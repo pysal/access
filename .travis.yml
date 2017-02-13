@@ -22,7 +22,7 @@ before_install:
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
   - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; 
-        then 2to3 -nw pysal_core/ > /dev/null; 
+        then 2to3 -nw {PACKAGE_NAME} > /dev/null; 
     fi
 
 install:
