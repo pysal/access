@@ -1,19 +1,24 @@
 from setuptools import setup
+import os.path
 
 try:
     from distutils.command.build_py import build_py_2to3 as build_py
 except ImportError:
     from distutils.command.build_py import build_py
 
-setup(name=, #name of package
+pth = os.path.dirname(os.path.abspath(__file__))+ '/requirements.txt'
+
+REQUIREMENTS = [i.strip() for i in open(pth).readlines()]
+
+setup(name='', #name of package
       version='1.0.0dev',
-      description=, #short <80chr description
-      url=, #github repo
-      maintainer=, 
-      maintainer_email=, 
+      description='', #short <80chr description
+      url='', #github repo
+      maintainer='',
+      maintainer_email='',
       test_suite = 'nose.collector',
       tests_require=['nose'],
-      keywords='spatial statistics'
+      keywords='spatial statistics',
       classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
@@ -30,8 +35,6 @@ setup(name=, #name of package
         ],
       license='3-Clause BSD',
       packages=[],
-      install_requires=['numpy', 'scipy', 'pysal_core',
-                        # other dependencies
-                        ,],
+      install_requires=REQUIREMENTS,
       zip_safe=False,
       cmdclass = {'build.py':build_py})
