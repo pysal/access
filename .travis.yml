@@ -4,7 +4,6 @@ branches:
 only:
   - master
 python:
-  - "2.7"
   - "3.5"
   - "3.6"
 
@@ -15,8 +14,8 @@ python:
 # - frank@gmail.com
 
 env:
-  - PYSAL_PLUS=false
-  - PYSAL_PLUS=true
+  - PYSAL_PLUS=false MPLBACKEND='pdf'
+  - PYSAL_PLUS=true MPLBACKEND='pdf'
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -24,21 +23,20 @@ before_install:
   - ./miniconda.sh -b -p ./miniconda
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
-  - conda config --add channels conda-forge
+  - conda config --append channels conda-forge
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; 
-        then 2to3 -nw {PACKAGE_NAME} > /dev/null; 
-    fi
 
 install:
   - conda install --yes pip
   - conda install --yes --file requirements.txt;
+  - conda install -c conda-forge geopandas
   - pip install -r requirements_dev.txt
 
 script:
   - python setup.py sdist >/dev/null
-  - nosetests --with-coverage --cover-package={PACKAGE_NAME};
+  - python setup.py install
+  - nosetests --with-coverage --cover-package={PACKAGE_NAME} {PACKAGE_NAME}
 
 notifications:
     email:
