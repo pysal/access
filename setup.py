@@ -2,11 +2,10 @@ from setuptools import setup
 import os.path
 from distutils.command.build_py import build_py
 
-Major = 1
-Feature = 0
-Bug = 0
-# dev could be removed
-version = '%d.%d.%d' % (Major, Feature, Bug) + 'dev'
+# Get __version__ from PACKAGE_NAME/__init__.py without importing the package
+# __version__ has to be defined in the firt line
+exec(compile(open('PACKAGE_NAME/__init__.py').readline(),
+             'PACKAGE_NAME/__init__.py', 'exec'))
 
 def _get_requirements_from_files(groups_files):
     groups_reqlist = {}
@@ -30,7 +29,7 @@ def setup_package():
     extras_reqs = reqs
 
     setup(name='', #name of package
-          version=version,
+          version=__version__,
           description='', #short <80chr description
           url='', #github repo
           maintainer='',
