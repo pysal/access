@@ -20,9 +20,9 @@ env:
 matrix:
   allow_failures: #allow travis tests to fail if using the github version of libpysal
       - python: 3.5
-        env: PYSAL_PYPI=false
+        env: PYSAL_PYPI=false MPLBACKEND='pdf'
       - python: 3.6
-        env: PYSAL_PYPI=false
+        env: PYSAL_PYPI=false MPLBACKEND='pdf'
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
