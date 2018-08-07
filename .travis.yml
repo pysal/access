@@ -1,7 +1,7 @@
 language: python
 sudo: false
 branches:
-only:
+  only:
   - master
 python:
   - 3.5
@@ -18,12 +18,13 @@ env:
   - PYSAL_PYPI=false
   global:
     - MPLBACKEND='pdf'
-  matrix:
-    allow_failures: #allow travis tests to fail if using the github version of libpysal
-      - python: 3.5
-        env: PYSAL_PYPI=false
-      - python: 3.6
-        env: PYSAL_PYPI=false
+    
+matrix:
+  allow_failures: #allow travis tests to fail if using the github version of libpysal
+    - python: 3.5
+      env: PYSAL_PYPI=false
+    - python: 3.6
+      env: PYSAL_PYPI=false
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
