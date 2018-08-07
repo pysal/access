@@ -7,13 +7,15 @@ python:
   - 3.5
   - 3.6
 
-# to add testing, replace {PACKAGE NAME} with your package's name, and {AUTHOR_EMAILS} with a
+# to add testing, replace PACKAGE_NAME with your package's name, and {AUTHOR_EMAILS} with a
 # YAML list of author emails, like:
 # - robert@gmail.com
 # - betsy@gmail.com
 # - frank@gmail.com
 
 env:
+  - PYSAL_PYPI=true
+  - PYSAL_PYPI=false
   global:
     - MPLBACKEND='pdf'
   matrix:
@@ -47,7 +49,7 @@ install:
 script:
   - python setup.py sdist >/dev/null
   - python setup.py install
-  - nosetests --with-coverage --cover-package={PACKAGE_NAME}
+  - nosetests --with-coverage --cover-package=PACKAGE_NAME
 
 notifications:
     email:
