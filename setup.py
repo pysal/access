@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os.path
 from distutils.command.build_py import build_py
 
@@ -28,7 +28,7 @@ def setup_package():
     install_reqs = reqs.pop('base')
     extras_reqs = reqs
 
-    setup(name='', #name of package
+    setup(name='PACKAGE_NAME', #name of package
           version=__version__,
           description='', #short <80chr description
           url='', #github repo
@@ -50,7 +50,7 @@ def setup_package():
             'Programming Language :: Python :: 3.6'
             ],
           license='3-Clause BSD',
-          packages=[], #add your package name here as a string
+          packages=find_packages(),
           install_requires=install_reqs,
           extras_require=extras_reqs,
           zip_safe=False,
