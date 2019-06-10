@@ -60,8 +60,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = "access"  # string of your project name, for example, 'giddy'
-copyright = '2018, pysal developers'
-author = 'pysal developers'
+copyright = '2019, pysal access developers'
+author = 'pysal access developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
