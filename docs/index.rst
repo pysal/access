@@ -1,43 +1,27 @@
 .. documentation master file
 
-Introduction of your package
+========================
+Spatial Access for PySAL
+========================
+
+We are building this pysal package to calculate spatial accessibility from existing travel time matrices
+
+.. image:: _static/images/full_us.jpg
+   :width: 100%
 
 .. raw:: html
 
-    <div class="container-fluid">
-      <div class="row equal-height">
-        <div class="col-sm-1 col-xs-hidden">
-        </div>
-        <div class="col-md-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/giddy/blob/master/notebooks/directional.ipynb" class="thumbnail">
-                <img src="_static/images/rose_conditional.png" class="img-responsive center-block">
-                <div class="caption text-center">
-                <h6>Rose diagram (directional LISAs)</h6>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/giddy/blob/master/notebooks/Markov%20Based%20Methods.ipynb" class="thumbnail">
-                <img src="_static/images/spatial_markov_us.png" class="img-responsive center-block">
-                <div class="caption text-center">
-                <h6>Spatial Markov Chain</h6>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/giddy/blob/master/notebooks/Rank%20based%20Methods.ipynb" class="thumbnail">
-                <img src="_static/images/neighboorsetLIMA_US.png"
-                class="img-responsive center-block">
-                <div class="caption text-center">
-                <h6>Neighbor Set Local Indicator of Mobility Association (LIMA)
-                </h6>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-2 col-xs-hidden">
-        </div>
-      </div>
-    </div>
+   <figure class="figure">
+     <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
+     <figcaption class="figure-caption text-center">
+       By distributing our calculation on Amazon Web Services,
+         we are able to inexpensively compute an origin-destination driving time matrix
+         for tracts within 100 km of each other.
+       We also calculate transit time on public transportation, in 40 major cities.
+       Explore the map by clicking around or entering an address.
+       You can also download one-to-many data.
+     </figcaption>
+   </figure>
 
 
 .. toctree::
