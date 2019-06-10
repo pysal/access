@@ -8,7 +8,7 @@ from . import fca
 
 class access():
     """
-    Spatial weights class.
+    Spatial accessibility class.
 
     Parameters
     ----------
@@ -45,27 +45,27 @@ class access():
 
     @classmethod
     def from_points(x, y):
-    """
-    Alternative constructor.
-    """
+        """
+        Alternative constructor.
+        """
         pass
 
     def fca(self, max_cost):
-    """
-    Calculate floating catchment 
+        """
+        Calculate floating catchment 
 
-    Parameters
-    ----------
-    max_cost            : float
-                          Cutoff of cost values
+        Parameters
+        ----------
+        max_cost            : float
+                              Cutoff of cost values
 
-    Returns
-    -------
+        Returns
+        -------
 
-    access              : pandas Series
-                          Accessibility score for origin locations.
+        access              : pandas Series
+                              Accessibility score for origin locations.
 
-    """
+        """
         
         # Merge 
 
