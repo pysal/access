@@ -43,7 +43,31 @@ class access():
 
         pass
 
-    def fca(self):
+    @classmethod
+    def from_points(x, y):
+    """
+    Alternative constructor.
+    """
+        pass
+
+    def fca(self, max_cost):
+    """
+    Calculate floating catchment 
+
+    Parameters
+    ----------
+    max_cost            : float
+                          Cutoff of cost values
+
+    Returns
+    -------
+
+    access              : pandas Series
+                          Accessibility score for origin locations.
+
+    """
+        
+        # Merge 
 
         return fca.fca()
 
