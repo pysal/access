@@ -2,7 +2,7 @@
 
 We are building this pysal package to calculate spatial accessibility from existing travel time matrices
 
-.. image:: images/full_us.jpg
+.. image:: _static/images/pysal_favicon.ico
    :width: 40pt
 
 .. raw:: html
