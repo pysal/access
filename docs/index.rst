@@ -2,13 +2,13 @@
 
 We are building this pysal package to calculate spatial accessibility from existing travel time matrices
 
-.. image:: full_us.jpg
+.. image:: images/full_us.jpg
    :width: 40pt
 
 .. raw:: html
 
    <figure class="figure">
-     <embed src="mmap" style="padding: 10pt 0; width:95%; height: 70vh;">
+     <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
      <figcaption class="figure-caption text-center">
        By distributing our calculation on Amazon Web Services,
          we are able to inexpensively compute an origin-destination driving time matrix
