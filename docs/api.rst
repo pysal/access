@@ -1,6 +1,6 @@
 .. _api_ref:
 
-.. currentmodule:: PACKAGE_NAME
+.. currentmodule:: access
 
 API reference
 =============
