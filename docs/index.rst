@@ -3,7 +3,7 @@
 We are building this pysal package to calculate spatial accessibility from existing travel time matrices
 
 .. image:: _static/images/full_us.jpg
-   :width: 40pt
+   :width: 400pt
 
 .. raw:: html
 
