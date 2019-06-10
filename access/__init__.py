@@ -1,5 +1,50 @@
 __version__ = "1.0.0"
-# __version__ has to be defined in the first line
+"""
+:mod:`access` --- Accessibility Metrics
+=================================================
+"""
+
+from . import fca
+
+class access():
+    """
+    Spatial weights class.
+
+    Parameters
+    ----------
+    df                   : pandas.DataFrame
+                           Dataframe with three columns: origin, destination, and cost between them.
+    origins              : string
+                           Name of origin column
+    destinations         : string
+                           Name of destination column
+    cost                 : string
+                           Name of cost column
+
+    Attributes
+    ----------
+
+    origins              : Name of origin column
+
+    Methods
+    -------
+
+    fca()                : Calculate the floating catchment area (buffer) access score.
 
 
-#import modules/functions
+    Examples
+    --------
+    >>> from access import access
+    >>> access().fca()
+    10
+    """
+
+    def __init__(self):
+
+        pass
+
+    def fca(self):
+
+        return fca.fca()
+
+
