@@ -5,14 +5,12 @@
 API reference
 =============
 
-.. _markov_api:
-
-Markov Methods
---------------
+Acccessibility Methods
+----------------------
 
 .. autosummary::
    :toctree: generated/
 
-    giddy.markov.Markov
-    giddy.markov.Spatial_Markov
+    access.access
+    access.access.fca
 
