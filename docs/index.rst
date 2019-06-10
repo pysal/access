@@ -1,11 +1,16 @@
 .. documentation master file
 
+========================
+Spatial Access for PySAL
+========================
+
 We are building this pysal package to calculate spatial accessibility from existing travel time matrices
 
 .. image:: _static/images/full_us.jpg
    :width: 400pt
 
 .. raw:: html
+   :width: 400pt
 
    <figure class="figure">
      <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
