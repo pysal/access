@@ -5,11 +5,10 @@
 API reference
 =============
 
-Acccessibility Methods
+Acccessibility Class
 ----------------------
 
 .. autosummary::
-   :toctree: generated/
 
     access.access
     access.access.raam
@@ -18,14 +17,20 @@ Acccessibility Methods
     access.access.three_stage_fca
     access.access.score
 
-    Floating Catchment Methods
-    --------------------------
+Rational Agent Access Model
+---------------------------
+
+.. autosummary::
+
+    access.raam.raam
+
+Floating Catchment Methods
+--------------------------
+
+.. autosummary::
+
     access.fca.weighted_catchment
     access.fca.fca_ratio
     access.fca.two_stage_fca
     access.fca.three_stage_fca
-
-    Rational Agent Access Model
-    ---------------------------
-    access.raam.raam
 
