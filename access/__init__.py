@@ -13,6 +13,7 @@ from . import raam
 
 class access():
     """
+    Spatial Access Class
 
     Parameters
     ----------
