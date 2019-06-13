@@ -9,6 +9,7 @@ Acccessibility Class
 ----------------------
 
 .. autosummary::
+   :toctree: generated/
 
     access.access
     access.access.raam
