@@ -5,7 +5,7 @@ __version__ = "1.0.0"
 """
 
 import pandas
-# import geopandas
+import geopandas
 import warnings
 
 from . import fca
