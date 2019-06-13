@@ -220,6 +220,25 @@ class access():
         return fca.fca()
 
 
+    def raam(self, tau = 1, cost = None): 
+        """Calculate the rational agent access model cost.
+        """
+
+        if cost is None:
+            cost = self.default_cost
+
+    def two_stage_fca():
+        """Calculate the two-stage floating catchment area access score."""
+        pass
+
+    def three_stage_fca():
+        """Calculate the three-stage floating catchment area access score."""
+        pass
+
+    def score():
+        """Weighted aggregate of multiple (already-calculated) access components."""
+        pass
+
     def user_cost():
         """Create a user cost, from demand to supply locations."""
         pass
@@ -235,23 +254,8 @@ class access():
         """
         pass
 
-    def raam(): 
-        """Calculate the rational agent access model cost."""
-        pass
-
     def euclidean_distance_neighbors():
         """Calculate the Euclidean distance among demand locations."""
         pass
 
-    def two_stage_fca():
-        """Calculate the two-stage floating catchment area access score."""
-        pass
-
-    def three_stage_fca():
-        """Calculate the three-stage floating catchment area access score."""
-        pass
-
-    def score():
-        """Weighted aggregate of multiple (already-calculated) access components."""
-        pass
 
