@@ -61,50 +61,64 @@ class access():
     --------
 
     Import the base class and example data.
+
     >>> from access import access, examples as ex
 
     Inspect the example data:
+
     >>> ex.il_times.head()
 
     Using the example data, create an `access` object.
+
     >>> illinois_primary_care = access(demand_df = ex.il_pop,   demand_index = "geoid", demand_value = "pop",
                                        supply_df = ex.il_doc,   supply_index = "geoid", supply_value = ["pc_physicians", "dentists"],
                                        cost_df   = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
 
     Attempt to calculate floating catchment area method:
+
     >>> illinois_primary_care.fca_ratio(max_cost = 60)
     TypeError: unsupported operand type(s) for +: 'int' and 'str'
 
     This failed, because we had not set a distance from users to their own neighbors.
     In the present case, `il_times` actually runs among 2010 Census Tracts, so we can use the same dataframe again,
+
     >>> illinois_primary_care.user_cost_neighbors(name = "driving", cost_df = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
 
     But we could have also have gotten a Euclidean distance for this.  First set the CRS to 3528, for Illinois (it already is).
     Note that this is "in place."
+
     >>> illinois_primary_care.to_crs(epsg = 3528)
 
     And now set the distances.
+
     >>> illinois_primary_care.euclidean_distance_neighbors(name = "euclidean")
       
     Calculate two-stage floating catchment method for all supply types, in a catchment of 60 minutes.
+
     >>> illinois_primary_care.two_stage_fca(max_cost = 60)
     {17031410900 : 0.1234, 17031836200 : 1.234, ... }
       
     Calculate RAAM with a tau parameter of 30 minutes, for every supply type (doctors and dentists).
+
     >>> illinois_primary_care.raam(name = "raam_tau30", tau = 30)
     {17031410900 : 0.1234, 17031836200 : 1.234, ... }
 
     Same thing, but with tau of 60 minutes.
+
     >>> illinois_primary_care.raam(name = "raam_tau60", tau = 60)
     {17031410900 : 0.1234, 17031836200 : 1.234, ... }
 
     Now doctors only, at 90 minutes:
+
     >>> illinois_primary_care.raam(supply = "pc_physicians", name = "raam_tau60", tau = 90)
     {17031410900 : 0.1234, 17031836200 : 1.234, ... }
+
+    View all of the calculated types of access.
 
     >>> illinois_primary_care.access_metadata
 
     Create a weighted sum of multiple access types, from a dictionary.
+
     >>> illinois_primary_care.score({"pc_physicians_raam_tau60" : 1, "dentists_raam_tau30" : 0.2})
     """
 
