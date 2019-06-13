@@ -36,7 +36,7 @@ def setup_package():
           maintainer_email='',
           test_suite = 'nose.collector',
           tests_require=['nose'],
-          keywords='spatial statistics',
+          keywords='spatial statistics access',
           classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
