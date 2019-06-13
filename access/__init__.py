@@ -13,23 +13,22 @@ from . import raam
 
 class access():
     """
-    Spatial accessibility class.
 
     Parameters
     ----------
-    demand_df            : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) or [geopandas.GeoDataFrame](http://geopandas.org/reference/geopandas.GeoDataFrame.html)
+    demand_df            : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ or `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_
                            The origins dataframe, containing a location index and, optionally, a level of demand and geometry.
     demand_index         : str
                            is the name of the column of `demand` that holds the origin ID.
     demand_value         : str
                            is the name of the column of `demand` that holds the aggregate demand at a location.
-    supply_df            : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) or [geopandas.GeoDataFrame](http://geopandas.org/reference/geopandas.GeoDataFrame.html)
+    supply_df            : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ or `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_
                            The origins dataframe, containing a location index and, optionally, level of supply and geometry.
     supply_index         : str
                            is the name of the column of `supply` that holds the origin ID.
     supply_value         : {str, list}
                            is the name of the column of `supply` that holds the aggregate supply at a location, or a list of such columns.
-    cost_df              : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    cost_df              : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                            This dataframe contains a link from demand to supply locations, and a cost between them.
     cost_origin          : str
                            The column name of the index locations -- this is what will be grouped by.
@@ -37,7 +36,7 @@ class access():
                            The column name of the neighborhing demand locations -- this is what goes in the groups.
     cost_name            : str
                            The column name of the travel cost.
-    neighbor_cost_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    neighbor_cost_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                            This dataframe contains a link from demand to neighbor locations, and a cost between them (running consumer to supplier).
     neighbor_cost_origin : str
                            The column name of the origin locations -- this is what will be grouped by.
@@ -57,21 +56,6 @@ class access():
                            Describes each of the currently-available supply to demand costs.
     cost_metadata        : pandas.DataFrame
                            Describes each of the currently-available supply to demand costs.
-
-    Methods
-    -------
-
-    user_cost()                    : Create a user cost, from demand to supply locations.
-    user_cost_neighbors()          : Create a user cost, from supply locations to other supply locations.
-    euclidean_distance()           : Calculate the Euclidean distance from demand to supply locations. 
-                                     This is simply the geopandas `distance` function.  
-                                     The user is responsible for putting the geometries into an appropriate reference system.
-    raam()                         : Calculate the rational agent access model cost.
-    euclidean_distance_neighbors() : Calculate the Euclidean distance among demand locations.
-    fca_ratio()                    : Calculate the floating catchment area (buffer) access score.
-    two_stage_fca()                : Calculate the two-stage floating catchment area access score.
-    three_stage_fca()              : Calculate the three-stage floating catchment area access score.
-    score()                        : Weighted aggregate of multiple (already-calculated) access components.
 
     Examples
     --------
@@ -186,7 +170,7 @@ class access():
 
     def fca_ratio(self, name = "fca", cost = None, max_cost = None):
         """
-        Calculate floating catchment 
+        Calculate the floating catchment area (buffer) access score.
 
         Parameters
         ----------
@@ -221,4 +205,39 @@ class access():
         
         return fca.fca()
 
+
+    def user_cost():
+        """Create a user cost, from demand to supply locations."""
+        pass
+
+    def user_cost_neighbors():
+        """Create a user cost, from supply locations to other supply locations."""
+        pass
+
+    def euclidean_distance():
+        """Calculate the Euclidean distance from demand to supply locations.
+           This is simply the geopandas `distance` function.  
+           The user is responsible for putting the geometries into an appropriate reference system.
+        """
+        pass
+
+    def raam(): 
+        """Calculate the rational agent access model cost."""
+        pass
+
+    def euclidean_distance_neighbors():
+        """Calculate the Euclidean distance among demand locations."""
+        pass
+
+    def two_stage_fca():
+        """Calculate the two-stage floating catchment area access score."""
+        pass
+
+    def three_stage_fca():
+        """Calculate the three-stage floating catchment area access score."""
+        pass
+
+    def score():
+        """Weighted aggregate of multiple (already-calculated) access components."""
+        pass
 
