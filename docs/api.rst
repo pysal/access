@@ -8,11 +8,11 @@ API reference
 ACCESS
 ------
 
-.. automodule:: access
+.. autoclass:: access
+   :toctree: generated/
    :members:
    :private-members:
    :undoc-members:
-   :toctree: generated/
 
     access.access
 
