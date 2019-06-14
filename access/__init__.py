@@ -81,9 +81,11 @@ class access():
 
         Using the example data, create an `access` object.
 
-        >>> illinois_primary_care = access(demand_df = ex.il_pop,   demand_index = "geoid", demand_value = "pop",
-                                           supply_df = ex.il_doc,   supply_index = "geoid", supply_value = ["pc_physicians", "dentists"],
-                                           cost_df   = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
+        >>> illinois_primary_care = \
+                 access(demand_df = ex.il_pop,   demand_index = "geoid", demand_value = "pop",
+                        supply_df = ex.il_doc,   supply_index = "geoid", 
+                        supply_value = ["pc_physicians", "dentists"],
+                        cost_df   = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
 
         Attempt to calculate floating catchment area method:
 
@@ -93,7 +95,8 @@ class access():
         This failed, because we had not set a distance from users to their own neighbors.
         In the present case, `il_times` actually runs among 2010 Census Tracts, so we can use the same dataframe again,
 
-        >>> illinois_primary_care.user_cost_neighbors(name = "driving", cost_df = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
+        >>> illinois_primary_care.user_cost_neighbors(name = "cost", cost_df = ex.il_times, 
+                                                      cost_origin = "origin", cost_dest = "dest")
 
         But we could have also have gotten a Euclidean distance for this.  First set the CRS to 3528, for Illinois (it already is).
         Note that this is "in place."
