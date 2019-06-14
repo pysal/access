@@ -26,6 +26,7 @@ Rational Agent Access Model
 ---------------------------
 
 .. autosummary::
+   :toctree: generated/
 
     access.raam.raam
 
@@ -33,6 +34,7 @@ Floating Catchment Methods
 --------------------------
 
 .. autosummary::
+   :toctree: generated/
 
     access.fca.weighted_catchment
     access.fca.fca_ratio
