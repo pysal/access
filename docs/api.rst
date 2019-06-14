@@ -17,6 +17,10 @@ Acccessibility Class
     access.access.two_stage_fca
     access.access.three_stage_fca
     access.access.score
+    access.access.euclidean_distance
+    access.access.euclidean_distance_neighbors
+    access.access.user_cost
+    access.access.user_cost_neighbors
 
 Rational Agent Access Model
 ---------------------------
