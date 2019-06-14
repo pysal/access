@@ -5,7 +5,7 @@
 API reference
 =============
 
-Acccessibility Class
+Accessibility Class
 ----------------------
 
 .. autosummary::
