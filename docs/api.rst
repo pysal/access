@@ -9,18 +9,18 @@ ACCESS
 ------
 
 .. autoclass:: access
-   :toctree: generated/
    :members:
-   :private-members:
-   :undoc-members:
-
-    access.access
 
 Accessibility Class
 ----------------------
 
+.. rubric:: Accessibility Class
+
 .. autosummary::
    :toctree: generated/
+   :members:
+   :undoc-members:
+
 
     access.access
     access.access.raam
@@ -33,20 +33,12 @@ Accessibility Class
     access.access.user_cost
     access.access.user_cost_neighbors
 
-Rational Agent Access Model
----------------------------
+.. rubric:: Access Functions
 
 .. autosummary::
    :toctree: generated/
 
     access.raam.raam
-
-Floating Catchment Methods
---------------------------
-
-.. autosummary::
-   :toctree: generated/
-
     access.fca.weighted_catchment
     access.fca.fca_ratio
     access.fca.two_stage_fca
