@@ -5,22 +5,11 @@
 API reference
 =============
 
-ACCESS
-------
-
-.. autoclass:: access
-   :members:
-
 Accessibility Class
 ----------------------
 
-.. rubric:: Accessibility Class
-
 .. autosummary::
    :toctree: generated/
-   :members:
-   :undoc-members:
-
 
     access.access
     access.access.raam
@@ -33,7 +22,8 @@ Accessibility Class
     access.access.user_cost
     access.access.user_cost_neighbors
 
-.. rubric:: Access Functions
+Access Functions
+----------------
 
 .. autosummary::
    :toctree: generated/
