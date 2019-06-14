@@ -55,8 +55,6 @@ class access():
                            Lists currently-available measures of access.
     cost_metadata        : pandas.DataFrame
                            Describes each of the currently-available supply to demand costs.
-    cost_metadata        : pandas.DataFrame
-                           Describes each of the currently-available supply to demand costs.
     """
 
 
@@ -187,8 +185,28 @@ class access():
         if supply_index is not True: 
             self.supply_df.set_index(supply_index)
 
+        if cost_df is not None:
+          
+            self.cost_df     = cost_df
+            self.cost_origin = cost_origin
+            self.cost_dest   = cost_dest
+            self.cost_name   = cost_name
+
+        if neighbor_cost_df is not None:
+          
+            self.neighbor_cost_df     = neighbor_cost_df
+            self.neighbor_cost_origin = neighbor_cost_origin
+            self.neighbor_cost_dest   = neighbor_cost_dest
+            self.neighbor_cost_name   = neighbor_cost_name
+
+
+        self.access = pandas.DataFrame(index = self.supply_df.index)
+
+        self.access_metadata = pd.DataFrame(columns = ["name", "distance", "function", "descriptor"])
+        self.cost_metadata   = pd.DataFrame(columns = ["name", "type", "descriptor"])
 
         return
+
 
     def fca_ratio(self, name = "fca", cost = None, max_cost = None):
         """
@@ -255,7 +273,7 @@ class access():
         """Create a user cost, from supply locations to other supply locations."""
         pass
 
-    def euclidean_distance():
+    def euclidean_distance(name = "euclidean", threshold = 0, metric = 2, centroid_x = False, centroid_y = False):
         """Calculate the Euclidean distance from demand to supply locations.
            This is simply the geopandas `distance` function.  
            The user is responsible for putting the geometries into an appropriate reference system.
