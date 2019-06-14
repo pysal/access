@@ -66,6 +66,8 @@ class access():
                  neighbor_cost_df = None, neighbor_cost_origin = None, neighbor_cost_dest = None, neighbor_cost_name = None):
 
         """
+        Initialize the class.
+
         Examples
         --------
 
