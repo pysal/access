@@ -5,6 +5,17 @@
 API reference
 =============
 
+ACCESS
+------
+
+.. automodule:: access
+   :members:
+   :private-members:
+   :undoc-members:
+   :toctree: generated/
+
+    access.access
+
 Accessibility Class
 ----------------------
 
