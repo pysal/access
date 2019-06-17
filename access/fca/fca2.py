@@ -19,13 +19,15 @@ def two_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df,
     demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
                     The origins dataframe, containing a location index and a total demand.
     demand_origin : str
-                    is the name of the column of `demand` that holds the origin ID.
+                    is the name of the column of `demand_df` that holds the origin ID.
     demand_value  : str
-                    is the name of the column of `demand` that holds the aggregate demand at a location.
+                    is the name of the column of `demand_df` that holds the aggregate demand at a location.
     supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
                     The origins dataframe, containing a location index and level of supply
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
-                    The origins dataframe, containing a location index and level of supply
+    supply_origin : str
+                    is the name of the column of `supply_df` that holds the origin ID.
+    supply_value  : str
+                    is the name of the column of `supply_df` that holds the aggregate demand at a location.
     cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
                     This dataframe contains a link between neighboring demand locations, and a cost between them.
     cost_origin   : str
