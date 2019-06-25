@@ -59,7 +59,7 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
               demand_index = 'geoid', demand_name = "demand",
               supply_index = 'geoid', supply_name  = "supply",
               demand_cost_origin = "origin", demand_cost_dest = "dest", demand_cost_name = "cost",
-              supply_cost_origin = "origin", supply_cost_dest = "dest", supply_cost_name = "cost",
+              supply_cost_origin = "dest", supply_cost_dest = "origin", supply_cost_name = "cost",
               weight_fn = None, normalize = False, noise = 'quiet'):
     """
     Calculation of the floating catchment accessibility
@@ -122,11 +122,11 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
                                           cost_source = demand_cost_origin, cost_dest = demand_cost_dest, cost_cost = demand_cost_name,
                                           loc_dest = demand_index, loc_dest_value = demand_name, 
                                           weight_fn = weight_fn)
-    total_supply_series = weighted_catchment(supply_df, supply_cost_df, max_cost, 
-                                          cost_source = supply_cost_origin, cost_dest = supply_cost_dest, cost_cost = supply_cost_name,
+    total_supply_series = weighted_catchment(supply_df, demand_cost_df, max_cost, 
+                                          cost_source = demand_cost_origin, cost_dest = demand_cost_dest, cost_cost = demand_cost_name,
                                           loc_dest = supply_index, loc_dest_value = supply_name, 
                                           weight_fn = weight_fn)
-
+    print (total_supply_series)
     #calculate the base FCA series with total demand divided by total supply
     temp = total_supply_series.to_frame(name = 'supply').join(total_demand_series.to_frame(name = 'demand'), how = 'right').fillna(0)
     temp['FCA'] = temp['supply'] / temp['demand']

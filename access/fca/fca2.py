@@ -6,7 +6,7 @@ def two_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost
                   demand_index = "geoid", demand_name   = "demand",
                   supply_index = "geoid",   supply_name   = "supply",
                   demand_cost_origin = "origin", demand_cost_dest = "dest", demand_cost_name = "cost",
-                  supply_cost_origin = "origin", supply_cost_dest = "dest", supply_cost_name = "cost",
+                  supply_cost_origin = "dest", supply_cost_dest = "origin", supply_cost_name = "cost",
                   weight_fn = None, normalize = False):
     """
     Calculation of the floating catchment accessibility
@@ -63,8 +63,8 @@ def two_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost
                  A -- potentially-weighted -- two-stage access ratio.
     """
     #get a series of total demand then calculate the supply to total demand ratio for each location
-    total_pop_series = weighted_catchment(demand_df, demand_cost_df, max_cost, 
-                                          cost_source = demand_cost_origin, cost_dest = demand_cost_dest, cost_cost = demand_cost_name,
+    total_pop_series = weighted_catchment(demand_df, supply_cost_df, max_cost, 
+                                          cost_source = supply_cost_origin, cost_dest = supply_cost_dest, cost_cost = supply_cost_name,
                                           loc_dest = demand_index, loc_dest_value = demand_name, 
                                           weight_fn = weight_fn)
     temp = supply_df.set_index(supply_index).join(total_pop_series.to_frame(name = 'demand'), how = 'right').fillna(0)
