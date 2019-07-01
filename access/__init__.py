@@ -245,7 +245,7 @@ class access():
                                                       supply_cost_df = self.cost_df,
                                                       max_cost = max_cost)
         
-        return fca.fca()
+        return fca.filter("^" + name)
 
 
     def raam(self, tau = 1, cost = None): 
