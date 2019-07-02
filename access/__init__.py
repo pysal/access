@@ -4,7 +4,7 @@ __version__ = "1.0.0"
 =================================================
 """
 
-import pandas
+import pandas as pd
 import geopandas
 import warnings
 
@@ -202,7 +202,7 @@ class access():
             self.neighbor_cost_name   = neighbor_cost_name
 
 
-        self.access = pandas.DataFrame(index = self.supply_df.index)
+        self.access = pd.DataFrame(index = self.supply_df.index)
 
         self.access_metadata = pd.DataFrame(columns = ["name", "distance", "function", "descriptor"])
         self.cost_metadata   = pd.DataFrame(columns = ["name", "type", "descriptor"])
