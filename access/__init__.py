@@ -37,16 +37,16 @@ class access():
                            The column name of the index locations -- this is what will be grouped by.
     cost_dest            : str
                            The column name of the neighborhing demand locations -- this is what goes in the groups.
-    cost_name            : str
-                           The column name of the travel cost.
+    cost_name            : {str, list}
+                           The column(s) name of the travel cost(s).
     neighbor_cost_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                            This dataframe contains a link from demand to neighbor locations, and a cost between them (running consumer to supplier).
     neighbor_cost_origin : str
                            The column name of the origin locations -- this is what will be grouped by.
     neighbor_cost_dest   : str
                            The column name of the destination locations -- this is what goes in the groups.
-    neighbor_cost_name   : str
-                           The column name of the travel cost.
+    neighbor_cost_name   : {str, list}
+                           The column name(s) of the travel cost(s).
 
     Attributes
     ----------
@@ -158,8 +158,12 @@ class access():
           if cost_dest   not in cost_df.columns:
               raise ValueError("cost_dest must be a column of cost_df")
 
-          if cost_name   not in cost_df.columns:
+          if type(cost_name) is string and cost_name not in cost_df.columns:
               raise ValueError("cost_name must be a column of cost_df")
+
+          if type(cost_name) is list:
+              if any([cn not in cost_df.columns for cn in cost_name]):
+                  raise ValueError("cost_name must be columns of cost_df")
 
         if neighbor_cost_df is not None:
 
@@ -169,8 +173,12 @@ class access():
           if neighbor_cost_dest   not in neighbor_cost_df.columns:
               raise ValueError("neighbor_cost_dest must be a column of neighbor_cost_df")
 
-          if neighbor_cost_name   not in neighbor_cost_df.columns:
-              raise ValueError("neighbor_cost_name must be a column of neighbor_cost_df")
+          if type(neighbor_cost_name) is string and neighbor_cost_name not in neighbor_cost_df.columns:
+              raise ValueError("neighbor_cost_name must be a column of cost_df")
+
+          if type(neighbor_cost_name) is list:
+              if any([cn not in neighbor_cost_df.columns for cn in neighbor_cost_name]):
+                  raise ValueError("neighbor_cost_names must be columns of cost_df")
 
 
         ### Now load the demand DFs.
@@ -192,7 +200,18 @@ class access():
             self.cost_df     = cost_df
             self.cost_origin = cost_origin
             self.cost_dest   = cost_dest
-            self.cost_name   = cost_name
+
+            if type(cost_name) is str:
+                self.cost_names = [cost_name]
+
+            elif type(cost_name) is list:
+                self.cost_names = cost_name
+
+            else:
+                raise ValueError("cost_name must be string or list of strings.")
+
+            self.default_cost = self.cost_names[0]
+
 
         if neighbor_cost_df is not None:
           
@@ -200,6 +219,17 @@ class access():
             self.neighbor_cost_origin = neighbor_cost_origin
             self.neighbor_cost_dest   = neighbor_cost_dest
             self.neighbor_cost_name   = neighbor_cost_name
+
+            if type(neighbor_cost_name) is str:
+                self.neighbor_cost_names = [neighbor_cost_name]
+
+            elif type(neighbor_cost_name) is list:
+                self.neighbor_cost_names = neighbor_cost_name
+
+            else:
+                raise ValueError("neighbor_cost_name must be string or list of strings.")
+
+            self.neighbor_default_cost = self.neighbor_cost_names[0]
 
 
         self.access = pandas.DataFrame(index = self.supply_df.index)
@@ -210,7 +240,7 @@ class access():
         return
 
 
-    def fca_ratio(self, name = "fca", cost = None, max_cost = None):
+    def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None, max_cost = None):
         """
         Calculate the floating catchment area (buffer) access score.
 
@@ -229,10 +259,24 @@ class access():
 
         """
 
-        if cost is None:
+        if demand_cost is None:
 
-            cost = self.default_cost
-            warnings.warn("deprecated", Warning)
+            demand_cost = self.neighbor_default_cost
+            warnings.warn("Using default cost, {}.".format(demand_cost), Warning)
+
+        if demand_cost not in self.neighbor_cost_names:
+
+            raise ValueError("{} not an available neighbor cost.".format(cost))
+
+        if supply_cost is None:
+
+            supply_cost = self.default_cost
+            warnings.warn("Using default cost, {}.".format(cost), Warning)
+
+        if supply_cost not in self.cost_names:
+
+            raise ValueError("{} not an available cost.".format(cost))
+
 
         for s in self.supply_types:
 
@@ -245,7 +289,7 @@ class access():
                                                       supply_cost_df = self.cost_df,
                                                       max_cost = max_cost)
         
-        return fca.filter("^" + name)
+        return demand_df.filter(regex = "^" + name, axis = 1)
 
 
     def raam(self, tau = 1, cost = None): 
@@ -267,22 +311,44 @@ class access():
         """Weighted aggregate of multiple (already-calculated) access components."""
         pass
 
+    def set_cost(self, new_cost):
+        """Change the default cost measure."""
+
+        if new_cost in self.cost_names:
+            self.default_cost = new_cost
+
+        else:
+            raise ValueError("Tried to set cost not available in cost df")
+
     def user_cost():
         """Create a user cost, from demand to supply locations."""
+
+        # Add it to the cost df.
+        # Add it to the list of costs.
+
         pass
 
     def user_cost_neighbors():
         """Create a user cost, from supply locations to other supply locations."""
+
+        # Add it to the list of costs.
+
         pass
 
-    def euclidean_distance(name = "euclidean", threshold = 0, metric = 2, centroid_x = False, centroid_y = False):
+    def euclidean_distance(self, name = "euclidean", threshold = 0, metric = 2, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
            This is simply the geopandas `distance` function.  
            The user is responsible for putting the geometries into an appropriate reference system.
         """
+
+        # Convert to centroids if so-specified
+        # Calculate the distances.
+        # Add it to the cost df.
+        # Add it to the list of costs.
+
         pass
 
-    def euclidean_distance_neighbors():
+    def euclidean_distance_neighbors(name = "euclidean", threshold = 0, metric = 2, centroid = False):
         """Calculate the Euclidean distance among demand locations."""
         pass
 

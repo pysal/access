@@ -1,4 +1,4 @@
-def two_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df,
+def two_stage_fca(demand_df, supply_df, cost_df,
                   demand_origin = "origin", demand_name   = "demand",
                   supply_origin = "dest",   supply_name   = "supply",
                   cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
