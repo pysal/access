@@ -5,7 +5,7 @@ __version__ = "1.0.0"
 """
 
 import pandas as pd
-import geopandas
+import geopandas as gpd
 import warnings
 
 from . import fca
@@ -184,6 +184,8 @@ class access():
 
         self.supply_df    = supply_df
         self.supply_value = supply_value
+        if type(supply_value) != list:
+            self.supply_value = [self.supply_value]
         if supply_index is not True: 
             self.supply_df.set_index(supply_index, inplace = True)
 
@@ -231,21 +233,22 @@ class access():
 
         if cost is None:
 
-            cost = self.default_cost
+            #cost = self.default_cost
             warnings.warn("deprecated", Warning)
 
         for s in self.supply_types:
-
-            if "{}_{}.".format(name, s) in demand_df.columns:
+            print (s)
+            if "{}_{}.".format(name, s) in self.demand_df.columns:
                 warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
             
-            demand_df[name + "_" + s] = fca.fca_ratio(demand_df = self.demand_df, 
+            wait = fca.fca_ratio(demand_df = self.demand_df, 
                                                       supply_df = self.supply_df, supply_name = s,
                                                       demand_cost_df = self.neighbor_cost_df,
                                                       supply_cost_df = self.cost_df,
                                                       max_cost = max_cost)
-        
-        return fca.fca()
+            
+            self.demand_df = self.demand_df.join(wait.to_frame().reset_index(drop = True))
+        return self.demand_df
 
 
     def raam(self, tau = 1, cost = None): 
@@ -255,9 +258,25 @@ class access():
         if cost is None:
             cost = self.default_cost
 
-    def two_stage_fca():
+    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None):
         """Calculate the two-stage floating catchment area access score."""
-        pass
+        if cost is None:
+
+            #cost = self.default_cost
+            warnings.warn("deprecated", Warning)
+
+        for s in self.supply_types:
+
+            if "{}_{}.".format(name, s) in self.demand_df.columns:
+                warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
+            
+            wait = fca.two_stage_fca(demand_df = self.demand_df, 
+                                                      supply_df = self.supply_df, supply_name = s,
+                                                      demand_cost_df = self.neighbor_cost_df,
+                                                      supply_cost_df = self.cost_df,
+                                                      max_cost = max_cost)
+        self.demand_df = self.demand_df.join(wait.to_frame().reset_index(drop = True))
+        return self.demand_df
 
     def three_stage_fca():
         """Calculate the three-stage floating catchment area access score."""
