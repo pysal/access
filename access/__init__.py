@@ -334,6 +334,16 @@ class access():
         else:
             raise ValueError("Tried to set cost not available in cost df")
 
+    def set_neighbor_cost(self, new_cost):
+        """Change the default cost measure."""
+
+        if new_cost in self.neighbor_cost_names:
+            self.neighbor_default_cost = new_cost
+
+        else:
+            raise ValueError("Tried to set cost not available in cost df")
+
+
     def user_cost():
         """Create a user cost, from demand to supply locations."""
 
