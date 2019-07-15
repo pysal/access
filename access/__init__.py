@@ -150,6 +150,13 @@ class access():
         if supply_value not in supply_df.columns:
             raise ValueError("supply_value must either be True -- or it must be a column of supply_df")
 
+        if type(supply_value) is string and supply_value not in supply_df.columns:
+            raise ValueError("supply_value must be a column of supply_df")
+
+        if type(supply_value) is list:
+            if any([sv not in supply_df.columns for sv in supply_value]):
+                raise ValueError("supply_value must be columns of supply_df")
+
         if cost_df is not None:
 
           if cost_origin not in cost_df.columns:
@@ -191,7 +198,14 @@ class access():
         ### And now the supply DFs.
 
         self.supply_df    = supply_df
-        self.supply_value = supply_value
+
+        if type(self.supply_value) is str:
+            self.supply_types = [supply_value]
+        elif type(self.supply_value) is list:
+            self.supply_types = supply_value
+        else:
+            raise ValueError("supply_value must be string or list of strings.")
+
         if supply_index is not True: 
             self.supply_df.set_index(supply_index, inplace = True)
 
