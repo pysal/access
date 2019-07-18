@@ -10,6 +10,7 @@ import warnings
 
 from . import fca
 from . import raam
+from . import weights
 
 class access():
     """
@@ -313,7 +314,7 @@ class access():
         if cost is None:
             cost = self.default_cost
 
-    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None):
+    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None):
         """Calculate the two-stage floating catchment area access score.
 
         Parameters
@@ -348,7 +349,7 @@ class access():
             series = fca.two_stage_fca(demand_df = self.demand_df, 
                                                       supply_df = self.supply_df, supply_name = s,
                                                       cost_df = self.cost_df,
-                                                      max_cost = max_cost)
+                                                      max_cost = max_cost, weight_fn = weight_fn)
             self.demand_df = self.demand_df.join(series.to_frame().reset_index(drop = True).rename({"Rl":name + "_" + s}, axis = 'columns'))
         return self.demand_df.filter(regex = "^" + name, axis = 1)
 
