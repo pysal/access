@@ -1,8 +1,13 @@
-def three_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df,
-                    demand_origin = "origin", demand_name   = "demand",
-                    supply_origin = "dest",   supply_name   = "supply",
-                    cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
-                    max_cost = None, weight_fn = None, preference_weight_beta = None):
+import pandas as pd
+import numpy as np
+import geopandas as gpd
+from .fca1 import weighted_catchment
+
+def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
+                  demand_index = "geoid", demand_name   = "demand",
+                  supply_index = "geoid",   supply_name   = "supply",
+                  cost_origin = "dest", cost_dest = "origin", cost_name = "cost",
+                  weight_fn = None, normalize = False):
     """
     Calculation of the floating catchment accessibility
       ratio, from DataFrames with precomputed distances.
@@ -52,6 +57,30 @@ def three_stage_fca(demand_df, supply_df, demand_cost_df, supply_cost_df,
     access     : pandas.Series
                  A -- potentially-weighted -- three-stage access ratio.
     """
+    if weight_fn is None:
+        raise Exception("Weight function for three-stage-FCA must be specified.")
     
-    return pandas.Series([10])
+    #get a series of total demand then calculate the supply to total demand ratio for each location
+    total_demand_series = weighted_catchment(demand_df, cost_df, max_cost, 
+                                          cost_source = cost_origin, cost_dest = cost_dest, cost_cost = cost_name,
+                                          loc_dest = demand_index, loc_dest_value = demand_name, 
+                                          weight_fn = weight_fn, three_stage_weight = True)
+    temp = supply_df.set_index(supply_index).join(total_demand_series.to_frame(name = 'demand'), how = 'right').fillna(0)
+    temp['Rl'] = temp[supply_name] / temp['demand']
+        
+    supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
+    
+    supply_to_total_demand_frame.reset_index(level = 0, inplace = True)
+    supply_to_total_demand_frame.rename({cost_origin: supply_index, 'Rl': 'Rl'}, axis='columns', inplace = True)
+    
+    #sum, into a series, the supply to total demand ratios for each location
+    three_stage_fca_series = weighted_catchment(supply_to_total_demand_frame, cost_df, max_cost, 
+                                          cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
+                                          loc_dest = supply_index, loc_dest_value = "Rl", 
+                                          weight_fn = weight_fn, three_stage_weight = True)
+    
+    if normalize:
+        mean_access = ((three_stage_fca_series * demand_df[demand_name]).sum() / demand_df[demand_name].sum())
+        three_stage_fca_series = three_stage_fca_series / mean_access
+    return three_stage_fca_series
 

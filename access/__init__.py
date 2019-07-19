@@ -353,9 +353,43 @@ class access():
             self.demand_df = self.demand_df.join(series.to_frame().reset_index(drop = True).rename({"Rl":name + "_" + s}, axis = 'columns'))
         return self.demand_df.filter(regex = "^" + name, axis = 1)
 
-    def three_stage_fca():
-        """Calculate the three-stage floating catchment area access score."""
-        pass
+    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None):
+        """Calculate the three-stage floating catchment area access score.
+        Parameters
+        ----------
+        name                : str 
+                              Cutoff of cost values
+        max_cost            : float
+                              Cutoff of cost values
+
+        Returns
+        -------
+
+        access              : pandas Series
+                              Accessibility score for origin locations.
+
+        """
+
+        if cost is None:
+
+            cost = self.default_cost
+            warnings.warn("Using default cost, {}.".format(cost), Warning)
+
+        if cost not in self.cost_names:
+
+            raise ValueError("{} not an available cost.".format(cost))
+
+        for s in self.supply_types:
+
+            if "{}_{}.".format(name, s) in self.demand_df.columns:
+                warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
+            
+            series = fca.three_stage_fca(demand_df = self.demand_df, 
+                                                      supply_df = self.supply_df, supply_name = s,
+                                                      cost_df = self.cost_df,
+                                                      max_cost = max_cost, weight_fn = weight_fn)
+            self.demand_df = self.demand_df.join(series.to_frame().reset_index(drop = True).rename({"Rl":name + "_" + s}, axis = 'columns'))
+        return self.demand_df.filter(regex = "^" + name, axis = 1)
 
     def score():
         """Weighted aggregate of multiple (already-calculated) access components."""

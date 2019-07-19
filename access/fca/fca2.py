@@ -54,13 +54,7 @@ def two_stage_fca(demand_df, supply_df, cost_df, max_cost,
     access     : pandas.Series
                  A -- potentially-weighted -- two-stage access ratio.
     """
-    
-    #weigh the times using the given parameter
-    if weight_fn:
-        weights_column = cost_df[cost_name].apply(weight_fn)*cost_df[cost_name] 
-        cost_df = cost_df.drop([cost_name], axis = 1)
-        cost_df[cost_name] = weights_column
-        
+  
     #get a series of total demand then calculate the supply to total demand ratio for each location
     total_demand_series = weighted_catchment(demand_df, cost_df, max_cost, 
                                           cost_source = cost_origin, cost_dest = cost_dest, cost_cost = cost_name,
@@ -68,7 +62,7 @@ def two_stage_fca(demand_df, supply_df, cost_df, max_cost,
                                           weight_fn = weight_fn)
     
     temp = supply_df.set_index(supply_index).join(total_demand_series.to_frame(name = 'demand'), how = 'right').fillna(0)
-    temp['Rl'] = temp[supply_name] / temp['demand']
+    temp['Rl'] = temp[supply_name] / temp['demand']   
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
     
     supply_to_total_demand_frame.reset_index(level = 0, inplace = True)

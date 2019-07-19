@@ -3,7 +3,7 @@ import numpy as np
 import geopandas as gpd
 
 def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_dest = "dest", cost_cost = "cost", 
-                       loc_dest = "dest",loc_dest_value = None, weight_fn = None,):
+                       loc_dest = "dest",loc_dest_value = None, weight_fn = None, three_stage_weight = False):
     """
     Calculation of the floating catchment (buffered) accessibility
     sum, from DataFrames with computed distances.
@@ -47,6 +47,22 @@ def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_d
         temp.drop(columns = loc_dest, inplace = True)
     else:
         temp = pd.merge(cost_df, loc_df, on = cost_dest)
+    
+    if weight_fn:
+        if not three_stage_weight:
+            weights_column = temp[cost_cost].apply(weight_fn)
+            new_loc_dest_value_column = temp[loc_dest_value]*weights_column
+            temp = temp.drop([loc_dest_value], axis = 1)
+            temp[loc_dest_value] = new_loc_dest_value_column
+        else:
+            temp["W3"] = temp[cost_cost].apply(weight_fn)
+            W3sum_frame = temp[["origin", "W3"]].groupby('origin').sum().rename(columns = {"W3" : "W3sum"}).reset_index()
+            temp = pd.merge(temp, W3sum_frame)
+            temp["G"] = temp.W3 / temp.W3sum
+            
+            new_loc_dest_value_column = temp[loc_dest_value]*temp.W3*temp.G
+            temp = temp.drop([loc_dest_value], axis = 1)
+            temp[loc_dest_value] = new_loc_dest_value_column
     
     temp = temp[temp[cost_cost] < max_cost]
     
