@@ -151,7 +151,7 @@ class access():
         if supply_value not in supply_df.columns:
             raise ValueError("supply_value must either be True -- or it must be a column of supply_df")
 
-        if type(supply_value) is string and supply_value not in supply_df.columns:
+        if type(supply_value) is str and supply_value not in supply_df.columns:
             raise ValueError("supply_value must be a column of supply_df")
 
         if type(supply_value) is list:
@@ -166,7 +166,7 @@ class access():
           if cost_dest   not in cost_df.columns:
               raise ValueError("cost_dest must be a column of cost_df")
 
-          if type(cost_name) is string and cost_name not in cost_df.columns:
+          if type(cost_name) is str and cost_name not in cost_df.columns:
               raise ValueError("cost_name must be a column of cost_df")
 
           if type(cost_name) is list:
@@ -181,7 +181,7 @@ class access():
           if neighbor_cost_dest   not in neighbor_cost_df.columns:
               raise ValueError("neighbor_cost_dest must be a column of neighbor_cost_df")
 
-          if type(neighbor_cost_name) is string and neighbor_cost_name not in neighbor_cost_df.columns:
+          if type(neighbor_cost_name) is str and neighbor_cost_name not in neighbor_cost_df.columns:
               raise ValueError("neighbor_cost_name must be a column of cost_df")
 
           if type(neighbor_cost_name) is list:
@@ -200,9 +200,9 @@ class access():
 
         self.supply_df    = supply_df
 
-        if type(self.supply_value) is str:
+        if type(supply_value) is str:
             self.supply_types = [supply_value]
-        elif type(self.supply_value) is list:
+        elif type(supply_value) is list:
             self.supply_types = supply_value
         else:
             raise ValueError("supply_value must be string or list of strings.")
@@ -247,11 +247,6 @@ class access():
             self.neighbor_default_cost = self.neighbor_cost_names[0]
 
 
-            else:
-                raise ValueError("neighbor_cost_name must be string or list of strings.")
-
-            self.neighbor_default_cost = self.neighbor_cost_names[0]
-
 
         self.access = pd.DataFrame(index = self.supply_df.index)
 
@@ -287,30 +282,35 @@ class access():
 
         if demand_cost not in self.neighbor_cost_names:
 
-            raise ValueError("{} not an available neighbor cost.".format(cost))
+            raise ValueError("{} not an available neighbor cost.".format(demand_cost))
 
         if supply_cost is None:
 
             supply_cost = self.default_cost
-            warnings.warn("Using default cost, {}.".format(cost), Warning)
+            warnings.warn("Using default cost, {}.".format(supply_cost), Warning)
 
         if supply_cost not in self.cost_names:
 
-            raise ValueError("{} not an available cost.".format(cost))
+            raise ValueError("{} not an available cost.".format(supply_cost))
 
 
         for s in self.supply_types:
 
             if "{}_{}.".format(name, s) in self.demand_df.columns:
                 warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
-            
+
             series = fca.fca_ratio(demand_df = self.demand_df, 
-                                                      supply_df = self.supply_df, supply_name = s,
-                                                      demand_cost_df = self.neighbor_cost_df,
-                                                      supply_cost_df = self.cost_df,
+                                                      demand_name = self.demand_value,
+                                                      supply_df = self.supply_df,             
+                                                      supply_name = s,
+                                                      demand_cost_df = self.neighbor_cost_df, 
+                                                      supply_cost_df = self.cost_df,          
+                                                      demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
+                                                      supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
                                                       max_cost = max_cost)
-        
-        return demand_df.filter(regex = "^" + name, axis = 1)
+            reformatted_series = series.to_frame().rename({"FCA":name + "_" + s}, axis = 'columns')
+            self.demand_df = self.demand_df.join(reformatted_series)
+        return self.demand_df.filter(regex = "^" + name, axis = 1)
 
 
     def raam(self, tau = 1, cost = None): 
@@ -353,10 +353,14 @@ class access():
                 warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
             
             series = fca.two_stage_fca(demand_df = self.demand_df, 
-                                                      supply_df = self.supply_df, supply_name = s,
-                                                      cost_df = self.cost_df,
+                                                      demand_name = self.demand_value,
+                                                      supply_df = self.supply_df, 
+                                                      supply_name = s,
+                                                      cost_df = self.cost_df,    
+                                                      cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
                                                       max_cost = max_cost, weight_fn = weight_fn)
-            self.demand_df = self.demand_df.join(series.to_frame().reset_index(drop = True).rename({"Rl":name + "_" + s}, axis = 'columns'))
+            reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
+            self.demand_df = self.demand_df.join(reformatted_series)
         return self.demand_df.filter(regex = "^" + name, axis = 1)
 
     def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None):
@@ -391,10 +395,14 @@ class access():
                 warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
             
             series = fca.three_stage_fca(demand_df = self.demand_df, 
-                                                      supply_df = self.supply_df, supply_name = s,
-                                                      cost_df = self.cost_df,
+                                                      demand_name = self.demand_value,
+                                                      supply_df = self.supply_df, 
+                                                      supply_name = s,
+                                                      cost_df = self.cost_df,    
+                                                      cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
                                                       max_cost = max_cost, weight_fn = weight_fn)
-            self.demand_df = self.demand_df.join(series.to_frame().reset_index(drop = True).rename({"Rl":name + "_" + s}, axis = 'columns'))
+            reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
+            self.demand_df = self.demand_df.join(reformatted_series)
         return self.demand_df.filter(regex = "^" + name, axis = 1)
 
     def score():

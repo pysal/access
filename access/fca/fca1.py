@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import geopandas as gpd
+import warnings
 
 def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_dest = "dest", cost_cost = "cost", 
                        loc_loc = "geoid",loc_value = None, weight_fn = None, three_stage_weight = False):
@@ -43,11 +44,7 @@ def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_d
                  A -- potentially weighted -- sum of resources, facilities, or consumers.
     """
     #merge the loc dataframe and cost dataframe together
-    if loc_loc != cost_source:
-        temp = pd.merge(cost_df, loc_df, left_on = cost_source, right_on = loc_loc)
-        temp.drop(columns = loc_loc, inplace = True)
-    else:
-        temp = pd.merge(cost_df, loc_df, on = cost_source)
+    temp = pd.merge(cost_df, loc_df, left_on = cost_source, right_on = loc_loc)
      
     #apply a weight function if inputted -- either enhanced two stage or three stage
     if weight_fn:
@@ -128,9 +125,8 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
     access     : pandas.Series
                  A -- potentially-weighted -- access ratio.
     """
-    if demand_index is True:
-        demand_df.reset_index
-    if len(set(demand_df[demand_index]) - set(supply_cost_df[supply_cost_dest].unique())) != 0:
+    #if there is a discrepancy between the demand and supply cost dataframe locations, print it
+    if len(set(demand_df.index.tolist()) - set(supply_cost_df[supply_cost_dest].unique())) != 0:
         warnings.warn("some tracts may be unaccounted for in supply_cost")
         
 
@@ -153,11 +149,13 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
     base_FCA_series = temp['FCA']
     
     if noise != 'quiet':
-        #this will print out the tracts that have undefined FCA values due to differences within census tract version history
+        #depending on the version history of the census tract data you use, this will print out the tracts that have undefined FCA values
         print (base_FCA_series[pd.isna(base_FCA_series)])
     
+    #normalize the access values 
     if normalize:
-        mean_access = ((base_FCA_series * demand_df[demand_name]).sum() / demand_df[demand_name].sum())
-        base_FCA_series = base_FCA_series / mean_access
+        normalize_df = demand_df.join(base_fca_series.to_frame(), how = 'right')
+        mean_access = (normalize_df['FCA'] * normalize_df[demand_name]).sum() / normalize_df[demand_name].sum()
+        base_fca_series = normalize_df['FCA'] / mean_access
 
     return base_FCA_series

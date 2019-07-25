@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 from .fca1 import weighted_catchment
+from ..weights.weights import step_fn
 
 def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                   demand_index = "geoid", demand_name   = "demand",
@@ -57,9 +58,10 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
     access     : pandas.Series
                  A -- potentially-weighted -- three-stage access ratio.
     """
-    #a weighting function is required in the definition of three stage floating catchment
+    #creates a default stepwise weighting function if none specified
     if weight_fn is None:
-        raise Exception("Weight function for three-stage-FCA must be specified.")
+        d = {10 : 0.962, 20 : 0.704, 30 : 0.377, 40 : 0.042}
+        weight_fn = step_fn(d)
     
     #create preference weight 'G', which is the weight
     cost_df["W3"] = cost_df[cost_name].apply(weight_fn)
@@ -73,24 +75,21 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                                           loc_loc = demand_index, loc_value = demand_name, 
                                           weight_fn = weight_fn, three_stage_weight = True)
     
-    #rename the demand series for clarity 
-    total_demand_series = total_demand_series.to_frame(name = 'demand')
-
     #create a temporary dataframe, temp, that holds the supply and aggregate demand at each location
-    temp = supply_df.set_index(supply_index).join(total_demand_series, how = 'right')
+    temp = supply_df.join(total_demand_series, how = 'right')
     
     #there may be NA values due to a shorter supply dataframe than the demand dataframe. 
     #in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.
-    temp = temp.fillna(0)
+    temp.fillna(0, inplace = True)
     
     #calculate the fractional ratio of supply to aggregate demand at each location, or Rl
-    temp['Rl'] = temp[supply_name] / temp['demand']
+    temp['Rl'] = temp[supply_name] / temp[demand_name]
         
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
     supply_to_total_demand_frame.reset_index(level = 0, inplace = True)
     
-    #rename the location column to supply_index for clarity for the next weighted_catchment call
+    #rename the location column to supply_index for clarity in the next weighted_catchment call
     supply_to_total_demand_frame.rename({cost_dest: supply_index, 'Rl': 'Rl'}, axis='columns', inplace = True)
     
     #sum, into a series, the supply to total demand ratios for each location
@@ -98,10 +97,11 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                                           cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
                                           loc_loc = supply_index, loc_value = "Rl", 
                                           weight_fn = weight_fn, three_stage_weight = True)
-    
+    #normalize the access values 
     if normalize:
-        mean_access = ((three_stage_fca_series * demand_df[demand_name]).sum() / demand_df[demand_name].sum())
-        three_stage_fca_series = three_stage_fca_series / mean_access
+        normalize_df = demand_df.join(three_stage_fca_series.to_frame(), how = 'right')
+        mean_access = (normalize_df['Rl'] * normalize_df[demand_name]).sum() / normalize_df[demand_name].sum()
+        three_stage_fca_series = normalize_df['Rl'] / mean_access
         
     #remove the preference weight G from the original costs dataframe
     cost_df.drop(columns = ["G", "W3", "W3sum"], inplace = True)
