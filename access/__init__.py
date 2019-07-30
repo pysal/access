@@ -246,7 +246,8 @@ class access():
 
             self.neighbor_default_cost = self.neighbor_cost_names[0]
 
-
+       
+        self.access_df = pd.DataFrame(index = self.demand_df.index)
 
         self.access = pd.DataFrame(index = self.supply_df.index)
 
@@ -256,7 +257,7 @@ class access():
         return
 
 
-    def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None, max_cost = None):
+    def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None, max_cost = None, normalize = False):
         """
         Calculate the floating catchment area (buffer) access score.
 
@@ -272,6 +273,20 @@ class access():
 
         access              : pandas Series
                               Accessibility score for origin locations.
+
+        Examples
+        --------
+
+        Create an access object, as detailed in __init__.py
+
+        >>> illinois_primary_care = access(<...>)
+
+        This method will utilize the parameters passed into the access object at time of instantiation.
+        Any calls of floating catchment area need only provide method-specific parameters.
+
+        Call the floating catchment area with max_cost only
+
+        >>> illinois_primary_care.fca_ratio(max_cost = 30)
 
         """
 
@@ -307,9 +322,19 @@ class access():
                                                       supply_cost_df = self.cost_df,          
                                                       demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
                                                       supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
-                                                      max_cost = max_cost)
+                                                      max_cost = max_cost, normalize = normalize)
+            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
             reformatted_series = series.to_frame().rename({"FCA":name + "_" + s}, axis = 'columns')
             self.demand_df = self.demand_df.join(reformatted_series)
+        
+        if normalize:
+            #normalize the access values without adding to demand_df and return the normalized values
+            access_columns_names = [column for column in self.demand_df.columns if name in column ]
+            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
+                                    / self.demand_df[self.demand_value].sum()
+            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            return normalized_access_columns
+
         return self.demand_df.filter(regex = "^" + name, axis = 1)
 
 
@@ -320,7 +345,7 @@ class access():
         if cost is None:
             cost = self.default_cost
 
-    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None):
+    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the two-stage floating catchment area access score.
 
         Parameters
@@ -358,12 +383,41 @@ class access():
                                                       supply_name = s,
                                                       cost_df = self.cost_df,    
                                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
-                                                      max_cost = max_cost, weight_fn = weight_fn)
+                                                      max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
+            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
             reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
-            self.demand_df = self.demand_df.join(reformatted_series)
-        return self.demand_df.filter(regex = "^" + name, axis = 1)
+            self.access_df = self.access_df.join(reformatted_series)
+        
+        if normalize:
+            #normalize the access values without adding to demand_df and return the normalized values
+            access_columns_names = [column for column in self.demand_df.columns if name in column ]
+            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
+                                      / self.demand_df[self.demand_value].sum()
+            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            return normalized_access_columns
 
-    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None):
+        return self.access_df.filter(regex = "^" + name, axis = 1)
+
+    def enhanced_two_stage_fca(self, name = "E2sfca", cost = None, max_cost = None, weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22}), normalize = False):
+        """Calculate the enhanced two-stage floating catchment area access score.
+
+        Parameters
+        ----------
+        name                : str 
+                              Cutoff of cost values
+        max_cost            : float
+                              Cutoff of cost values
+
+        Returns
+        -------
+
+        access              : pandas Series
+                              Accessibility score for origin locations.
+
+        """
+        return self.two_stage_fca(name, cost, max_cost, weight_fn, normalize)
+
+    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
         Parameters
         ----------
@@ -400,10 +454,27 @@ class access():
                                                       supply_name = s,
                                                       cost_df = self.cost_df,    
                                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
-                                                      max_cost = max_cost, weight_fn = weight_fn)
+                                                      max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
+            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
             reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
-            self.demand_df = self.demand_df.join(reformatted_series)
+            self.access_df = self.demand_df.join(reformatted_series)
+        
+        if normalize:
+            #normalize the access values without adding to demand_df and return the normalized values
+            access_columns_names = [column for column in self.demand_df.columns if name in column ]
+            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
+                                    / self.demand_df[self.demand_value].sum()
+            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            return normalized_access_columns
         return self.demand_df.filter(regex = "^" + name, axis = 1)
+
+    @property
+    def norm_access_df(self):
+        for column in self.demand_df:
+            if column != self.demand_value:
+                mean_access = (self.demand_df[column] * self.demand_df[self.demand_value]).sum() / self.demand_df[self.demand_value].sum()
+                self.demand_df[column] /= mean_access
+        return self.demand_df[self.demand_df.columns.difference([self.demand_value])]
 
     def score():
         """Weighted aggregate of multiple (already-calculated) access components."""
@@ -449,12 +520,39 @@ class access():
            The user is responsible for putting the geometries into an appropriate reference system.
         """
 
-        # Convert to centroids if so-specified
-        # Calculate the distances.
-        # Add it to the cost df.
-        # Add it to the list of costs.
+        df1 = self.demand_df
+        df2 = self.supply_df
 
-        pass
+        # Continue if the dataframes are geodataframes, else throw an error
+        if type(df1) is not gpd.GeoDataFrame:
+            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+            
+        if type(df1) is not gpd.GeoDataFrame:
+            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+
+        # Convert to centroids if so-specified
+        if centroid_o:
+            df1.set_geometry(df1.centroid, inplace = True)
+        if centroid_d:
+            df2.set_geometry(df2.centroid, inplace = True)
+
+        # Calculate the distances.
+        if (df1.geometry.geom_type.all() == "Point") & (df2.geometry.geom_type.all() == "Point"):
+            df1["temp"] = 1
+            df2["temp"] = 1
+            df1and2 = df1[["temp", "geometry"]].merge(df2[["temp", "geometry"]].rename(columns = {'geometry':'geob'}))
+            df1and2.drop("temp", inplace = True, axis = 1)
+            distances = df1and2.distance(df1and2.set_geometry("geob"))
+        else:
+            df1and2 = gpd.sjoin(df1, df2.set_geometry(df2.buffer(threshold)).reset_index().rename(columns = {'geoid':'geoidb'}))
+            df1and2 = df1and2.merge(df2, on = 'geoid' )
+            distances = df1and2.distance(df1and2.set_geometry("geob"))
+
+        # Add it to the cost df.
+        self.cost_df[name] = distances
+        # Add it to the list of costs.
+        self.cost_names.append(name)
+
 
     def euclidean_distance_neighbors(name = "euclidean", threshold = 0, metric = 2, centroid = False):
         """Calculate the Euclidean distance among demand locations."""
