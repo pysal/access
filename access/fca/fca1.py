@@ -151,11 +151,5 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
     if noise != 'quiet':
         #depending on the version history of the census tract data you use, this will print out the tracts that have undefined FCA values
         print (base_FCA_series[pd.isna(base_FCA_series)])
-    
-    #normalize the access values 
-    if normalize:
-        normalize_df = demand_df.join(base_fca_series.to_frame(), how = 'right')
-        mean_access = (normalize_df['FCA'] * normalize_df[demand_name]).sum() / normalize_df[demand_name].sum()
-        base_fca_series = normalize_df['FCA'] / mean_access
 
     return base_FCA_series

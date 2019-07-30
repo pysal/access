@@ -58,10 +58,6 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
     access     : pandas.Series
                  A -- potentially-weighted -- three-stage access ratio.
     """
-    #creates a default stepwise weighting function if none specified
-    if weight_fn is None:
-        d = {10 : 0.962, 20 : 0.704, 30 : 0.377, 40 : 0.042}
-        weight_fn = step_fn(d)
     
     #create preference weight 'G', which is the weight
     cost_df["W3"] = cost_df[cost_name].apply(weight_fn)
@@ -97,11 +93,6 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                                           cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
                                           loc_loc = supply_index, loc_value = "Rl", 
                                           weight_fn = weight_fn, three_stage_weight = True)
-    #normalize the access values 
-    if normalize:
-        normalize_df = demand_df.join(three_stage_fca_series.to_frame(), how = 'right')
-        mean_access = (normalize_df['Rl'] * normalize_df[demand_name]).sum() / normalize_df[demand_name].sum()
-        three_stage_fca_series = normalize_df['Rl'] / mean_access
         
     #remove the preference weight G from the original costs dataframe
     cost_df.drop(columns = ["G", "W3", "W3sum"], inplace = True)

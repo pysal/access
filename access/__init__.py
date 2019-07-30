@@ -247,7 +247,7 @@ class access():
             self.neighbor_default_cost = self.neighbor_cost_names[0]
 
        
-        self.access_df = pd.DataFrame(index = self.demand_df.index)
+        self.access_df = self.demand_df.copy()
 
         self.access = pd.DataFrame(index = self.supply_df.index)
 
@@ -264,10 +264,15 @@ class access():
         Parameters
         ----------
         name                : str 
-                              Cutoff of cost values
+                              Column name for access values
+        demand_cost         : str 
+                              Name of demand cost value column in demand_df                     
+        supply_cost         : str 
+                              Name of supply cost value column in supply_df
         max_cost            : float
-                              Cutoff of cost values
-
+                              Cutoff of cost values     
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                       
         Returns
         -------
 
@@ -325,17 +330,17 @@ class access():
                                                       max_cost = max_cost, normalize = normalize)
             #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
             reformatted_series = series.to_frame().rename({"FCA":name + "_" + s}, axis = 'columns')
-            self.demand_df = self.demand_df.join(reformatted_series)
+            self.access_df = self.access_df.join(reformatted_series)
         
         if normalize:
             #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.demand_df.columns if name in column ]
-            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
-                                    / self.demand_df[self.demand_value].sum()
-            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            access_columns_names = [column for column in self.access_df.columns if name in column ]
+            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+                                      / self.access_df[self.demand_value].sum()
+            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
             return normalized_access_columns
 
-        return self.demand_df.filter(regex = "^" + name, axis = 1)
+        return self.access_df.filter(regex = "^" + name, axis = 1)
 
 
     def raam(self, tau = 1, cost = None): 
@@ -351,9 +356,15 @@ class access():
         Parameters
         ----------
         name                : str 
-                              Cutoff of cost values
+                              Column name for access values
+        cost                : str 
+                              Name of cost value column in cost_df (supply-side)
         max_cost            : float
                               Cutoff of cost values
+        weight_fn           : function 
+                              Weight to be applied to access values                                       
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                                            
 
         Returns
         -------
@@ -390,10 +401,10 @@ class access():
         
         if normalize:
             #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.demand_df.columns if name in column ]
-            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
-                                      / self.demand_df[self.demand_value].sum()
-            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            access_columns_names = [column for column in self.access_df.columns if name in column ]
+            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+                                      / self.access_df[self.demand_value].sum()
+            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
             return normalized_access_columns
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
@@ -404,9 +415,15 @@ class access():
         Parameters
         ----------
         name                : str 
-                              Cutoff of cost values
+                              Column name for access values
+        cost                : str 
+                              Name of cost value column in cost_df (supply-side)
         max_cost            : float
                               Cutoff of cost values
+        weight_fn           : function 
+                              Weight to be applied to access values                                       
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                                            
 
         Returns
         -------
@@ -417,15 +434,20 @@ class access():
         """
         return self.two_stage_fca(name, cost, max_cost, weight_fn, normalize)
 
-    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
+    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = weights.step_fn({10 : 0.962, 20 : 0.704, 30 : 0.377, 60 : 0.042}), normalize = False):
         """Calculate the three-stage floating catchment area access score.
         Parameters
         ----------
         name                : str 
-                              Cutoff of cost values
+                              Column name for access values
+        cost                : str 
+                              Name of cost value column in cost_df (supply-side)
         max_cost            : float
                               Cutoff of cost values
-
+        weight_fn           : function 
+                              Weight to be applied to access values                                       
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                                            
         Returns
         -------
 
@@ -457,24 +479,24 @@ class access():
                                                       max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
             #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
             reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
-            self.access_df = self.demand_df.join(reformatted_series)
+            self.access_df = self.access_df.join(reformatted_series)
         
         if normalize:
             #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.demand_df.columns if name in column ]
-            normalized_mean_access_values = self.demand_df[access_columns_names].multiply(self.demand_df[self.demand_value], axis = 0).sum()  \
-                                    / self.demand_df[self.demand_value].sum()
-            normalized_access_columns = self.demand_df[access_columns_names].divide(normalized_mean_access_values)
+            access_columns_names = [column for column in self.access_df.columns if name in column ]
+            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+                                      / self.access_df[self.demand_value].sum()
+            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
             return normalized_access_columns
-        return self.demand_df.filter(regex = "^" + name, axis = 1)
+        
+        return self.access_df.filter(regex = "^" + name, axis = 1)
 
     @property
     def norm_access_df(self):
-        for column in self.demand_df:
-            if column != self.demand_value:
-                mean_access = (self.demand_df[column] * self.demand_df[self.demand_value]).sum() / self.demand_df[self.demand_value].sum()
-                self.demand_df[column] /= mean_access
-        return self.demand_df[self.demand_df.columns.difference([self.demand_value])]
+        for column in self.access_df.columns.difference([self.demand_value]):
+            mean_access = (self.access_df[column] * self.access_df[self.demand_value]).sum() / self.access_df[self.demand_value].sum()
+            self.access_df[column] /= mean_access
+        return self.access_df[self.access_df.columns.difference([self.demand_value])]
 
     def score():
         """Weighted aggregate of multiple (already-calculated) access components."""
@@ -514,10 +536,21 @@ class access():
 
         pass
 
-    def euclidean_distance(self, name = "euclidean", threshold = 0, metric = 2, centroid_o = False, centroid_d = False):
+    def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
            This is simply the geopandas `distance` function.  
            The user is responsible for putting the geometries into an appropriate reference system.
+        Parameters
+        ----------
+        name                : str 
+                              Column name for euclidean distances
+        threshold           : int 
+                              Buffer threshold for non-point geometries, AKA max_distance                                
+        centroid_o          : bool 
+                              If True, convert geometries of demand_df (origins) to centroids; otherwise, no change 
+        centroid_o          : bool 
+                              If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change                                                              
+        
         """
 
         df1 = self.demand_df
@@ -554,8 +587,51 @@ class access():
         self.cost_names.append(name)
 
 
-    def euclidean_distance_neighbors(name = "euclidean", threshold = 0, metric = 2, centroid = False):
-        """Calculate the Euclidean distance among demand locations."""
-        pass
+    def euclidean_distance_neighbors(name = "euclidean", threshold = 0, centroid = False):
+        """Calculate the Euclidean distance among demand locations.
+        Parameters
+        ----------
+        name                : str 
+                              Column name for euclidean distances
+        threshold           : int 
+                              Buffer threshold for non-point geometries, AKA max_distance                                
+        centroid_o          : bool 
+                              If True, convert geometries of demand_df (origins) to centroids; otherwise, no change 
+        centroid_o          : bool 
+                              If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change                                                              
+        
+        """
+        df1 = self.demand_df
+        df2 = self.demand_df
+
+        # Continue if the dataframes are geodataframes, else throw an error
+        if type(df1) is not gpd.GeoDataFrame:
+            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+            
+        if type(df1) is not gpd.GeoDataFrame:
+            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+
+        # Convert to centroids if so-specified
+        if centroid_o:
+            df1.set_geometry(df1.centroid, inplace = True)
+        if centroid_d:
+            df2.set_geometry(df2.centroid, inplace = True)
+
+        # Calculate the distances.
+        if (df1.geometry.geom_type.all() == "Point") & (df2.geometry.geom_type.all() == "Point"):
+            df1["temp"] = 1
+            df2["temp"] = 1
+            df1and2 = df1[["temp", "geometry"]].merge(df2[["temp", "geometry"]].rename(columns = {'geometry':'geob'}))
+            df1and2.drop("temp", inplace = True, axis = 1)
+            distances = df1and2.distance(df1and2.set_geometry("geob"))
+        else:
+            df1and2 = gpd.sjoin(df1, df2.set_geometry(df2.buffer(threshold)).reset_index().rename(columns = {'geoid':'geoidb'}))
+            df1and2 = df1and2.merge(df2, on = 'geoid' )
+            distances = df1and2.distance(df1and2.set_geometry("geob"))
+
+        # Add it to the cost df.
+        self.neighbor_cost_df[name] = distances
+        # Add it to the list of costs.
+        self.neighbor_cost_names.append(name)
 
 
