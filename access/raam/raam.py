@@ -7,7 +7,6 @@ def raam(demand_df, demand_value, supply_df, cost_df, supply_cost_df,
          supply_origin = "dest",   supply_name   = "supply",
          cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
          tau = 1, max_cost = None, weight_fn = None):
-    print("THIS WORKS")
     """
     Calculate the rational agent access model's total cost -- 
       a weighted travel and congestion cost.
@@ -53,7 +52,7 @@ def raam(demand_df, demand_value, supply_df, cost_df, supply_cost_df,
     """
 
     cost_df = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
-    tracts = travel.index.values.tolist()
+    tracts = cost_df.index.values.tolist()
     cost_df = cost_df.index.values.tolist()
     travel = cost_df.to_sparse()
     travel = travel.to_numpy()
