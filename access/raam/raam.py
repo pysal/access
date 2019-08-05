@@ -96,8 +96,6 @@ def numpyFindMovers(assignment, supply, tracts, minPos, maxPos, travel, demand, 
 
   both = tenth_sup.merge(arrivals)
 
-  both.movers = 527
-
   both = both.drop(both.loc[both.movers < both.maxArrivals].index)
 
 
@@ -238,7 +236,7 @@ def raam(demand_df, supply_df, cost_df,
 
   rho = 1315
   tau = 60
-  maxShift = 50
+  maxShift = 250
   assignment, raamMatrix, demandCost, travelCost = optimizationCycle(tractPops,travel,rho,tau,maxShift,tracts,docs,150)
 
   data = pd.DataFrame([tracts,raamMatrix.mean(axis=1),demandCost,travelCost]).transpose()
