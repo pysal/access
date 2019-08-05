@@ -316,9 +316,13 @@ class access():
     def raam(self, tau = 1, cost = None): 
         """Calculate the rational agent access model cost.
         """
-
-        if cost is None:
-            cost = self.default_cost
+        costs = raam.raam(demand_df = self.demand_df, supply_df = self.supply_df, cost_df = self.cost_df,
+         demand_origin = "geoid", demand_name   = "demand",
+         supply_origin = "geoid",   supply_name   = "supply",
+         cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
+         tau = 1, max_cost = None, weight_fn = None)
+        return costs
+        
 
     def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None):
         """Calculate the two-stage floating catchment area access score.
