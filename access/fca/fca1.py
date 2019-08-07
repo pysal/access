@@ -57,10 +57,9 @@ def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_d
             new_loc_value_column = temp[loc_value]*temp.W3*temp.G
             temp = temp.drop([loc_value], axis = 1)
             temp[loc_value] = new_loc_value_column
-    
-    #constrain by max cost as a safety check
+    #constrain by max cost 
     temp = temp[temp[cost_cost] < max_cost]
-    
+   
     #return either the count or the summation of the values of the desired weighted catchment
     if loc_value is None:
         return temp.groupby([cost_dest])[cost_source].count()

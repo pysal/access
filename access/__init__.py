@@ -248,6 +248,11 @@ class access():
 
             self.neighbor_default_cost = self.neighbor_cost_names[0]
 
+        else:
+            self.neighbor_cost_df = pd.DataFrame(columns = ['origin', 'dest'])
+            self.neighbor_cost_origin = 'origin'
+            self.neighbor_cost_dest = 'dest'
+            self.neighbor_cost_names = []
        
         self.access_df = self.demand_df.copy()
 
@@ -597,7 +602,7 @@ class access():
         if not hasattr(self, 'default_cost'):
             self.default_cost = name
 
-    def euclidean_distance_neighbors(name = "euclidean", threshold = 0, centroid = False):
+    def euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
         """Calculate the Euclidean distance among demand locations.
         Parameters
         ----------
@@ -608,37 +613,43 @@ class access():
         centroid          : bool 
                               If True, convert geometries to centroids; otherwise, no change 
         """
-        df1 = self.demand_df
-        df2 = self.demand_df
 
+        # TO-DO: check for unprojected geometries
+
+        
         # Continue if the dataframes are geodataframes, else throw an error
-        if type(df1) is not gpd.GeoDataFrame:
+        if type(self.demand_df) is not gpd.GeoDataFrame:
             raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
-            
-        if type(df2) is not gpd.GeoDataFrame:
-            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+
+        # Reset the index so that the geoids are accessible 
+        df1 = self.demand_df.rename_axis('origin').reset_index()
+        df2 = self.demand_df.rename_axis('dest').reset_index()
 
         # Convert to centroids if so-specified
-        if centroid_o:
+        if centroid:
             df1.set_geometry(df1.centroid, inplace = True)
-        if centroid_d:
             df2.set_geometry(df2.centroid, inplace = True)
 
         # Calculate the distances.
-        if (df1.geometry.geom_type.all() == "Point") & (df2.geometry.geom_type.all() == "Point"):
+        if ((df1.geom_type == "Point").all() & (df2.geom_type == "Point").all()):
+            # If both geometries are point types, merge on a temporary dummy column
             df1["temp"] = 1
             df2["temp"] = 1
-            df1and2 = df1[["temp", "geometry"]].merge(df2[["temp", "geometry"]].rename(columns = {'geometry':'geob'}))
+            df1and2 = df1[["temp", "geometry","origin"]].merge(df2[["temp", "geometry","dest"]].rename(columns = {'geometry':'geomb'}))
             df1and2.drop("temp", inplace = True, axis = 1)
-            distances = df1and2.distance(df1and2.set_geometry("geob"))
+            df1and2[name] = df1and2.distance(df1and2.set_geometry("geomb"))
         else:
-            df1and2 = gpd.sjoin(df1, df2.set_geometry(df2.buffer(threshold)).reset_index().rename(columns = {'geoid':'geoidb'}))
-            df1and2 = df1and2.merge(df2, on = 'geoid' )
-            distances = df1and2.distance(df1and2.set_geometry("geob"))
-
+            # Execute an sjoin for non-point geometries, based upon a buffer zone
+            df1and2 = gpd.sjoin(df1, df2.rename(columns = {'geometry':'geomb'}).set_geometry(df2.buffer(threshold)))
+            df1and2[name] = df1and2.distance(df1and2.set_geometry("geomb"))
+       
         # Add it to the cost df.
-        self.neighbor_cost_df[name] = distances
+        df1and2 = df1and2[df1and2[name] < threshold]
+        self.neighbor_cost_df = self.neighbor_cost_df.merge(df1and2[[name,'origin','dest']], how = 'outer', left_on = [self.neighbor_cost_origin, self.neighbor_cost_dest], right_on = ['origin', 'dest'])
         # Add it to the list of costs.
         self.neighbor_cost_names.append(name)
+        # Set the default cost if it does not exist
+        if not hasattr(self, 'neighbor_default_cost'):
+            self.neighbor_default_cost = name
 
 

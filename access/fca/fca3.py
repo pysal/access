@@ -83,15 +83,12 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
         
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
-    supply_to_total_demand_frame.reset_index(level = 0, inplace = True)
-    
-    #rename the location column to supply_index for clarity in the next weighted_catchment call
-    supply_to_total_demand_frame.rename({cost_dest: supply_index, 'Rl': 'Rl'}, axis='columns', inplace = True)
+    supply_to_total_demand_frame.index.name = 'geoid'
     
     #sum, into a series, the supply to total demand ratios for each location
     three_stage_fca_series = weighted_catchment(supply_to_total_demand_frame, cost_df.sort_index(), max_cost, 
                                           cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
-                                          loc_loc = supply_index, loc_value = "Rl", 
+                                          loc_loc = 'geoid', loc_value = "Rl", 
                                           weight_fn = weight_fn, three_stage_weight = True)
         
     #remove the preference weight G from the original costs dataframe
