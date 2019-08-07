@@ -254,7 +254,7 @@ class access():
             self.neighbor_cost_dest = 'dest'
             self.neighbor_cost_names = []
        
-        self.access_df = self.demand_df.copy()
+        self.access_df = self.demand_df[[self.demand_value]].sort_index()
 
         self.access = pd.DataFrame(index = self.supply_df.index)
 
