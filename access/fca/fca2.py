@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
-import geopandas as gpd
+try:
+    import geopandas as gpd
+except:
+    pass
 from .fca1 import weighted_catchment
 from ..weights.weights import step_fn
 

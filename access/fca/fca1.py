@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
-import geopandas as gpd
+try:
+    import geopandas as gpd
+except:
+    pass
 import warnings
 
 def weighted_catchment(loc_df, cost_df, max_cost, cost_source = "origin", cost_dest = "dest", cost_cost = "cost", 

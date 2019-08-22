@@ -5,7 +5,10 @@ __version__ = "1.0.0"
 """
 
 import pandas as pd
-import geopandas as gpd
+try:
+    import geopandas as gpd
+except:
+    pass
 import warnings
 
 from . import fca
