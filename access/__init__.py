@@ -308,7 +308,9 @@ class access():
         if demand_cost is None:
 
             demand_cost = self.neighbor_default_cost
-            warnings.warn("Using default cost, {}.".format(demand_cost), Warning)
+            
+            if len(self.neighbor_cost_names) > 1:
+                warnings.warn("Using default demand cost, {}, for {}.".format(demand_cost, name), Warning, stacklevel = 2)
 
         if demand_cost not in self.neighbor_cost_names:
 
@@ -317,7 +319,8 @@ class access():
         if supply_cost is None:
 
             supply_cost = self.default_cost
-            warnings.warn("Using default cost, {}.".format(supply_cost), Warning)
+            if len(self.cost_names) > 1:
+                warnings.warn("Using default supply cost, {}, for {}.".format(supply_cost, name), Warning, stacklevel = 2)
 
         if supply_cost not in self.cost_names:
 
@@ -325,9 +328,6 @@ class access():
 
 
         for s in self.supply_types:
-
-            if "{}_{}.".format(name, s) in self.demand_df.columns:
-                warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
 
             series = fca.fca_ratio(demand_df = self.demand_df, 
                                                       demand_name = self.demand_value,
@@ -338,30 +338,77 @@ class access():
                                                       demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
                                                       supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
                                                       max_cost = max_cost, normalize = normalize)
+
+            series.name = name + "_" + s
+            if series.name in self.access_df.columns:
+                warnings.warn("Overwriting {}.".format(series.name), Warning)
+                self.access_df.drop(series.name, axis = 1, inplace = True)
+
             #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
-            reformatted_series = series.to_frame().rename({"FCA":name + "_" + s}, axis = 'columns')
-            self.access_df = self.access_df.join(reformatted_series)
+            self.access_df = self.access_df.join(series)
         
         if normalize:
+
             #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.access_df.columns if name in column ]
-            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
+
+            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
                                       / self.access_df[self.demand_value].sum()
-            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
-            return normalized_access_columns
+
+            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
+
+            return normalized_access
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
 
-    def raam(self, tau = 1, cost = None): 
+    def raam(self, name = "raam", tau = 60, rho = None, cost = None, 
+             max_cycles = 150, initial_step = 0.2, min_step = 0.005, half_life = 50,
+             normalize = False, verbose = False): 
         """Calculate the rational agent access model cost.
         """
-        costs = raam.raam(demand_df = self.demand_df, supply_df = self.supply_df, cost_df = self.cost_df,
-         demand_origin = "geoid", demand_name   = "demand",
-         supply_origin = "geoid",   supply_name   = "supply",
-         cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
-         tau = 1, max_cost = None, weight_fn = None)
-        return costs
+
+        if cost is None:
+
+            cost = self.default_cost
+            if len(self.cost_names) > 1:
+                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
+
+        if cost not in self.cost_names:
+
+            raise ValueError("{} not an available cost.".format(cost))
+
+        for s in self.supply_types:
+
+            raam_costs = raam.raam(demand_df = self.demand_df, supply_df = self.supply_df, cost_df = self.cost_df,
+                                   demand_name = self.demand_value,
+                                   supply_name = s,
+                                   cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
+                                   max_cycles = max_cycles, tau = tau, verbose = verbose)
+
+            raam_costs.name = name + "_" + s
+            if raam_costs.name in self.access_df.columns:
+                warnings.warn("Overwriting {}.".format(raam_costs.name), Warning)
+                self.access_df.drop(raam_costs.name, axis = 1, inplace = True)
+            
+            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
+            self.access_df = self.access_df.join(raam_costs)
+        
+        if normalize:
+
+            #normalize the access values without adding to demand_df and return the normalized values
+            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
+
+            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+                                      / self.access_df[self.demand_value].sum()
+
+            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
+
+            return normalized_access
+
+
+        return self.access_df.filter(regex = "^" + name, axis = 1)
+
         
 
     def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
@@ -375,7 +422,7 @@ class access():
                               Name of cost value column in cost_df (supply-side)
         max_cost            : float
                               Cutoff of cost values
-        weight_fn           : function 
+                              weight_fn           : function 
                               Weight to be applied to access values                                       
         normalize           : bool 
                               If True, return normalized access values; otherwise, return raw access values                                                            
@@ -391,7 +438,8 @@ class access():
         if cost is None:
 
             cost = self.default_cost
-            warnings.warn("Using default cost, {}.".format(cost), Warning)
+            if len(self.cost_names) > 1:
+                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
 
         if cost not in self.cost_names:
 
@@ -399,31 +447,35 @@ class access():
 
         for s in self.supply_types:
 
-            if "{}_{}.".format(name, s) in self.demand_df.columns:
-                warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
-            
             series = fca.two_stage_fca(demand_df = self.demand_df, 
-                                                      demand_name = self.demand_value,
-                                                      supply_df = self.supply_df, 
-                                                      supply_name = s,
-                                                      cost_df = self.cost_df,    
-                                                      cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
-                                                      max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
-            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
-            reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
-            self.access_df = self.access_df.join(reformatted_series)
+                                       demand_name = self.demand_value,
+                                       supply_df = self.supply_df, 
+                                       supply_name = s,
+                                       cost_df = self.cost_df,    
+                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
+                                       max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
+
+            series.name = name + "_" + s
+            if series.name in self.access_df.columns:
+                warnings.warn("Overwriting {}.".format(series.name), Warning)
+                self.access_df.drop(series.name, axis = 1, inplace = True)
+
+            self.access_df = self.access_df.join(series)
         
         if normalize:
-            #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.access_df.columns if name in column ]
-            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+
+            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
+
+            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
                                       / self.access_df[self.demand_value].sum()
-            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
-            return normalized_access_columns
+
+            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
+
+            return normalized_access
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
-    def enhanced_two_stage_fca(self, name = "E2sfca", cost = None, max_cost = None, weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22}), normalize = False):
+    def enhanced_two_stage_fca(self, name = "e2sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the enhanced two-stage floating catchment area access score.
 
         Parameters
@@ -446,9 +498,12 @@ class access():
                               Accessibility score for origin locations.
 
         """
+
+        if weight_fn is None: weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})
+
         return self.two_stage_fca(name, cost, max_cost, weight_fn, normalize)
 
-    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = weights.step_fn({10 : 0.962, 20 : 0.704, 30 : 0.377, 60 : 0.042}), normalize = False):
+    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
         Parameters
         ----------
@@ -470,10 +525,14 @@ class access():
 
         """
 
+        if weight_fn is None:
+            weight_fn = weights.step_fn({10 : 0.962, 20 : 0.704, 30 : 0.377, 60 : 0.042})
+
         if cost is None:
 
             cost = self.default_cost
-            warnings.warn("Using default cost, {}.".format(cost), Warning)
+            if len(self.cost_names) > 1:
+                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
 
         if cost not in self.cost_names:
 
@@ -481,9 +540,7 @@ class access():
 
         for s in self.supply_types:
 
-            if "{}_{}.".format(name, s) in self.demand_df.columns:
-                warnings.warn("Overwriting {}_{}.".format(name, s), Warning)
-            
+
             series = fca.three_stage_fca(demand_df = self.demand_df, 
                                                       demand_name = self.demand_value,
                                                       supply_df = self.supply_df, 
@@ -491,17 +548,26 @@ class access():
                                                       cost_df = self.cost_df,    
                                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
                                                       max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
+
+            series.name = name + "_" + s
+            if series.name in self.access_df.columns:
+                warnings.warn("Overwriting {}.".format(series.name), Warning)
+                self.access_df.drop(series.name, axis = 1, inplace = True)
+
             #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
-            reformatted_series = series.to_frame().rename({"Rl":name + "_" + s}, axis = 'columns')
-            self.access_df = self.access_df.join(reformatted_series)
+            self.access_df = self.access_df.join(series)
         
         if normalize:
+
             #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = [column for column in self.access_df.columns if name in column ]
-            normalized_mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
+            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
+
+            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
                                       / self.access_df[self.demand_value].sum()
-            normalized_access_columns = self.access_df[access_columns_names].divide(normalized_mean_access_values)
-            return normalized_access_columns
+
+            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
+
+            return normalized_access
         
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
@@ -582,10 +648,8 @@ class access():
         df2 = self.supply_df.rename_axis('dest').reset_index()
         
         # Convert to centroids if so-specified
-        if centroid_o:
-            df1.set_geometry(df1.centroid, inplace = True)
-        if centroid_d:
-            df2.set_geometry(df2.centroid, inplace = True)
+        if centroid_o: df1.set_geometry(df1.centroid, inplace = True)
+        if centroid_d: df2.set_geometry(df2.centroid, inplace = True)
 
         # Calculate the distances.
         if ((df1.geom_type == "Point").all() & (df2.geom_type == "Point").all()):
