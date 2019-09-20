@@ -1,247 +1,183 @@
 import numpy as np
-import numpy.ma as ma
 import pandas as pd
-import math
-def makeAssignmentMatrix(tractPops, travel, tracts, docs): 
-
-  assignment = np.zeros((len(tracts),len(tracts))) #Create assignment matrix
-
-  supMask = ma.masked_values(docs,0) # Make mask for all no-doctor locations
-  timeMask= ma.masked_array(travel, np.isnan(travel)) #make mask for all missing travel data 
-  mask = np.logical_or(supMask.mask,timeMask.mask) # Create masked value if one or the other is masked
-
-  travelMask = ma.masked_array(travel, mask=mask)
-  # Put all ppl in lowest time location with doctor
-  
-  lowestTime = np.zeros((len(tracts),len(tracts)))
-  lowestTime[np.arange(len(lowestTime)), travelMask.argmin(axis=1)] = 1
-
-  assignment = (tractPops)*lowestTime 
-  assignment = ma.masked_array(assignment, mask=mask)
-
-  return assignment, tracts, travelMask, supMask
 
 
-def numpyRaam(assignment, travelCost, docs, tracts, rho, tau):
+def iterate_raam(demand, supply, travel, 
+                 max_cycles = 151, initial_step = 0.2, min_step = 0.005, half_life = 50,
+                 limit_initial = 20, verbose = False):
 
-  raamMatrix = np.zeros((len(tracts),len(tracts))) #Create raam matrix
-
-  demand = assignment.sum(axis=0) # Get number of ppl going to each doctor location
-
-  demandCost = demand/(docs*rho) #Congestion cost
-
-  raamMatrix = demandCost + travelCost
-
-  return raamMatrix, demand, travelCost
-
-def numpyMaxMin(raamMatrix, assignment):
-
-  #Find min
-  minPos = raamMatrix.argmin(axis=1)
-
-  # Find max which has ppl to move
-  maxPos = ma.masked_array(raamMatrix, assignment == 0).argmax(axis = 1)
-
-  return minPos, maxPos
+    norig, ndest = travel.shape
+    assignment = np.zeros((norig, ndest))
+    assignment[range(norig), travel.argmin(axis = 1)] = demand
 
 
-def numpyMove(assignment,minPos,maxPos,quantity):
+    for i in range(max_cycles): 
+            
+        demand_at_supply = assignment.sum(axis = 0) 
+        congestion_cost  = demand_at_supply / supply 
+        total_cost       = (congestion_cost + travel)
 
-  #Remove from max and put to min
-  assignment[np.arange(len(assignment)), maxPos] -= np.int32(quantity)
-  assignment[np.arange(len(assignment)), minPos] += np.int32(quantity)
-  return assignment
+        max_locations = np.ma.masked_array(total_cost, assignment == 0).argmax(axis = 1)
+        min_locations = total_cost.argmin(axis = 1)
 
+        slmin = supply[min_locations]
+        slmax = supply[max_locations]
 
-def numpyFindMovers(assignment, supply, tracts, minPos, maxPos, travel, demand, maxShift, rho, tau):
+        trlmin = travel[range(norig), min_locations]
+        trlmax = travel[range(norig), max_locations]
 
-  movers = np.int32(np.zeros(shape=(len(tracts),3))) # Create movers matrix
-  movers[:, 0] = maxShift #add in max shift
-  movers[:, 1] = assignment[np.arange(len(assignment)), maxPos] # add in populations
+        drlmin = assignment[range(norig), min_locations]
+        drlmax = assignment[range(norig), max_locations]
 
-  #Calculate people necessary to equilibrate
-  notMe = demand - assignment
+        dr = drlmin + drlmax
 
-  drTot = assignment[np.arange(len(assignment)),maxPos] + assignment[np.arange(len(assignment)),minPos]
+        drotherlmin = demand_at_supply[min_locations] - drlmin
+        drotherlmax = demand_at_supply[max_locations] - drlmax
 
+        drlmin_new = ((slmin * slmax) / (slmin + slmax)) * \
+                     ((trlmax - trlmin) + (dr + drotherlmax) / slmax - drotherlmin / slmin)
+        
+        delta = drlmin_new - drlmin
 
-  #Each of these is one 'piece' of the equation to calculate drlmin. 
-  p1 = (supply[minPos]*supply[maxPos])/(supply[minPos] +supply[maxPos])
-  p2 = ((travel[np.arange(len(travel)),maxPos]) - (travel[np.arange(len(travel)),minPos]))*(rho/tau)
-  p3 = ((drTot + notMe[np.arange(len(notMe)), maxPos])/supply[maxPos])
-  p4 = (notMe[np.arange(len(notMe)), minPos]/supply[minPos])
+        delta = np.minimum(delta, drlmax)
+        delta = np.where(max_locations == min_locations, 0, delta)
 
-  drlmin = p1*(p2+p3-p4)
+        if type(initial_step) is float:
+            step_size = initial_step * 0.5 ** (i / half_life)
+            if step_size < min_step: step_size = min_step
+            delta = np.minimum(delta, step_size * demand).astype(int)
 
-  drlmininit = assignment[np.arange(len(assignment)),minPos]
+        else:
 
-  delta = drlmin - drlmininit
+            step_size = int(np.rount(initial_step * 0.5 ** (i / half_life)))
+            if step_size < min_step: step_size = min_step
 
-  delta[delta< 0] = 0 #When maxpos=minpos the value is negative
-
-  # add in that 
-  movers[:, 2] = delta
-
-  minMovers = movers.min(axis=1)
-
-  #Find number moving to each tract
-  trackMove = pd.DataFrame([minMovers, tracts[minPos]]).transpose()
-  trackMove.columns = ['movers', 'tract']
-  arrivals = trackMove.groupby('tract').sum()
-  arrivals.reset_index(level=0, inplace=True)
-  #Find max movers allowed per tract
-
-  tenth_sup = pd.DataFrame([supply[minPos]*(rho/10), tracts]).transpose()
-  tenth_sup.columns = ['maxArrivals', 'tract']
-
-  both = tenth_sup.merge(arrivals)
-
-  both = both.drop(both.loc[both.movers < both.maxArrivals].index)
+            delta = np.minimum(delta, step_size).astype(int)
 
 
-  indeces = both.tract
-  trackMove['newMovers'] = 0
-  for index in indeces:
-      new = trackMove['movers'][trackMove.tract == index].apply(lambda x: x*(both['maxArrivals'][both.tract==index]/both['movers'][both.tract==index]))
-              
-      trackMove = trackMove.join(new)
-      trackMove.columns = ['movers','tract','newMovers','temp']
-      trackMove['newMovers'] = trackMove['newMovers'] + trackMove['temp'].fillna(0)
-      trackMove = trackMove[['movers','tract','newMovers']]
+        ## We don't want "attractive locations" getting mobbed.
+        ## This will only happen in the first 10-20 cycles.
+        ## So only do these (somewhat costly checks) then.
+        if i < limit_initial:
+
+            delta_mat = np.zeros(travel.shape)
+            delta_mat[range(norig), min_locations] += delta
+
+            naive_assignment = delta_mat.sum(axis = 0) / (supply)# * rho)
+            scale_factor = np.maximum(naive_assignment, 1)
+
+            delta_mat = (delta_mat / scale_factor).round().astype(int)
+
+            delta = delta_mat.sum(axis = 1)
+
+            
+
+        assignment[range(norig), min_locations] += delta
+        assignment[range(norig), max_locations] -= delta
+        
+        assert((assignment.sum(axis = 1) == demand).all())
+        
+        if not (i % 25):
+            raam_cost = (total_cost * assignment).sum(axis = 1) / assignment.sum(axis = 1)
+
+            if verbose: 
+                print("{:d} {:.2f} {:d} {:.3f}".format(i, raam_cost.mean(), delta.sum(), step_size), end = " || ")
+
+    raam_cost = (total_cost * assignment).sum(axis = 1) / assignment.sum(axis = 1)
+    
+    return raam_cost
 
 
-  trackMove['newMovers'] = np.where(trackMove['newMovers'] == 0, trackMove['movers'], trackMove['newMovers'])
-
-  minMovers = np.array(trackMove['movers'])
 
 
-  return minMovers, delta
-
-def decay(number,i,decay = 100):
-  # set decay
-  number = number*.5**(i/decay)
-  if number < 2:
-      number = 2
-  return (int(number))
 
 
-def optimizationCycle(tractPops,travel,rho,tau,maxShift, tracts, docs, cycles = 150):
-  startShift = maxShift
-  tracts = np.array(tracts)
-  quantity = [2]
-  assignment, tracts, travelMatrix, supply = makeAssignmentMatrix(tractPops, travel, tracts, docs)
-  travelCost = ((travelMatrix)/tau)
-
-  #Performs iterations and movements
-  print("Original start: ")
-
-  print(assignment)
-  i = 0
-  #Loop around assignment matrix and move people around
-  while max(quantity) > 1:
-      raamMatrix, demand, travelCost = numpyRaam(assignment,travelCost,docs,tracts,rho,tau)
-      #print("Raam: " + str(raamMatrix))
-      #print("Demand: " + str(demand))
-      minPos,maxPos = numpyMaxMin(raamMatrix, assignment)
-      #print("min: " + str(minPos))
-      #print("max: " + str(maxPos))
-      quantity, needToEqualize = numpyFindMovers(assignment, supply, tracts, minPos, maxPos, travelMatrix, demand, maxShift, rho, tau)
-      #print("Moved: " + str(quantity))
-      #print("To equalize: " + str(needToEqualize))
-      assignment = numpyMove(assignment,minPos,maxPos,quantity)
-      #print("Assignment: "+ str(assignment))
-      i +=1
-      maxShift = decay(startShift,i)
-      if i > cycles:
-          break 
-      
-      print("The amount of cycles is: {0}. The mean amount of people moved is: {1}. The mean amount necessary to equalize is {2}\r".format(i,quantity.mean(),needToEqualize.mean()), end='')
-
-  print("\n")
-
-
-  traveled = (travelCost*assignment)/assignment
-  finalRaam = (raamMatrix*assignment)/assignment
-  demandForTract = finalRaam.mean(axis=1) - traveled.mean(axis=1)
-  travelData = np.array([traveled.mean(axis=1),tracts])
-  demandData = np.array([demandForTract, tracts])
-
-
-  return assignment, finalRaam, demandData, travelData
 def raam(demand_df, supply_df, cost_df,
-         demand_origin = "geoid", demand_name   = "demand",
-         supply_origin = "geoid",   supply_name   = "supply",
-         cost_origin   = "origin", cost_dest     = "dest", cost_name = "cost",
-         tau = 1, max_cost = None, weight_fn = None):
-  """
-  Calculate the rational agent access model's total cost -- 
-    a weighted travel and congestion cost.
-  The balance of the two costs is expressed by the
-    $\tau$ parameter, which corresponds to the travel time 
-    required to accept of congestion by 100% of the mean demand to supply ratio
-    in the study area.
+         demand_index = True, demand_name = "demand",
+         supply_index = True, supply_name = "supply",
+         cost_origin   = "origin", cost_dest = "dest", cost_name = "cost",
+         tau = 60, rho = None, 
+         max_cycles = 150, initial_step = 0.2, min_step = 0.005, half_life = 50,
+         verbose = False):
+    """
+    Calculate the rational agent access model's total cost -- 
+      a weighted travel and congestion cost.
+    The balance of the two costs is expressed by the
+      $\tau$ parameter, which corresponds to the travel time 
+      required to accept of congestion by 100% of the mean demand to supply ratio
+      in the study area.
+  
+    Parameters
+    ----------
+  
+    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+                    The origins dataframe, containing a location index and a total demand.
+    demand_origin : str
+                    is the name of the column of `demand` that holds the origin ID.
+    demand_value  : str
+                    is the name of the column of `demand` that holds the aggregate demand at a location.
+    supply_origin : str
+                    is the name of the column of `demand` that holds the origin ID.
+    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+                    The origins dataframe, containing a location index and level of supply
+    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+                    This dataframe contains a link between neighboring demand locations, and a cost between them.
+    cost_origin   : str
+                    The column name of the locations of users or consumers.
+    cost_dest     : str
+                    The column name of the supply or resource locations.
+    cost_name     : str
+                    The column name of the travel cost between origins and destinations
+    weight_fn  : function
+                  This fucntion will weight the value of resources/facilities,
+                  as a function of the raw cost.
+    max_cycles : int
+                  Max number of cycles.
+    max_shift  : int
+                  This is the maximum number to shift in each cycle.
+    max_cost   : float
+                  This is the maximum cost to consider in the weighted sum;
+                    note that it applies _along with_ the weight function.
+  
+    Returns
+    -------
+    access     : pandas.Series
+        
+                  A -- potentially-weighted -- Rational Agent Access Model cost.
+    """
 
-  Parameters
-  ----------
+    if demand_index is not True: demand_df = demand_df.set_index(demand_index)
+    if supply_index is not True: supply_df = supply_df.set_index(supply_index)
+    
+    demand_df = demand_df[demand_df[demand_name] > 0].copy()
+    supply_df = supply_df[supply_df[supply_name] > 0].copy()
 
-  demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
-                  The origins dataframe, containing a location index and a total demand.
-  demand_origin : str
-                  is the name of the column of `demand` that holds the origin ID.
-  demand_value  : str
-                  is the name of the column of `demand` that holds the aggregate demand at a location.
-  supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
-                  The origins dataframe, containing a location index and level of supply
-  cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
-                  This dataframe contains a link between neighboring demand locations, and a cost between them.
-  cost_origin   : str
-                  The column name of the locations of users or consumers.
-  cost_dest     : str
-                  The column name of the supply or resource locations.
-  cost_name     : str
-                  The column name of the travel cost between origins and destinations
-  weight_fn  : function
-                This fucntion will weight the value of resources/facilities,
-                as a function of the raw cost.
-  max_cost   : float
-                This is the maximum cost to consider in the weighted sum;
-                  note that it applies _along with_ the weight function.
-  max_cost   : float
-                This is the maximum cost to consider in the weighted sum;
-                  note that it applies _along with_ the weight function.
+    demand_locations = list(set(cost_df[cost_origin]) & set(demand_df.index))
+    supply_locations = list(set(cost_df[cost_dest])   & set(supply_df.index))
+    
+    cost_pivot = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
+    travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
+    travel_np  = travel_np / tau
+    travel_np  = np.ma.masked_array(travel_np, np.isnan(travel_np))
+    
+    # If it is not specified, rho is the average demand to supply ratio.
+    if rho is None: rho = demand_df[demand_name].sum() / supply_df[supply_name].sum()
+    
+    supply_np = supply_df.loc[supply_locations, supply_name].to_numpy().copy()
+    supply_np = supply_np * rho 
+    
+    # Change this -- should be 
+    demand_np = demand_df.loc[demand_locations, demand_name].to_numpy().copy()
 
-  Returns
-  -------
-  access     : pandas.Series
-      
-                A -- potentially-weighted -- Rational Agent Access Model cost.
-  """
-  cost_df = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
-  tracts = cost_df.index.values.tolist()
-  travel = cost_df.to_sparse()
-  travel = travel.to_numpy()
+    raam_cost = iterate_raam(demand_np, supply_np, travel_np, verbose = verbose,
+                             max_cycles = max_cycles, initial_step = initial_step,
+                             min_step = min_step, half_life = half_life)
 
-  supply_df = supply_df.drop(supply_df.loc[~supply_df[supply_origin].isin(tracts)].index)
-  supply_df['destination'] = supply_df[supply_origin]
-  docs = np.array(supply_df[supply_name].values.tolist())
+    rs = pd.Series(name = "RAAM", index = demand_locations, data = raam_cost)
 
-  demand_df = demand_df.drop(demand_df.loc[~demand_df[demand_origin].isin(tracts)].index)
-  demand_df['destination'] = demand_df[demand_origin]
-  demand_df = demand_df.pivot(index=demand_origin,columns='destination',values=demand_name)
-  demand_df.fillna(method='ffill', inplace=True)
-  demand_df.fillna(method='bfill', inplace=True)
-  demand_df = demand_df.transpose()
-  demand_df = demand_df.to_sparse()
-  tractPops = demand_df.to_numpy()
+    return rs
 
-  rho = 1315
-  tau = 60
-  maxShift = 250
-  assignment, raamMatrix, demandCost, travelCost = optimizationCycle(tractPops,travel,rho,tau,maxShift,tracts,docs,150)
 
-  data = pd.DataFrame([tracts,raamMatrix.mean(axis=1),demandCost,travelCost]).transpose()
-
-  return data
 
 
 
