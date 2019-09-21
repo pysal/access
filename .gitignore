@@ -24,3 +24,5 @@ develop-eggs
 lib
 lib64
 __pycache__
+examples/il_med/il_times.csv
+docs/_static/images/publishing_agreement.pdf
