@@ -667,6 +667,14 @@ class access():
 
         access              : pandas Series
                               Single, aggregate score for origin locations.
+
+        Examples
+        --------
+
+        Aggregate RAAM for doctors and dentists, weighting doctors more heavily.
+
+        >>> A.score(name = "raam_combo", col_dict = {"raam_doc" : 0.8, "raam_dentist" : 0.2});
+        
         """
 
 
@@ -766,8 +774,7 @@ class access():
         centroid_o          : bool 
                               If True, convert geometries of demand_df (origins) to centroids; otherwise, no change 
         centroid_d          : bool 
-                              If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change                                                              
-        
+                              If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change
         """
 
         if not HAS_GEOPANDAS:
