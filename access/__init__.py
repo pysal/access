@@ -654,7 +654,21 @@ class access():
         return self.access_df[self.access_df.columns.difference([self.demand_value])]
 
     def score(self, col_dict, name = "score"):
-        """Weighted aggregate of multiple (already-calculated) access components."""
+        """Weighted aggregate of multiple already-calculated, normalized access components.
+
+        Parameters
+        ----------
+        name                : str 
+                              Column name for access values
+        col_dict            : dict
+                              Column names (keys) and weights.
+        Returns
+        -------
+
+        access              : pandas Series
+                              Single, aggregate score for origin locations.
+        """
+
 
         for v in col_dict:
             if v not in self.access_df.columns:
