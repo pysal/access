@@ -5,15 +5,23 @@ __version__ = "1.0.0"
 """
 
 import pandas as pd
-try:
-    import geopandas as gpd
-except:
-    pass
 import warnings
+import logging
+
+try:
+  import geopandas as gpd
+  HAS_GEOPANDAS = True
+except:
+  HAS_GEOPANDAS = False
 
 from . import fca
 from . import raam
 from . import weights
+from . import helpers
+
+access_log_stream = logging.StreamHandler()
+access_log_format = logging.Formatter('%(name)s %(levelname)-8s :: %(message)s')
+access_log_stream.setFormatter(access_log_format)
 
 class access():
     """
@@ -136,9 +144,15 @@ class access():
         >>> illinois_primary_care.access_metadata
 
         Create a weighted sum of multiple access types, from a dictionary.
+        Note that this is based on _normalized_ access values.
 
         >>> illinois_primary_care.score({"pc_physicians_raam_tau60" : 1, "dentists_raam_tau30" : 0.2})
         """
+
+        self.log = logging.getLogger("access")
+        self.log.addHandler(access_log_stream)
+        self.log.setLevel(logging.INFO)
+        self.log.propagate = False
 
         ### First all the dummy checks...
 
@@ -267,9 +281,77 @@ class access():
         return
 
 
-    def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None, max_cost = None, normalize = False):
+    def weighted_catchment(self, name = "catchment", supply_cost = None, supply_values = None,
+                           weight_fn = None, max_cost = None, normalize = False):
         """
-        Calculate the floating catchment area (buffer) access score.
+        Calculate the catchment area (buffer) aggregate access score.
+
+        Parameters
+        ----------
+        name                : str 
+                              Column name for access values
+        supply_cost         : str 
+                              Name of supply cost value column in supply_df
+        supply_values       : {str, list}
+                              Name(s) of supply values in supply_df
+        weight_fn           : function
+                              function to apply to the cost to reach the supply.
+                              In this way, you could run, e.g., a gravity function.
+                              (Be careful of course of values as distances go to 0!)
+        max_cost            : float
+                              Cutoff of cost values     
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                       
+        Returns
+        -------
+
+        access              : pandas Series
+                              Accessibility score for origin locations.
+
+        Examples
+        --------
+
+        Create an access object, as detailed in __init__.py
+
+        >>> illinois_primary_care = access(<...>)
+
+        Call the floating catchment area with max_cost only
+
+        >>> gravity = weights.gravity(scale = 60, alpha = -1)
+        >>> illinois_primary_care.weighted_catchment(weight_fn = gravity)
+
+        """
+
+        supply_cost   = helpers.sanitize_supply_cost(self, supply_cost, name)
+        supply_values = helpers.sanitize_supplies   (self, supply_values)
+
+        for s in supply_values:
+
+            # Bryan consistently flipped origin and destination in this one -- very confusing.
+            series = fca.weighted_catchment(loc_df = self.supply_df, loc_index = True, loc_value = s,
+                                            cost_df = self.cost_df, cost_source = self.cost_dest, cost_dest = self.cost_origin,
+                                            weight_fn = weight_fn, max_cost = max_cost)
+
+            series.name = name + "_" + s
+            if series.name in self.access_df.columns:
+                self.log.info("Overwriting {}.".format(series.name))
+                self.access_df.drop(series.name, axis = 1, inplace = True)
+
+            # store the raw, un-normalized access values 
+            self.access_df = self.access_df.join(series)
+        
+        if normalize:
+
+            columns = [name + "_" + s for s in supply_values]
+            return helpers.normalized_access(self, columns)
+
+        return self.access_df.filter(regex = "^" + name, axis = 1)
+
+
+    def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None, 
+                  supply_values = None, max_cost = None, normalize = False):
+        """
+        Calculate the floating catchment area (buffer) ratio access score.
 
         Parameters
         ----------
@@ -279,6 +361,8 @@ class access():
                               Name of demand cost value column in demand_df                     
         supply_cost         : str 
                               Name of supply cost value column in supply_df
+        supply_values       : {str, list}
+                              Name(s) of supply values in supply_df
         max_cost            : float
                               Cutoff of cost values     
         normalize           : bool 
@@ -305,29 +389,11 @@ class access():
 
         """
 
-        if demand_cost is None:
+        supply_cost   = helpers.sanitize_supply_cost(self, supply_cost, name)
+        demand_cost   = helpers.sanitize_demand_cost(self, demand_cost, name)
+        supply_values = helpers.sanitize_supplies   (self, supply_values)
 
-            demand_cost = self.neighbor_default_cost
-            
-            if len(self.neighbor_cost_names) > 1:
-                warnings.warn("Using default demand cost, {}, for {}.".format(demand_cost, name), Warning, stacklevel = 2)
-
-        if demand_cost not in self.neighbor_cost_names:
-
-            raise ValueError("{} not an available neighbor cost.".format(demand_cost))
-
-        if supply_cost is None:
-
-            supply_cost = self.default_cost
-            if len(self.cost_names) > 1:
-                warnings.warn("Using default supply cost, {}, for {}.".format(supply_cost, name), Warning, stacklevel = 2)
-
-        if supply_cost not in self.cost_names:
-
-            raise ValueError("{} not an available cost.".format(supply_cost))
-
-
-        for s in self.supply_types:
+        for s in supply_values:
 
             series = fca.fca_ratio(demand_df = self.demand_df, 
                                                       demand_name = self.demand_value,
@@ -341,44 +407,70 @@ class access():
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                warnings.warn("Overwriting {}.".format(series.name), Warning)
+                self.log.info("Overwriting {}.".format(series.name))
                 self.access_df.drop(series.name, axis = 1, inplace = True)
 
-            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
+            # store the raw, un-normalized access values 
             self.access_df = self.access_df.join(series)
         
         if normalize:
 
-            #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
-
-            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
-                                      / self.access_df[self.demand_value].sum()
-
-            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
-
-            return normalized_access
+            columns = [name + "_" + s for s in supply_values]
+            return helpers.normalized_access(self, columns)
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
 
-    def raam(self, name = "raam", tau = 60, rho = None, cost = None, 
-             max_cycles = 150, initial_step = 0.2, min_step = 0.005, half_life = 50,
-             normalize = False, verbose = False): 
-        """Calculate the rational agent access model cost.
+    def raam(self, name = "raam", cost = None, supply_values = None, normalize = False,
+             tau = 60, rho = None, 
+             max_cycles = 150, initial_step = 0.2, half_life = 50, min_step = 0.005, 
+             verbose = False): 
+        """Calculate the rational agent access model. :cite:`2019_saxon_snow_raam`
+
+        Parameters
+        ----------
+        name                : str 
+                              Column name for access values
+        cost                : str 
+                              Name of cost variable, for reaching supply sites.
+        supply_values       : {str, list}
+                              Name(s) of supply values in supply_df
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                               tau                 : float
+                              tau parameter (travel time scale)
+        rho                 : float 
+                              rho parameter (congestion cost scale)
+        max_cycles          : int
+                              How many cycles to run the RAAM optimization for.
+        initial_step        : {int, float}
+                              If an float < 1, it is the proportion of a demand site that can shift, in the first cycle.
+                              If it is an integer, it is simply a limit on the total number.
+        half_life           : int
+                              How many cycles does it take to halve the move rate?
+        min_step            : {int, float}
+                              This is the minimum value, to which the moving fraction converges.
+        verbose             : bool
+                              Print some information as the optimization proceeds.
+
+        Returns
+        -------
+
+        access              : pandas Series
+                              Accessibility score for origin locations.
+
+        Examples
+        --------
+
+        Call the RAAM, seting the tau parameter to the default value of 60.
+
+        >>> illinois_primary_care.raam(tau = 60)
+
         """
 
-        if cost is None:
+        cost          = helpers.sanitize_supply_cost(self, cost, name)
+        supply_values = helpers.sanitize_supplies   (self, supply_values)
 
-            cost = self.default_cost
-            if len(self.cost_names) > 1:
-                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
-
-        if cost not in self.cost_names:
-
-            raise ValueError("{} not an available cost.".format(cost))
-
-        for s in self.supply_types:
+        for s in supply_values:
 
             raam_costs = raam.raam(demand_df = self.demand_df, supply_df = self.supply_df, cost_df = self.cost_df,
                                    demand_name = self.demand_value,
@@ -388,30 +480,24 @@ class access():
 
             raam_costs.name = name + "_" + s
             if raam_costs.name in self.access_df.columns:
-                warnings.warn("Overwriting {}.".format(raam_costs.name), Warning)
+                self.log.info("Overwriting {}.".format(raam_costs.name))
                 self.access_df.drop(raam_costs.name, axis = 1, inplace = True)
             
-            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
+            # store the raw, un-normalized access values 
             self.access_df = self.access_df.join(raam_costs)
         
         if normalize:
 
-            #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
-
-            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
-                                      / self.access_df[self.demand_value].sum()
-
-            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
-
-            return normalized_access
+            columns = [name + "_" + s for s in supply_values]
+            return helpers.normalized_access(self, columns)
 
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
         
 
-    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
+    def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None, 
+                      supply_values = None, weight_fn = None, normalize = False):
         """Calculate the two-stage floating catchment area access score.
 
         Parameters
@@ -420,70 +506,8 @@ class access():
                               Column name for access values
         cost                : str 
                               Name of cost value column in cost_df (supply-side)
-        max_cost            : float
-                              Cutoff of cost values
-                              weight_fn           : function 
-                              Weight to be applied to access values                                       
-        normalize           : bool 
-                              If True, return normalized access values; otherwise, return raw access values                                                            
-
-        Returns
-        -------
-
-        access              : pandas Series
-                              Accessibility score for origin locations.
-
-        """
-
-        if cost is None:
-
-            cost = self.default_cost
-            if len(self.cost_names) > 1:
-                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
-
-        if cost not in self.cost_names:
-
-            raise ValueError("{} not an available cost.".format(cost))
-
-        for s in self.supply_types:
-
-            series = fca.two_stage_fca(demand_df = self.demand_df, 
-                                       demand_name = self.demand_value,
-                                       supply_df = self.supply_df, 
-                                       supply_name = s,
-                                       cost_df = self.cost_df,    
-                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
-                                       max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
-
-            series.name = name + "_" + s
-            if series.name in self.access_df.columns:
-                warnings.warn("Overwriting {}.".format(series.name), Warning)
-                self.access_df.drop(series.name, axis = 1, inplace = True)
-
-            self.access_df = self.access_df.join(series)
-        
-        if normalize:
-
-            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
-
-            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
-                                      / self.access_df[self.demand_value].sum()
-
-            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
-
-            return normalized_access
-
-        return self.access_df.filter(regex = "^" + name, axis = 1)
-
-    def enhanced_two_stage_fca(self, name = "e2sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
-        """Calculate the enhanced two-stage floating catchment area access score.
-
-        Parameters
-        ----------
-        name                : str 
-                              Column name for access values
-        cost                : str 
-                              Name of cost value column in cost_df (supply-side)
+        supply_values       : {str, list}
+                              supply type or types.
         max_cost            : float
                               Cutoff of cost values
         weight_fn           : function 
@@ -499,11 +523,77 @@ class access():
 
         """
 
+        if cost is None:
+
+            cost = self.default_cost
+            if len(self.cost_names) > 1:
+                self.log.info("Using default cost, {}, for {}.".format(cost, name))
+
+        if cost not in self.cost_names:
+
+            raise ValueError("{} not an available cost.".format(cost))
+
+        if type(supply_values) is str:
+            supply_values = [supply_values]
+        if supply_values is None:
+            supply_values = self.supply_types
+
+        for s in supply_values:
+
+            series = fca.two_stage_fca(demand_df = self.demand_df, 
+                                       demand_name = self.demand_value,
+                                       supply_df = self.supply_df, 
+                                       supply_name = s,
+                                       cost_df = self.cost_df,    
+                                       cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
+                                       max_cost = max_cost, weight_fn = weight_fn, normalize = normalize)
+
+            series.name = name + "_" + s
+            if series.name in self.access_df.columns:
+                self.log.info("Overwriting {}.".format(series.name))
+                self.access_df.drop(series.name, axis = 1, inplace = True)
+
+            self.access_df = self.access_df.join(series)
+        
+        if normalize:
+
+            columns = [name + "_" + s for s in supply_values]
+            return helpers.normalized_access(self, columns)
+
+        return self.access_df.filter(regex = "^" + name, axis = 1)
+
+    def enhanced_two_stage_fca(self, name = "e2sfca", cost = None, supply_values = None, 
+                               max_cost = None, weight_fn = None, normalize = False):
+        """Calculate the enhanced two-stage floating catchment area access score.
+
+        Parameters
+        ----------
+        name                : str 
+                              Column name for access values
+        cost                : str 
+                              Name of cost value column in cost_df (supply-side)
+        max_cost            : float
+                              Cutoff of cost values
+        supply_values       : {str, list}
+                              supply type or types.
+        weight_fn           : function 
+                              Weight to be applied to access values                                       
+        normalize           : bool 
+                              If True, return normalized access values; otherwise, return raw access values                                                            
+
+        Returns
+        -------
+
+        access              : pandas Series
+                              Accessibility score for origin locations.
+
+        """
+
         if weight_fn is None: weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})
 
-        return self.two_stage_fca(name, cost, max_cost, weight_fn, normalize)
+        return self.two_stage_fca(name, cost, supply_values, max_cost, weight_fn, normalize)
 
-    def three_stage_fca(self, name = "3sfca", cost = None, max_cost = None, weight_fn = None, normalize = False):
+    def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
         Parameters
         ----------
@@ -528,18 +618,10 @@ class access():
         if weight_fn is None:
             weight_fn = weights.step_fn({10 : 0.962, 20 : 0.704, 30 : 0.377, 60 : 0.042})
 
-        if cost is None:
+        cost          = helpers.sanitize_supply_cost(self, cost, name)
+        supply_values = helpers.sanitize_supplies   (self, supply_values)
 
-            cost = self.default_cost
-            if len(self.cost_names) > 1:
-                warnings.warn("Using default cost, {}, for {}.".format(cost, name), Warning, stacklevel = 2)
-
-        if cost not in self.cost_names:
-
-            raise ValueError("{} not an available cost.".format(cost))
-
-        for s in self.supply_types:
-
+        for s in supply_values:
 
             series = fca.three_stage_fca(demand_df = self.demand_df, 
                                                       demand_name = self.demand_value,
@@ -551,23 +633,16 @@ class access():
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                warnings.warn("Overwriting {}.".format(series.name), Warning)
+                self.log.info("Overwriting {}.".format(series.name))
                 self.access_df.drop(series.name, axis = 1, inplace = True)
 
-            #store the raw, un-normalized access values (if normalization is desired, return but do not store normalized values)
+            # store the raw, un-normalized access values 
             self.access_df = self.access_df.join(series)
         
         if normalize:
 
-            #normalize the access values without adding to demand_df and return the normalized values
-            access_columns_names = self.access_df.filter(regex = "^" + name, axis = 1).columns
-
-            mean_access_values = self.access_df[access_columns_names].multiply(self.access_df[self.demand_value], axis = 0).sum()  \
-                                      / self.access_df[self.demand_value].sum()
-
-            normalized_access = self.access_df[access_columns_names].divide(mean_access_values)
-
-            return normalized_access
+            columns = [name + "_" + s for s in supply_values]
+            return helpers.normalized_access(self, columns)
         
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
@@ -578,9 +653,26 @@ class access():
             self.access_df[column] /= mean_access
         return self.access_df[self.access_df.columns.difference([self.demand_value])]
 
-    def score():
+    def score(self, col_dict, name = "score"):
         """Weighted aggregate of multiple (already-calculated) access components."""
-        pass
+
+        for v in col_dict:
+            if v not in self.access_df.columns:
+                raise ValueError("{} is not a calculated access value".format(v))
+
+        weights = pd.Series(col_dict)
+
+        weighted_score = self.norm_access_df[weights.index].dot(weights)
+
+        weighted_score.name = name 
+        if weighted_score.name in self.access_df.columns:
+            self.log.info("Overwriting {}.".format(weighted_score.name))
+            self.access_df.drop(weighted_score.name, axis = 1, inplace = True)
+
+        self.access_df = self.access_df.join(weighted_score)
+
+        return weighted_score
+
 
     def set_cost(self, new_cost):
         """Change the default cost measure."""
@@ -601,25 +693,56 @@ class access():
             raise ValueError("Tried to set cost not available in cost df")
 
 
-    def user_cost():
-        """Create a user cost, from demand to supply locations."""
+    def user_cost(self, new_cost_df, origin, destination, name):
+        """Create a user cost, from demand to supply locations.
 
-        # Add it to the cost df.
+        Parameters
+        ----------
+        new_cost_df         : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
+                              Holds the new cost....
+        cost                : str
+                              Name of the new cost variable in new_cost_df
+        origin              : str
+                              Name of the new origin variable in new_cost_df
+        destination         : str
+                              Name of the new destination variable in new_cost_df
+
+        """
+
         # Add it to the list of costs.
+        self.neighbor_cost_df = self.neighbor_cost_df.merge(new_cost[[origin, destination, name]], how = 'outer', 
+                                                            left_on = [self.neighbor_cost_origin,
+                                                                       self.neighbor_cost_destination], 
+                                                            right_on = [origin, destination])
+        self.neighbor_cost_names.append(name)
 
-        pass
 
-    def user_cost_neighbors():
-        """Create a user cost, from supply locations to other supply locations."""
+    def user_cost_neighbors(self, new_cost_df, origin, destination, name):
+        """Create a user cost, from supply locations to other supply locations.
+
+        Parameters
+        ----------
+        new_cost_df         : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
+                              Holds the new cost....
+        cost                : str
+                              Name of the new cost variable in new_cost_df
+        origin              : str
+                              Name of the new origin variable in new_cost_df
+        destination         : str
+                              Name of the new destination variable in new_cost_df
+        """
 
         # Add it to the list of costs.
-
-        pass
+        self.cost_df = self.neighbor_cost_df.merge(new_cost_df[[origin, destination, name]], how = 'outer', 
+                                                   left_on = [self.cost_origin, self.cost_destination], 
+                                                   right_on = [origin, destination])
+        self.cost_names.append(name)
 
     def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
            This is simply the geopandas `distance` function.  
            The user is responsible for putting the geometries into an appropriate reference system.
+
         Parameters
         ----------
         name                : str 
@@ -632,6 +755,10 @@ class access():
                               If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change                                                              
         
         """
+
+        if not HAS_GEOPANDAS:
+          raise ModuleNotFoundError("System does not have geopandas installed.  Cannot calculate distances.")
+
 
         # TO-DO: check for unprojected geometries
         
@@ -675,6 +802,7 @@ class access():
 
     def euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
         """Calculate the Euclidean distance among demand locations.
+
         Parameters
         ----------
         name                : str 

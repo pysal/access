@@ -13,3 +13,8 @@ def gaussian(width):
   return lambda x: np.exp(-x*x / (2 * width**2)) \
                    / np.sqrt(2*np.pi*width**2)
 
+def gravity(scale = 1, alpha = -1):
+
+  return lambda x: np.power(x / scale, alpha)
+
+
