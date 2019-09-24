@@ -7,10 +7,10 @@ Spatial Access for PySAL
 This PySAL package calculates how spatially accessible points of origins are to a set of destinations.
 We have implemented four classic measures:
 
-- FCAs (Huff 1963, :cite:`1963_huff_shopping_trade_areas`, Joseph and Bantock 1982, :cite:`1982_joseph_potential_physical_accessibility_rural` and Luo 2004, :cite:`2004_luo_gis_floating_catchment`).
-- 2SFCA (Luo and Wang, 2002, :cite:`2002_luo_spatial_accessibility_chicago` and Wang and Luo 2005, :cite:`2004_wang_luo_HPSAs`),
-- E2SFCA (Luo and Qi 2009, :cite:`2009_luo_qi_E2SFCA`),
-- 3SFCA (Wan, Zou, and Sternberg, 2012, :cite:`2012_wan_3SFCA`)
+- Floating Catchment Areas (FCA) (Huff 1963, :cite:`1963_huff_shopping_trade_areas`, Joseph and Bantock 1982, :cite:`1982_joseph_potential_physical_accessibility_rural` and Luo 2004, :cite:`2004_luo_gis_floating_catchment`).
+- Two-Stage FCAs (2SFCA) (Luo and Wang, 2002, :cite:`2002_luo_spatial_accessibility_chicago` and Wang and Luo 2005, :cite:`2004_wang_luo_HPSAs`),
+- Enhanced 2SFCA (E2SFCA) (Luo and Qi 2009, :cite:`2009_luo_qi_E2SFCA`),
+- Three-Stage FCA (3SFCA) (Wan, Zou, and Sternberg, 2012, :cite:`2012_wan_3SFCA`)
 
 and our new measure:
 
@@ -21,7 +21,7 @@ Here is an example of the results of the RAAM model: It shows, compared to the n
 .. image:: _static/images/full_us.jpg
    :width: 100%
 
-These spatial access measures depend on travel times or distances between origins and destinations. You need to generate these so-called travel time matrices from other sources (e.g. `OSRM` <http://project-osrm.org/>, `OpenTrip Planner <https://www.opentripplanner.org/>`, `Valhalla <https://github.com/valhalla>`, `Pandana <https://udst.github.io/urbanaccess/introduction.html>`, or our `PyPi spatial access package <https://pypi.org/project/spatial-access/>`) or use one of our `pre-computed matrices <https://geoda.s3.amazonaws.com/data/otp/index.html>`.
+These spatial access measures depend on travel times or distances between origins and destinations. You need to generate these so-called travel time matrices from other sources (e.g. `OSRM <http://project-osrm.org/>`_, `OpenTrip Planner <https://www.opentripplanner.org/>`_,`Valhalla <https://github.com/valhalla>`_, `Pandana <https://udst.github.io/urbanaccess/introduction.html>`_, our `PyPi spatial access package <https://pypi.org/project/spatial-access/>`_, or use one of our `pre-computed matrices <https://geoda.s3.amazonaws.com/data/otp/index.html>`_.
 
 If you prefer a point-and-click interface for analysis in the contiguous US states, you can generate results with the PySAL spatial access package through an Amazon Web Service that we are hosting. This is inexpensive since it draws on these pre-computed travel times (driving times between tracts within 100 km (62 miles) of each other for the whole contiguous US, or walking, transit or driving between blocks or tracts for the 20 largest cities in the US).
 
