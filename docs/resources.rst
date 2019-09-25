@@ -21,11 +21,17 @@ You can also download these results for driving or transit.
      </figcaption>
    </figure>
 
+|
+|
+
 In addition to driving times between tracts within 100 km, you can access matrices for walking, transit or driving times between blocks or tracts for the 20 largest cities in the US:
 
 .. raw:: html
 
     <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="2400px" width="100%"></iframe>
+
+|
+|
 
 If you need to compute customized cost matrices, there are several options.
 
