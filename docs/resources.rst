@@ -24,7 +24,7 @@ You can also download these results for driving or transit.
 
 .. raw:: html
 
-    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="3045px" width="150%"></iframe>
+    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="900px" width="100%"></iframe>
 
 If you need to compute customized cost matrices, there are several options.
 
