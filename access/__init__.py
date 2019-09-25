@@ -533,10 +533,13 @@ class access():
 
             raise ValueError("{} not an available cost.".format(cost))
 
+        print("SV:", supply_values)
+        print("ST:", supply_types)
         if type(supply_values) is str:
             supply_values = [supply_values]
         if supply_values is None:
             supply_values = self.supply_types
+        print("SV:", supply_values)
 
         for s in supply_values:
 
@@ -591,7 +594,8 @@ class access():
 
         if weight_fn is None: weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})
 
-        return self.two_stage_fca(name, cost, supply_values, max_cost, weight_fn, normalize)
+        return self.two_stage_fca(name, cost, max_cost, supply_values, weight_fn, normalize)
+
 
     def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
