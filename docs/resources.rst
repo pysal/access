@@ -22,12 +22,11 @@ You can also download these results for driving or transit.
    </figure>
 
 
+.. raw:: html
 
-   .. raw:: html
-
-      <figure class="figure">
-        <embed src="https://geoda.s3.amazonaws.com/data/otp/index.html" style="padding: 10pt 0; width:100%; height: 100vh;">
-      </figure>
+   <figure class="figure">
+     <embed src="https://geoda.s3.amazonaws.com/data/otp/index.html" style="padding: 10pt 0; width:150%; height: 100vh;">
+   </figure>
 
 If you need to compute customized cost matrices, there are several options.
 
