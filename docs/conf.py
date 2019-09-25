@@ -169,7 +169,7 @@ html_theme_options = {
     'navbar_links': [
                      ("Installation", "installation"),
                      ("API", "api"),
-                     ("Resources", "resources"),
+                     ("Cost Matrices", "resources"),
                      ("Live App", "app"),
                      ("References", "references"),
                      ],
