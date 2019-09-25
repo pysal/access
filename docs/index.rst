@@ -4,20 +4,20 @@
 Spatial Access for PySAL
 ========================
 
-Wether you work with data in health, retail, employment or other domains, spatial accessibility measures help you identify potential spatial mismatches between the supply and demand of services. Spatial access measures indicate how close demand locations are to supply locations.
+Wether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
 
 We built this package for several reasons:
 
-- to make a new spatial access metric available,
+- to make the new spatial access metric (RAAM) available,
 - to allow for easy comparison between RAAM and classic spatial access models,
 - to support spatial access research at scale by making pre-computed travel time matrices available and sharing code for computing new matrices at scale, and
-- to allow users who prefer a point-and-click interface to obtain spatial access results for their data using our web app (for US states)
+- to allow users who prefer a point-and-click interface to obtain spatial access results for their data using our web app (for US).
 
-This PySAL package implements our new measure that simultaneously accounts for congestion at the destination and travel time:
+This PySAL package implements our new measure that simultaneously accounts for travel time and congestion at the destination:
 
 - Rational Agent Access Model (RAAM) (Saxon and Snow 2019, :cite:`2019_saxon_snow_raam`).
 
-Here is an example of the results of the RAAM model: It shows, compared to the national average, how much more or less spatially accessible each Census tract is to primary care. Darker blue areas have better spatial access (below-average travel costs) while darker red areas have worse spatial access (above average travel costs).
+Here is an example of the results of the RAAM model: It shows how spatially accessible each Census tract is to primary care, compared to the national average. Darker blue areas have better spatial access (below-average travel costs) while darker red areas have worse spatial access (above average travel costs).
 
 .. image:: _static/images/full_us.jpg
    :width: 100%
@@ -36,7 +36,12 @@ In addition, the package calculates five classic spatial access models within th
 
 These classic models were also recently implemented in the Python package `aceso <https://github.com/tetraptych/aceso>`_.
 
-These spatial access measures depend on travel times or distances between origins and destinations. The `Resources <resources>`_ section outlines how these can be calculated.
+Figure 1 shows the workflow that our PySAL package uses to calculate these models, including data inputs, creation of cost (travel time) matrix, and data output:
+
+.. image:: _static/images/fig1.png
+   :width: 100%
+
+As shown, all measures depend on travel times or distances between origins and destinations. The `Cost Matrix <https://access.readthedocs.io/en/latest/resources.html>`_ section outlines how these travel times can be calculated or accessed as matrices that we pre-calculated.
 
 .. toctree::
    :hidden:
@@ -45,9 +50,9 @@ These spatial access measures depend on travel times or distances between origin
 
    Installation <installation>
    API <api>
-   References <references>
-   Resources <resources>
+   Cost Matrices <resources>
    Live App <app>
+   References <references>
 
 
 
