@@ -121,7 +121,7 @@ html_theme_options = {
 
     # Render the current pages TOC in the navbar. (Default: true)
     #'navbar_pagenav': True,
-    #'navbar_pagenav': False,
+    'navbar_pagenav': False,
 
     # No sidebar
     'nosidebar': True,
@@ -131,7 +131,7 @@ html_theme_options = {
 
     # Global TOC depth for "site" navbar tab. (Default: 1)
     # Switching to -1 shows all levels.
-    'globaltoc_depth': 2,
+    'globaltoc_depth': -1,
 
     # Include hidden TOCs in Site navbar?
     #
