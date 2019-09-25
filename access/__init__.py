@@ -533,13 +533,10 @@ class access():
 
             raise ValueError("{} not an available cost.".format(cost))
 
-        print("SV:", supply_values)
-        print("ST:", supply_types)
         if type(supply_values) is str:
             supply_values = [supply_values]
         if supply_values is None:
             supply_values = self.supply_types
-        print("SV:", supply_values)
 
         for s in supply_values:
 
