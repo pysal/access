@@ -17,14 +17,14 @@ You can also download these results for driving or transit.
    <figure class="figure">
      <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
      <figcaption class="figure-caption text-center">
-       Web Service to get spatial access results for pre-computed travel times
+       Web Service to explore and download travel times between tracts
      </figcaption>
    </figure>
 
 
 .. raw:: html
 
-    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="900px" width="100%"></iframe>
+    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="2000px" width="100%"></iframe>
 
 If you need to compute customized cost matrices, there are several options.
 
