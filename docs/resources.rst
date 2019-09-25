@@ -7,7 +7,7 @@ Resources for Computing Travel Cost
 
 The spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time matrices from other sources.
 
-Since this is computationally expensive and non-trivial to implement at scale, we pre-computed driving times between tracts within 100 km (62 miles) of each other for the whole US. In addition, you can access matrices for walking, transit or driving times between blocks or tracts for the 20 largest cities in the US.
+Since this is computationally expensive and non-trivial to implement at scale, we pre-computed driving times between tracts within 100 km (62 miles) of each other for the whole US. 
 
 Explore the map of driving times between a selected Census tract and all tracts within 100 km (62 miles) by clicking around or entering an address.
 You can also download these results for driving or transit.
@@ -21,10 +21,11 @@ You can also download these results for driving or transit.
      </figcaption>
    </figure>
 
+In addition to driving times between tracts within 100 km, you can access matrices for walking, transit or driving times between blocks or tracts for the 20 largest cities in the US:
 
 .. raw:: html
 
-    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="2000px" width="100%"></iframe>
+    <iframe src="https://geoda.s3.amazonaws.com/data/otp/index.html" height="2400px" width="100%"></iframe>
 
 If you need to compute customized cost matrices, there are several options.
 
