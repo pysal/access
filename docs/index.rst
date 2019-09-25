@@ -4,16 +4,16 @@
 Spatial Access for PySAL
 ========================
 
-This PySAL package calculates how spatially accessible points of origins are to a set of destinations.
-We have implemented five classic measures:
+Wether you work with data in health, retail, employment or other domains, spatial accessibility measures help you identify potential spatial mismatches between the supply and demand of services. Spatial access measures indicate how close demand locations are to supply locations.
 
-- Floating Catchment Areas (FCA): For each provider, this is the ratio of providers to clients within a given travel time to the provider (Huff 1963, :cite:`1963_huff_shopping_trade_areas`, Joseph and Bantock 1982, :cite:`1982_joseph_potential_physical_accessibility_rural` and Luo 2004, :cite:`2004_luo_gis_floating_catchment`).
-- Two-Stage FCAs (2SFCA): Calculated in two steps for a given travel time to the provider: 1) for each provider, the provider-to-client ratio is generated, 2) for each point of origin, these ratios are then summed (Luo and Wang, 2002, :cite:`2002_luo_spatial_accessibility_chicago` and Wang and Luo 2005, :cite:`2004_wang_luo_HPSAs`).
-- Enhanced 2SFCA (E2SFCA): 2SFCA but with less weight to providers that are still within the travel threshold but at larger distances from the point of origin (Luo and Qi 2009, :cite:`2009_luo_qi_E2SFCA`).
-- Three-Stage FCA (3SFCA): adds distance-based allocation function to E2SFCA (Wan, Zou, and Sternberg, 2012, :cite:`2012_wan_3SFCA`).
-- Access Score: This is a weighted sum of access components like distance to provider and relative importance of provider type (Isard 1960, :cite:`1960_isard_reganalysis`).
+We built this package for several reasons:
 
-and our new measure that simultaneously accounts for travel time and congestion at the destination:
+- to make a new spatial access metric available,
+- to allow for easy comparison between RAAM and classic spatial access models,
+- to support spatial access research at scale by making pre-computed travel time matrices available and sharing code for computing new matrices at scale, and
+- to allow users who prefer a point-and-click interface to obtain spatial access results for their data using our web app (for US states)
+
+This PySAL package implements our new measure that simultaneously accounts for congestion at the destination and travel time:
 
 - Rational Agent Access Model (RAAM) (Saxon and Snow 2019, :cite:`2019_saxon_snow_raam`).
 
@@ -22,22 +22,21 @@ Here is an example of the results of the RAAM model: It shows, compared to the n
 .. image:: _static/images/full_us.jpg
    :width: 100%
 
-These spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time matrices from other sources (e.g. `OSRM <http://project-osrm.org/>`_, `OpenTrip Planner <https://www.opentripplanner.org/>`_, `Valhalla <https://github.com/valhalla>`_, `Pandana <https://udst.github.io/urbanaccess/introduction.html>`_, our `PyPi spatial access package <https://pypi.org/project/spatial-access/>`_, or use one of our `pre-computed matrices <https://geoda.s3.amazonaws.com/data/otp/index.html>`_.
+  In addition, the package calculates five classic spatial access models within the same access class as RAAM for easy comparison between models:
 
-If you prefer a point-and-click interface for analysis in the contiguous US states, you can generate results with the PySAL spatial access package through an Amazon Web Service that we are hosting. This is inexpensive since it draws on these pre-computed travel times (driving times between tracts within 100 km (62 miles) of each other for the whole contiguous US, or walking, transit or driving between blocks or tracts for the 20 largest cities in the US).
+   - Floating Catchment Areas (FCA): For each provider, this is the ratio of providers to clients within a given travel time to the provider (Huff 1963, :cite:`1963_huff_shopping_trade_areas`, Joseph and Bantock 1982, :cite:`1982_joseph_potential_physical_accessibility_rural` and Luo 2004, :cite:`2004_luo_gis_floating_catchment`).
 
-Explore the map by clicking around or entering an address.
-You can also download results data for one tract to all tracts within 100 km (62 miles).
+   - Two-Stage FCAs (2SFCA): Calculated in two steps for a given travel time to the provider: 1) for each provider, the provider-to-client ratio is generated, 2) for each point of origin, these ratios are then summed (Luo and Wang, 2002, :cite:`2002_luo_spatial_accessibility_chicago` and Wang and Luo 2005, :cite:`2004_wang_luo_HPSAs`).
 
-.. raw:: html
+   - Enhanced 2SFCA (E2SFCA): 2SFCA but with less weight to providers that are still within the travel threshold but at larger distances from the point of origin (Luo and Qi 2009, :cite:`2009_luo_qi_E2SFCA`).
 
-   <figure class="figure">
-     <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
-     <figcaption class="figure-caption text-center">
-       Web Service to get spatial access results for pre-computed travel times
-     </figcaption>
-   </figure>
+   - Three-Stage FCA (3SFCA): adds distance-based allocation function to E2SFCA (Wan, Zou, and Sternberg, 2012, :cite:`2012_wan_3SFCA`).
 
+   - Access Score: This is a weighted sum of access components like distance to provider and relative importance of provider type (Isard 1960, :cite:`1960_isard_reganalysis`).
+
+These classic models were also recently implemented in the Python package `aceso <https://github.com/tetraptych/aceso>`_.
+
+These spatial access measures depend on travel times or distances between origins and destinations. The `Resources <resources>`_ section outlines how these can be calculated.
 
 .. toctree::
    :hidden:
@@ -47,6 +46,9 @@ You can also download results data for one tract to all tracts within 100 km (62
    Installation <installation>
    API <api>
    References <references>
+   Resources <resources>
+   Live App <app>
+
 
 
 .. _PySAL: https://github.com/pysal/pysal
