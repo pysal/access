@@ -170,7 +170,7 @@ html_theme_options = {
                      ("Installation", "installation"),
                      ("API", "api"),
                      ("Resources", "resources"),
-                     ("Live App", "live_app"),
+                     ("Live App", "app"),
                      ("References", "references"),
                      ],
 
