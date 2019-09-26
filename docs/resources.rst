@@ -414,6 +414,19 @@ In addition to driving times between tracts within 100 km, you can access matric
 |
 |
 
+
+Some of the matrices linked here are very large when unzipped (up to 100 GB). We have created an example bash script demonstrating how to extract a smaller
+portion of a larger matrix using bzcat and awk. The script and a short example can be found here_.
+.. _here: https://github.com/dfsnow/otp-routing#extracting-a-subset-of-tracts-or-blocks
+
+These matrices were generated primarily using 
+`OpenTripPlanner <https://www.opentripplanner.org>`_ (OTP)</a> and Docker.
+The necessary containers can be found `here <https://github.com/dfsnow/otp-routing>`_ and 
+`here <https://github.com/dfsnow/otp-resources>`_ 
+and are also available on `DockerHub <https://cloud.docker.com/u/snowdfs>`_.
+All matrices were generated with the following settings using all land-based GTFS feeds
+available in a given county buffer, including e.g. buses, subways, and lightrail (no ferries are included):
+
 .. raw:: html
 
   <table class="tg">
@@ -481,6 +494,9 @@ In addition to driving times between tracts within 100 km, you can access matric
       <td class="tg-0lax">N/A</td>
     </tr>
   </table>
+  <p class="center">
+    Created by: <a href="https://github.com/dfsnow">Dan Snow</a>, MPP | Sept 2019
+  </p>
 
 
 If you need to compute customized cost matrices, there are several options.
