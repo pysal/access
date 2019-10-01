@@ -564,7 +564,7 @@ If you need to compute customized cost matrices, there are several options. This
       <tr>
       <td class="tg-0lax"><img src="_static/images/csds.png" height="50" width="100"/></td> 
       <td class="tg-0lax"><a href="https://pypi.org/project/spatial-access/">Center for Spatial Data Science</a></td>
-      <td class="tg-0lax"><a href="https://github.com/GeoDaCenter/spatial_access">install</a></td>
+      <td class="tg-0lax"><a href="https://github.com/GeoDaCenter/spatial_access/blob/master/docs/notebooks/0_Reqs_Install.ipynb">install</a></td>
     </tr>
       <tr>
       <td class="tg-0lax"><img src="_static/images/googlemaps.png" height="60" width="60"/></td> 
