@@ -57,6 +57,17 @@ Figure 1 shows the workflow that our PySAL package uses to calculate these model
 
 As shown, all measures depend on travel times or distances between origins and destinations. This is the most computationally expensive part of calculating spatial access measures. The `Cost Matrix <https://access.readthedocs.io/en/latest/resources.html>`_ section outlines how these travel times can be computed or how you can access our pre-computed matrices for the US.
 
+|
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Authors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Spatial access package: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_
+- Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_
+- Pre-Computed Cost Matrices: `Dan Snow, MPP <https://www.linkedin.com/in/dfsnow/>`_
+- Concept and Documentation: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_ and `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_
+
+
 .. toctree::
    :hidden:
    :maxdepth: 3
