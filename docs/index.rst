@@ -8,9 +8,9 @@ Spatial Access for PySAL
 
 Wether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
 
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Motivation
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We built this package for several reasons:
 
@@ -19,9 +19,9 @@ We built this package for several reasons:
 - to support spatial access research at scale by making pre-computed travel time matrices available and sharing code for computing new matrices at scale, and
 - to allow users who prefer a point-and-click interface to obtain spatial access results for their data using our web app (for US).
 
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Methods
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This PySAL package implements our new measure that simultaneously accounts for travel time and congestion at the destination:
 
@@ -46,9 +46,9 @@ In addition, the package calculates five classic spatial access models within th
 
 These classic models were also recently implemented in the Python package `aceso <https://github.com/tetraptych/aceso>`_.
 
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Architecture
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Figure 1 shows the workflow that our PySAL package uses to calculate these models, including data inputs, creation of cost (travel time) matrix, and data output:
 
