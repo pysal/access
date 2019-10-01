@@ -525,12 +525,12 @@ If you need to compute customized cost matrices, there are several options. This
       <th class="tg-1wig">Installation</th>
     </tr>
     <tr>
-      <td class="tg-0lax"><img src="_static/images/pgrouting.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><img src="_static/images/pgrouting.png" height="50" width="120"/></td> 
       <td class="tg-0lax"><a href="https://pgrouting.org/">pgrouting</a></td>
       <td class="tg-0lax"><a href="https://github.com/JamesSaxon/routing-container">docker</a></td>
     </tr>
     <tr>
-      <td class="tg-0lax"><img src="_static/images/osrm.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><img src="_static/images/osrm.png" height="42" width="120"/></td> 
       <td class="tg-0lax"><a href="http://project-osrm.org/">OSRM</a></td>
       <td class="tg-0lax">
             <a href="https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM">install</a> /
@@ -539,7 +539,7 @@ If you need to compute customized cost matrices, there are several options. This
             </td>
     </tr>
     <tr>
-      <td class="tg-0lax"><img src="_static/images/otp.png" height="42" width="42"/></td> 
+      <td class="tg-0lax"><img src="_static/images/otp.png" height="50" width="60"/></td> 
       <td class="tg-0lax"><a href="https://www.opentripplanner.org/">Open Trip Planner</a></td>
       <td class="tg-0lax">
             <a href="https://github.com/dfsnow/otp-routing">docker routing</a> /
@@ -547,7 +547,7 @@ If you need to compute customized cost matrices, there are several options. This
             </td>
     </tr>
      <tr>
-      <td class="tg-0lax"><img src="_static/images/valhalla.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><img src="_static/images/valhalla.png" height="42" width="200"/></td> 
       <td class="tg-0lax"><a href="https://valhalla.readthedocs.io/en/latest/">Valhalla</a></td>
       <td class="tg-0lax"><a href="https://github.com/valhalla/valhalla">install</a></td>
     </tr>  
@@ -557,17 +557,17 @@ If you need to compute customized cost matrices, there are several options. This
       <td class="tg-0lax"><a href="https://udst.github.io/pandana/installation.html">install</a></td>
     </tr> 
       <tr>
-      <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="42" width="145"/></td> 
       <td class="tg-0lax"><a href="https://www.graphhopper.com/open-source/">Graphhopper</a></td>
       <td class="tg-0lax"><a href="https://github.com/graphhopper/graphhopper">install</a></td>
     </tr>
       <tr>
-      <td class="tg-0lax"><img src="_static/images/csds.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><img src="_static/images/csds.png" height="50" width="100"/></td> 
       <td class="tg-0lax"><a href="https://pypi.org/project/spatial-access/">Center for Spatial Data Science</a></td>
       <td class="tg-0lax"><a href="https://github.com/GeoDaCenter/spatial_access">install</a></td>
     </tr>
       <tr>
-      <td class="tg-0lax"><img src="_static/images/googlemaps.png" height="42" width="42"/></td> 
+      <td class="tg-0lax"><img src="_static/images/googlemaps.png" height="60" width="60"/></td> 
       <td class="tg-0lax"><a href="https://cloud.google.com/maps-platform/">Google Maps</a></td>
       <td class="tg-0lax"><a href="https://developers.google.com/maps/documentation/distance-matrix/intro">install</a></td>
     </tr>
@@ -576,5 +576,8 @@ If you need to compute customized cost matrices, there are several options. This
 
 Get Results with the Live App
 ################################################
+|
 
 If you prefer a point-and-click interface for analyzing spatial access in the contiguous US states, you can generate results for free with the PySAL spatial access package through the `Live App <https://access.readthedocs.io/en/latest/app.html>`_ we are hosting on AWS. Since it draws on our pre-computed travel times, the access metrics are generated relatively fast.
+
+|
