@@ -4,8 +4,12 @@
 Resources for Computing Travel Cost
 ====================================
 
+|
 
 The spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time matrices from other sources.
+
+Explore and Download Pre-Computed Travel Times
+################################################
 
 Since this is computationally expensive and non-trivial to implement at scale, we pre-computed driving times between tracts within 100 km (62 miles) of each other for the whole US. 
 
@@ -420,15 +424,13 @@ For a full list of origin and destination locations + attached populations, see 
   </table>
 
 |
-|
-
 
 Some of the matrices linked here are very large when unzipped (up to 100 GB). We have created an example bash script demonstrating how to extract a smaller
 portion of a larger matrix using bzcat and awk. The script and a short example can be found
 `here <https://github.com/dfsnow/otp-routing#extracting-a-subset-of-tracts-or-blocks>`_.
 
 These matrices were generated primarily using 
-`OpenTripPlanner <https://www.opentripplanner.org>`_ (OTP)</a> and Docker.
+`OpenTripPlanner <https://www.opentripplanner.org>`_ (OTP) and Docker.
 The necessary containers can be found `here <https://github.com/dfsnow/otp-routing>`_ and 
 `here <https://github.com/dfsnow/otp-resources>`_ 
 and are also available on `DockerHub <https://cloud.docker.com/u/snowdfs>`_.
@@ -506,9 +508,17 @@ available in a given county buffer, including e.g. buses, subways, and lightrail
     Created by: <a href="https://github.com/dfsnow">Dan Snow</a>, MPP | Sept. 2019
   </p>
 
+|
+Compute your Own Travel Times
+################################################
 
 If you need to compute customized cost matrices, there are several options.
 
 (e.g. `OSRM <http://project-osrm.org/>`_, `OpenTrip Planner <https://www.opentripplanner.org/>`_, `Valhalla <https://github.com/valhalla>`_, `Pandana <https://udst.github.io/urbanaccess/introduction.html>`_, our `PyPi spatial access package <https://pypi.org/project/spatial-access/>`_, or use one of our `pre-computed matrices <https://geoda.s3.amazonaws.com/data/otp/index.html>`_.
 
-If you prefer a point-and-click interface for analysis in the contiguous US states, you can generate results with the PySAL spatial access package through the `Live App <https://access.readthedocs.io/en/latest/app.html>`_ we are hosting on AWS. This is inexpensive since it draws on these pre-computed travel times.
+|
+
+Get Results with the Live App
+################################################
+
+If you prefer a point-and-click interface for analyzing spatial access in the contiguous US states, you can generate results for free with the PySAL spatial access package through the `Live App <https://access.readthedocs.io/en/latest/app.html>`_ we are hosting on AWS. Since it draws on our pre-computed travel times, the access metrics are generated relatively fast.
