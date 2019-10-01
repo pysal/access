@@ -512,10 +512,66 @@ available in a given county buffer, including e.g. buses, subways, and lightrail
 Compute your Own Travel Times
 ################################################
 
-If you need to compute customized cost matrices, there are several options.
+If you need to compute customized cost matrices, there are several options. This table lists some of them:
 
-(e.g. `OSRM <http://project-osrm.org/>`_, `OpenTrip Planner <https://www.opentripplanner.org/>`_, `Valhalla <https://github.com/valhalla>`_, `Pandana <https://udst.github.io/urbanaccess/introduction.html>`_, our `PyPi spatial access package <https://pypi.org/project/spatial-access/>`_, or use one of our `pre-computed matrices <https://geoda.s3.amazonaws.com/data/otp/index.html>`_.
+.. raw:: html
 
+  <table class="tg">
+  
+  
+    <tr>
+      <th class="tg-1wig"></th>
+      <th class="tg-1wig">Name</th>
+      <th class="tg-1wig">Installation</th>
+    </tr>
+    <tr>
+      <td class="tg-0lax"><img src="_static/images/pgrouting.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><a href="https://pgrouting.org/">pgrouting</a></td>
+      <td class="tg-0lax"><a href="https://github.com/JamesSaxon/routing-container">docker</a></td>
+    </tr>
+    <tr>
+      <td class="tg-0lax"><img src="_static/images/osrm.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><a href="http://project-osrm.org/">OSRM</a></td>
+      <td class="tg-0lax">
+            <a href="https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM">install</a> /
+            <a href="https://cran.r-project.org/web/packages/osrm/readme/README.html">R</a> /
+            <a href="https://github.com/Project-OSRM/osrm-backend#using-docker">docker</a>
+            </td>
+    </tr>
+    <tr>
+      <td class="tg-0lax"><img src="_static/images/otp.png" height="42" width="42"/></td> 
+      <td class="tg-0lax"><a href="https://www.opentripplanner.org/">Open Trip Planner</a></td>
+      <td class="tg-0lax">
+            <a href="https://github.com/dfsnow/otp-routing">docker routing</a> /
+            <a href="https://github.com/dfsnow/otp-resources">resources</a>
+            </td>
+    </tr>
+     <tr>
+      <td class="tg-0lax"><img src="_static/images/valhalla.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><a href="https://valhalla.readthedocs.io/en/latest/">Valhalla</a></td>
+      <td class="tg-0lax"><a href="https://github.com/valhalla/valhalla">install</a></td>
+    </tr>  
+     <tr>
+      <td class="tg-0lax"><img src="_static/images/pandana.png" height="42" width="42"/></td> 
+      <td class="tg-0lax"><a href="https://udst.github.io/urbanaccess/introduction.html">Pandana</a></td>
+      <td class="tg-0lax"><a href="https://udst.github.io/pandana/installation.html">install</a></td>
+    </tr> 
+      <tr>
+      <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><a href="https://www.graphhopper.com/open-source/">Graphhopper</a></td>
+      <td class="tg-0lax"><a href="https://github.com/graphhopper/graphhopper">install</a></td>
+    </tr>
+      <tr>
+      <td class="tg-0lax"><img src="_static/images/csds.png" height="42" width="90"/></td> 
+      <td class="tg-0lax"><a href="https://pypi.org/project/spatial-access/">Center for Spatial Data Science</a></td>
+      <td class="tg-0lax"><a href="https://github.com/GeoDaCenter/spatial_access">install</a></td>
+    </tr>
+      <tr>
+      <td class="tg-0lax"><img src="_static/images/googlemaps.png" height="42" width="42"/></td> 
+      <td class="tg-0lax"><a href="https://cloud.google.com/maps-platform/">Google Maps</a></td>
+      <td class="tg-0lax"><a href="https://developers.google.com/maps/documentation/distance-matrix/intro">install</a></td>
+    </tr>
+  </table>
 |
 
 Get Results with the Live App
