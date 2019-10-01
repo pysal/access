@@ -8,8 +8,9 @@ Resources for Computing Travel Cost
 
 The spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time matrices from other sources.
 
+******************************************************
 Explore and Download Pre-Computed Travel Times
-################################################
+******************************************************
 
 Since this is computationally expensive and non-trivial to implement at scale, we pre-computed driving times between tracts within 100 km (62 miles) of each other for the whole US. 
 
@@ -509,9 +510,9 @@ available in a given county buffer, including e.g. buses, subways, and lightrail
   </p>
 
 |
+******************************************************
 Compute your Own Travel Times
-################################################
-
+******************************************************
 If you need to compute customized cost matrices, there are several options. This table lists some of them:
 
 .. raw:: html
@@ -576,10 +577,9 @@ If you need to compute customized cost matrices, there are several options. This
     </tr>
   </table>
 |
-
+******************************************************
 Get Results with the Live App
-################################################
-|
+******************************************************|
 
 If you prefer a point-and-click interface for analyzing spatial access in the contiguous US states, you can generate results for free with the PySAL spatial access package through the `Live App <https://access.readthedocs.io/en/latest/app.html>`_ we are hosting on AWS. Since it draws on our pre-computed travel times, the access metrics are generated relatively fast.
 
