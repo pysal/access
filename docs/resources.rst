@@ -6,7 +6,7 @@ Resources for Computing Travel Cost
 
 |
 
-The spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time matrices from other sources.
+The spatial access measures depend on travel times or distances between origins and destinations. If you only need distances between origins and destinations, the package will calculate Euclidean distances for your projected data. If you need travel times for a specific travel mode, you need to generate these so-called travel time (or travel cost) matrices from other sources.
 
 
 Explore and Download Pre-Computed Travel Times
@@ -48,6 +48,19 @@ For a full list of origin and destination locations + attached populations, see 
       <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/walking.svg" height="42" width="42"/></th>
       <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/transit.svg" height="42" width="42"/></th>
       <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/driving.svg" height="42" width="42"/></th>
+    </tr>
+    <tr>
+      <td class="tg-0lax">National</td>
+      <td class="tg-0lax">All</td>
+      <td class="tg-0lax">
+        <a href="https://uchicago.box.com/shared/static/jsj1082lp7i6qcl1mau0dh553etqmag0.bz2">Tracts</a>
+      </td>
+      <td class="tg-0lax">
+        <a href="https://uchicago.box.com/shared/static/685x1cf1syxxbv503xqxyt2owm8zsakc.bz2">Tracts</a>
+      </td>
+      <td class="tg-0lax">
+        <a href="https://uchicago.box.com/shared/static/prapz7ac7vwuz44nnab3dhe10vbg55cz.bz2">Tracts</a>
+      </td>
     </tr>
     <tr>
       <td class="tg-0lax">New York City (Manhattan)</td>
@@ -407,19 +420,6 @@ For a full list of origin and destination locations + attached populations, see 
       </td>
       <td class="tg-0lax">
         <a href="https://uchicago.box.com/shared/static/v4pbsp1a85ghwhe2cmhf0e0lk7f7hdwj.bz2">Tracts</a>
-      </td>
-    </tr>
-    <tr>
-      <td class="tg-0lax">National</td>
-      <td class="tg-0lax">All</td>
-      <td class="tg-0lax">
-        <a href="https://uchicago.box.com/shared/static/jsj1082lp7i6qcl1mau0dh553etqmag0.bz2">Tracts</a>
-      </td>
-      <td class="tg-0lax">
-        <a href="https://uchicago.box.com/shared/static/685x1cf1syxxbv503xqxyt2owm8zsakc.bz2">Tracts</a>
-      </td>
-      <td class="tg-0lax">
-        <a href="https://uchicago.box.com/shared/static/prapz7ac7vwuz44nnab3dhe10vbg55cz.bz2">Tracts</a>
       </td>
     </tr>
   </table>
