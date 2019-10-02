@@ -525,11 +525,13 @@ If you need to compute customized cost matrices, there are several options. This
       <th class="tg-1wig"></th>
       <th class="tg-1wig">Name</th>
       <th class="tg-1wig">Installation</th>
+      <th class="tg-1wig">Notes</th>
     </tr>
     <tr>
       <td class="tg-0lax"><img src="_static/images/pgrouting.png" height="50" width="120"/></td> 
       <td class="tg-0lax"><a href="https://pgrouting.org/">pgRouting</a></td>
       <td class="tg-0lax"><a href="https://github.com/JamesSaxon/routing-container">docker</a></td>
+      <td class="tg-0lax">Good for driving, open-source and free, PostgreSQL/postgis and OpenStreetMap (OSM)</a></td>
     </tr>
     <tr>
       <td class="tg-0lax"><img src="_static/images/osrm.png" height="42" width="120"/></td> 
@@ -539,6 +541,7 @@ If you need to compute customized cost matrices, there are several options. This
             <a href="https://cran.r-project.org/web/packages/osrm/readme/README.html">R</a> /
             <a href="https://github.com/Project-OSRM/osrm-backend#using-docker">docker</a>
             </td>
+      <td class="tg-0lax">Best for driving, OSM, open-source and free, customized travel parameters, C++</a></td>      
     </tr>
     <tr>
       <td class="tg-0lax"><img src="_static/images/otp.png" height="50" width="60"/></td> 
@@ -547,21 +550,25 @@ If you need to compute customized cost matrices, there are several options. This
             <a href="https://github.com/dfsnow/otp-routing">docker routing</a> /
             <a href="https://github.com/dfsnow/otp-resources">resources</a>
             </td>
+      <td class="tg-0lax">Best for transit, open-source and free, customized travel parameters, Java</a></td>      
     </tr>
      <tr>
-      <td class="tg-0lax"><img src="_static/images/valhalla.png" height="42" width="200"/></td> 
+      <td class="tg-0lax"><img src="_static/images/valhalla.png" height="30" width="200"/></td> 
       <td class="tg-0lax"><a href="https://valhalla.readthedocs.io/en/latest/">Valhalla</a></td>
       <td class="tg-0lax"><a href="https://github.com/valhalla/valhalla">install</a></td>
+      <td class="tg-0lax">Multi-modal, OSM, open-source, for fee at scale, Python</a></td>      
     </tr>  
      <tr>
       <td class="tg-0lax"><img src="_static/images/pandana.png" height="42" width="42"/></td> 
       <td class="tg-0lax"><a href="https://udst.github.io/urbanaccess/introduction.html">Pandana</a></td>
       <td class="tg-0lax"><a href="https://udst.github.io/pandana/installation.html">install</a></td>
+      <td class="tg-0lax">Good for driving and walking, OSM, open-source and free, part of UrbanSim, Python</a></td>      
     </tr> 
       <tr>
       <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="42" width="145"/></td> 
       <td class="tg-0lax"><a href="https://www.graphhopper.com/open-source/">Graphhopper</a></td>
       <td class="tg-0lax"><a href="https://github.com/graphhopper/graphhopper">install</a></td>
+      <td class="tg-0lax">Multi-modal, OSM, open-source, for fee at scale, Python</a></td>      
     </tr>
       <tr>
       <td class="tg-0lax"><img src="_static/images/csds.png" height="50" width="100"/></td> 
@@ -570,12 +577,14 @@ If you need to compute customized cost matrices, there are several options. This
       <a href="https://github.com/GeoDaCenter/spatial_access">install</a> /
       <a href="https://github.com/GeoDaCenter/spatial_access/tree/master/docs/notebooks">notebooks</a>
     </td>
+      <td class="tg-0lax">Best for walking, OSM, scales well, open-source and free, includes spatial access metrics, Python</a></td>      
     </tr>
       <tr>
       <td class="tg-0lax"><img src="_static/images/googlemaps.png" height="60" width="60"/></td> 
       <td class="tg-0lax"><a href="https://cloud.google.com/maps-platform/">Google Maps</a></td>
       <td class="tg-0lax"><a href="https://developers.google.com/maps/documentation/distance-matrix/intro">install</a></td>
-    </tr>
+      <td class="tg-0lax">Accurate multi-modal, customized travel parameters, commercial, expensive at scale</a></td>      
+</tr>
   </table>
 |
 
