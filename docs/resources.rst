@@ -519,8 +519,6 @@ If you need to compute customized cost matrices, there are several options. This
 .. raw:: html
 
   <table class="tg">
-  
-  
     <tr>
       <th class="tg-1wig"></th>
       <th class="tg-1wig">Name</th>
@@ -540,7 +538,7 @@ If you need to compute customized cost matrices, there are several options. This
             <a href="https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM">install</a> /
             <a href="https://cran.r-project.org/web/packages/osrm/readme/README.html">R</a> /
             <a href="https://github.com/Project-OSRM/osrm-backend#using-docker">docker</a>
-            </td>
+      </td>
       <td class="tg-0lax">Best for driving, OSM, open-source and free, customized travel parameters, C++</a></td>      
     </tr>
     <tr>
@@ -585,7 +583,7 @@ If you need to compute customized cost matrices, there are several options. This
       <td class="tg-0lax"><a href="https://cloud.google.com/maps-platform/">Google Maps</a></td>
       <td class="tg-0lax"><a href="https://developers.google.com/maps/documentation/distance-matrix/intro">install</a></td>
       <td class="tg-0lax">Accurate multi-modal, customized travel parameters, commercial, expensive at scale</a></td>      
-</tr>
+     </tr>
   </table>
 |
 
