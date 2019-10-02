@@ -532,7 +532,7 @@ If you need to compute customized cost matrices, there are several options. This
       <td class="tg-0lax">Good for driving, open-source and free, PostgreSQL/postgis and OpenStreetMap (OSM)</a></td>
     </tr>
     <tr>
-      <td class="tg-0lax"><img src="_static/images/osrm.png" height="42" width="120"/></td> 
+      <td class="tg-0lax"><img src="_static/images/osrm.png" height="30" width="120"/></td> 
       <td class="tg-0lax"><a href="http://project-osrm.org/">OSRM</a></td>
       <td class="tg-0lax">
             <a href="https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM">install</a> /
@@ -564,7 +564,7 @@ If you need to compute customized cost matrices, there are several options. This
       <td class="tg-0lax">Good for driving and walking, OSM, open-source and free, part of UrbanSim, Python</a></td>      
     </tr> 
       <tr>
-      <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="42" width="145"/></td> 
+      <td class="tg-0lax"><img src="_static/images/graphhopper.png" height="30" width="145"/></td> 
       <td class="tg-0lax"><a href="https://www.graphhopper.com/open-source/">Graphhopper</a></td>
       <td class="tg-0lax"><a href="https://github.com/graphhopper/graphhopper">install</a></td>
       <td class="tg-0lax">Multi-modal, OSM, open-source, for fee at scale, Python</a></td>      
