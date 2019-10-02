@@ -548,7 +548,8 @@ If you need to compute customized cost matrices, there are several options. This
       <td class="tg-0lax"><a href="https://www.opentripplanner.org/">Open Trip Planner</a></td>
       <td class="tg-0lax">
             <a href="https://github.com/dfsnow/otp-routing">docker routing</a> /
-            <a href="https://github.com/dfsnow/otp-resources">resources</a>
+            <a href="https://github.com/dfsnow/otp-resources">resources</a> /
+            <a href="https://cloud.docker.com/u/snowdfs">DockerHub</a>
             </td>
       <td class="tg-0lax">Best for transit, open-source and free, customized travel parameters, Java</a></td>      
     </tr>
