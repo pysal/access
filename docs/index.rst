@@ -6,7 +6,7 @@ Spatial Access for PySAL
 
 |
 
-Wether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
+Whether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Motivation
