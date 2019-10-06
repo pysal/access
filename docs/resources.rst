@@ -430,7 +430,7 @@ Some of the matrices linked here are very large when unzipped (up to 100 GB). We
 portion of a larger matrix using bzcat and awk. The script and a short example can be found
 `here <https://github.com/dfsnow/otp-routing#extracting-a-subset-of-tracts-or-blocks>`_.
 
-These matrices were generated primarily using 
+These matrices were generated using 
 `OpenTripPlanner <https://www.opentripplanner.org>`_ (OTP) and Docker.
 The necessary containers can be found `here <https://github.com/dfsnow/otp-routing>`_ and 
 `here <https://github.com/dfsnow/otp-resources>`_ 
