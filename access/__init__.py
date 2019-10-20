@@ -462,9 +462,18 @@ class access():
         Examples
         --------
 
-        Call the RAAM, seting the tau parameter to the default value of 60.
+        Call the RAAM, setting the tau parameter to the default value of 60.
 
         >>> illinois_primary_care.raam(tau = 60)
+
+        Call the RAAM, setting the tau parameter to a value of your choice and save outputs without overwriting previous outputs.
+
+        >>> illinois_primary_care.raam(name = "raam30", tau = 30)
+
+        If euclidean costs are available (see 'access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>'),
+        you can use euclidean distance instead of time to calculate RAAM access measures.
+
+        >>> illinois_primary_care.raam(name = "raam_euclidean", tau = 1e5, cost = "euclidean");
 
         """
 
@@ -889,7 +898,7 @@ class examples():
 
     il_doc_cols = ['geoid','doc','dentist']
     il_pop_cols = ['geoid','pop']
-    il_doc_path = './examples/il_med/docs_dentists_pcsa.csv'
+    il_doc_path = '../examples/il_med/docs_dentists_pcsa.csv'
     il_doc = pd.read_csv(il_doc_path)[il_doc_cols]
     il_pop = pd.read_csv(il_doc_path)[il_pop_cols]
     print("Example datasets loaded.")
