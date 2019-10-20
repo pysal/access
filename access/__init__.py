@@ -94,11 +94,12 @@ class access():
 
         Using the example data, create an `access` object.
 
-        >>> illinois_primary_care = \
-                 access(demand_df = ex.il_pop,   demand_index = "geoid", demand_value = "pop",
-                        supply_df = ex.il_doc,   supply_index = "geoid",
-                        supply_value = ["pc_physicians", "dentists"],
-                        cost_df   = ex.il_times, cost_origin  = "origin", cost_dest = "dest")
+        >>> illinois_primary_care = access(demand_df = ex.il_pop, demand_index = "geoid",
+                                           demand_value = "pop",
+                                           supply_df = ex.il_doc, supply_index = "geoid",
+                                           supply_value = ["pc_physicians", "dentists"],
+                                           cost_df = ex.il_times, cost_origin  = "origin",
+                                           cost_dest = "dest")
 
         Attempt to calculate floating catchment area method:
 
@@ -747,7 +748,13 @@ class access():
 
         Examples
         --------
+        To add a new cost from demand to supply locations, first load the new cost data.
 
+        >>> euclidean_cost = pd.read_csv("euclidean_cost.csv")
+
+        Add new cost data to existing access instance.
+
+        >>> illinois_primary_care.user_cost(new_cost_df = euclidean_cost, cost = "euclidean", origin = "euclidean_origin", destination = "euclidean_destination")
 
         """
 
@@ -773,6 +780,20 @@ class access():
                               Name of the new origin variable in new_cost_df
         destination         : str
                               Name of the new destination variable in new_cost_df
+
+        Examples
+        --------
+        To add a new cost from supply to supply locations, first load the new neighbor cost data.
+
+        >>> euclidean_neighbor_cost = pd.read_csv("euclidean_neighbor_cost.csv")
+
+        Add new neighbor cost data to existing access instance.
+
+        >>> illinois_primary_care.user_cost_neighbors(new_cost_df = euclidean_neighbor_cost,
+                                                      cost = "euclidean",
+                                                      origin = "euclidean_origin",
+                                                      destination = "euclidean_destination")
+
         """
 
         # Add it to the list of costs.
