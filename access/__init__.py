@@ -745,14 +745,19 @@ class access():
         destination         : str
                               Name of the new destination variable in new_cost_df
 
+        Examples
+        --------
+
+
         """
 
         # Add it to the list of costs.
-        self.neighbor_cost_df = self.neighbor_cost_df.merge(new_cost[[origin, destination, name]], how = 'outer',
-                                                            left_on = [self.neighbor_cost_origin,
-                                                                       self.neighbor_cost_destination],
-                                                            right_on = [origin, destination])
-        self.neighbor_cost_names.append(name)
+        self.cost_df = self.cost_df.merge(new_cost[[origin, destination, name]],
+                                          how = 'outer',
+                                          left_on = [self.cost_origin,
+                                                     self.cost_destination],
+                                          right_on = [origin, destination])
+        self.cost_names.append(name)
 
 
     def user_cost_neighbors(self, new_cost_df, origin, destination, name):
@@ -771,10 +776,12 @@ class access():
         """
 
         # Add it to the list of costs.
-        self.cost_df = self.neighbor_cost_df.merge(new_cost_df[[origin, destination, name]], how = 'outer',
-                                                   left_on = [self.cost_origin, self.cost_destination],
-                                                   right_on = [origin, destination])
-        self.cost_names.append(name)
+        self.neighbor_cost_df = self.neighbor_cost_df.merge(new_cost_df[[origin, destination, name]],
+                                                            how = 'outer',
+                                                            left_on = [self.neighbor_cost_origin,
+                                                                       self.neighbor_cost_destination],
+                                                            right_on = [origin, destination])
+        self.neighbor_cost_names.append(name)
 
     def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
