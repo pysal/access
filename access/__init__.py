@@ -462,19 +462,96 @@ class access():
 
         Examples
         --------
+        Import the `access` class and the Chicago subset example data in the `example` class.
 
-        Call the RAAM, setting the tau parameter to the default value of 60.
+        >>> from access import access, examples as ex
 
-        >>> illinois_primary_care.raam(tau = 60)
+        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists) and cost (travel time), respectively. The sample data only represents 50 Chicago Census Tracts.
 
-        Call the RAAM, setting the tau parameter to a value of your choice and save outputs without overwriting previous outputs.
+        >>> chi_pop =   ex.load_data('chi_pop')
+            chi_doc =   ex.load_data('chi_doc')
+            chi_times = ex.load_data('chi_times')
 
-        >>> illinois_primary_care.raam(name = "raam30", tau = 30)
+        >>> chi_doc.head()
+                     geoid  doc  dentist
+            0  17031080100    1        3
+            1  17031080201    1        0
+            2  17031080202    0        4
+            3  17031080300   13        7
+            4  17031081000    9        1
+
+        >>> chi_pop.head()
+                     geoid   pop
+            0  17031080100  6013
+            1  17031080201  3287
+            2  17031080202  3498
+            3  17031080300  4315
+            4  17031081000  7546
+
+        The `chi_times` dataset is the cost matrix, showing the travel time between each of the 50 Census Tracts to the other 49.
+
+        >>> chi_times.head()
+                    origin  destination      cost
+            0  17031080100  17031081202  1.142298
+            1  17031080201  17031081202  2.365533
+            2  17031080202  17031081202  1.573745
+            3  17031080300  17031081202  2.730388
+            4  17031081000  17031081202  1.658106
+
+        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+
+        >>> chicago_primary_care = access(demand_df = chi_pop,
+                                          demand_value = "pop", demand_index = "geoid",
+                                          supply_df = chi_doc, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_times, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost")
+
+        With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 5 minutes by setting the tau value to 5 (default is 60 minutes).
+
+        >>> chicago_primary_care.raam(tau = 5)
+                         raam_doc  raam_dentist
+            geoid
+            17031080100  1.728150      1.689390
+            17031080201  1.653890      1.601826
+            17031080202  1.754975      1.674575
+            ...........  ........      ........
+            17031842200  2.006535      1.870467
+            17031842300  1.983064      2.126776
+            17031842900  1.589178      1.899403
+
+        You can access the results stored in the   `access.access_df` attribute.
+
+        >>> chicago_primary_care.access_df
+                           pop  raam_doc  raam_dentist
+            geoid
+            17031080100   6013  1.728150      1.689390
+            17031080201   3287  1.653890      1.601826
+            17031080202   3498  1.754975      1.674575
+            ...........   ....  ........      ........
+            17031842200   2603  2.006535      1.870467
+            17031842300   3244  1.983064      2.126776
+            17031842900   2341  1.589178      1.899403
+
+        By providing a string to the `name` argument, you can call the `access.raam` method again using a different parameter of tau and save the outputs without overwriting previous ones.
+
+        >>> chicago_primary_care.raam(name = "raam2", tau = 2)
+            chicago_primary_care.access_df
+                           pop  raam_doc  raam_dentist  raam2_doc  raam2_dentist
+            geoid
+            17031080100   6013  1.728150      1.689390   2.700206       2.516147
+            17031080201   3287  1.653890      1.601826   2.427319       2.159599
+            17031080202   3498  1.754975      1.674575   2.607731       2.252086
+            ...........   ....  ........      ........   ........       ........
+            17031842200   2603  2.006535      1.870467   3.252330       2.921684
+            17031842300   3244  1.983064      2.126776   3.076450       3.198503
+            17031842900   2341  1.589178      1.899403   2.703044       2.793372
+
 
         If euclidean costs are available (see 'access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>'),
-        you can use euclidean distance instead of time to calculate RAAM access measures.
+        you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
-        >>> illinois_primary_care.raam(name = "raam_euclidean", tau = 1e5, cost = "euclidean");
+        >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
 
         """
 
@@ -819,6 +896,10 @@ class access():
                               If True, convert geometries of demand_df (origins) to centroids; otherwise, no change
         centroid_d          : bool
                               If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change
+
+        Examples
+        --------
+
         """
 
         if not HAS_GEOPANDAS:
@@ -920,13 +1001,14 @@ class access():
 class examples():
     """Load example Illinois dataset used in API examples.
     """
-    print("Loading example datasets...")
-    il_time_url = 's3://geoda/data/il_times.csv'
-    il_times = pd.read_csv(il_time_url)
+    chi_time_path = './examples/chi_med/chi_times_subset.csv'
 
-    il_doc_cols = ['geoid','doc','dentist']
-    il_pop_cols = ['geoid','pop']
-    il_doc_path = '../examples/il_med/docs_dentists_pcsa.csv'
-    il_doc = pd.read_csv(il_doc_path)[il_doc_cols]
-    il_pop = pd.read_csv(il_doc_path)[il_pop_cols]
-    print("Example datasets loaded.")
+    chi_doc_cols = ['geoid','doc','dentist']
+    chi_pop_cols = ['geoid','pop']
+    chi_doc_path = './examples/chi_med/docs_dentists_pcsa_subset.csv'
+    datasets = {'chi_times':pd.read_csv(chi_time_path),
+                'chi_doc':  pd.read_csv(chi_doc_path)[chi_doc_cols],
+                'chi_pop':  pd.read_csv(chi_doc_path)[chi_pop_cols]}
+
+    def load_data(dataset):
+        return examples.datasets[dataset].copy()
