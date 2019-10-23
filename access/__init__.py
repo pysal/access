@@ -889,7 +889,7 @@ class access():
                                            origin = "origin",
                                            destination = "destination")
             chicago_primary_care.cost_df
-                    origin  destination      cost  euclidean
+                       origin  destination      cost  euclidean
             0     17031080100  17031081202  1.142298        NaN
             1     17031080201  17031081202  2.365533        NaN
             2     17031080202  17031081202  1.573745        NaN
@@ -924,16 +924,84 @@ class access():
 
         Examples
         --------
-        To add a new cost from supply to supply locations, first load the new neighbor cost data.
+        Examples
+        --------
+        Import the `access` class and the Chicago subset example data in the `example` class.
+
+        >>> from access import access, examples as ex
+
+        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists) and cost (travel time), respectively. The sample data only represents 50 Chicago Census Tracts.
+
+        >>> chi_pop =   ex.load_data('chi_pop')
+            chi_doc =   ex.load_data('chi_doc')
+            chi_times = ex.load_data('chi_times')
+
+        >>> chi_doc.head()
+                     geoid  doc  dentist
+            0  17031080100    1        3
+            1  17031080201    1        0
+            2  17031080202    0        4
+            3  17031080300   13        7
+            4  17031081000    9        1
+
+        >>> chi_pop.head()
+                     geoid   pop
+            0  17031080100  6013
+            1  17031080201  3287
+            2  17031080202  3498
+            3  17031080300  4315
+            4  17031081000  7546
+
+        The `chi_times` dataset is the cost matrix, showing the travel time between each of the 50 Census Tracts to the other 49.
+
+        >>> chi_times.head()
+                    origin  destination      cost
+            0  17031080100  17031081202  1.142298
+            1  17031080201  17031081202  2.365533
+            2  17031080202  17031081202  1.573745
+            3  17031080300  17031081202  2.730388
+            4  17031081000  17031081202  1.658106
+
+        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+
+        >>> chicago_primary_care = access(demand_df = chi_pop,
+                                          demand_value = "pop", demand_index = "geoid",
+                                          supply_df = chi_doc, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_times, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost",
+                                          neighbor_cost_df = chi_neighbor_cost,
+                                          neighbor_cost_origin = "origin",
+                                          neighbor_cost_dest = "destination",
+                                          neighbor_cost_name = "cost")
+
+        To add a new cost from supply to supply locations, first load the new cost data.
 
         >>> euclidean_neighbor_cost = pd.read_csv("euclidean_neighbor_cost.csv")
+            euclidean_neighbor_cost.head()
+                       origin  destination  euclidean
+            0     17031080100  17031080100       2200
+            1     17031080201  17031080201     241307
+            2     17031080202  17031080202     126109
+            3     17031080300  17031080300     167737
+            4     17031081000  17031081000      29138
 
-        Add new neighbor cost data to existing access instance.
 
-        >>> illinois_primary_care.user_cost_neighbors(new_cost_df = euclidean_neighbor_cost,
-                                                      cost = "euclidean",
-                                                      origin = "euclidean_origin",
-                                                      destination = "euclidean_destination")
+        Add new neighbor cost data to existing `access` instance.
+
+        >>> chicago_primary_care.user_cost_neighbors(new_cost_df = euclidean_neighbor_cost,
+                                                     name = "euclidean",
+                                                     origin = "origin",
+                                                     destination = "destination")
+            chicago_primary_care.neighbor_cost_df
+                       origin  destination      cost  euclidean
+            0     17031080100  17031081202  1.142298        NaN
+            1     17031080201  17031081202  2.365533        NaN
+            2     17031080202  17031081202  1.573745        NaN
+            .     ...........  ...........  ........        ...
+            4897  17031832900  17031832900        NaN     3651.0
+            3898  17031280800  17031280800        NaN     3710.0
+            4899  17031842300  17031842300        NaN     3794.0
 
         """
 
