@@ -7,6 +7,9 @@ from distutils.command.build_py import build_py
 with open('access/__init__.py', 'r') as f:
     exec(f.readline())
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 def _get_requirements_from_files(groups_files):
     groups_reqlist = {}
 
@@ -30,10 +33,12 @@ def setup_package():
 
     setup(name='access', #name of package
           version=__version__,
-          description='', #short <80chr description
-          url='', #github repo
-          maintainer='',
-          maintainer_email='',
+          description = 'Calculate spatial accessibility metrics.', #short <80chr description
+          long_description = long_description,
+          long_description_content_type='text/markdown',
+          url='https://access.readthedocs.io/en/latest/', #github repo
+          maintainer='James Saxon',
+          maintainer_email='jsaxon@uchicago.edu',
           test_suite = 'nose.collector',
           tests_require=['nose'],
           keywords='spatial statistics access',
@@ -57,4 +62,6 @@ def setup_package():
           cmdclass = {'build.py':build_py})
 
 if __name__ == '__main__':
+
     setup_package()
+
