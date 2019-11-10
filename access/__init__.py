@@ -19,6 +19,7 @@ from . import fca
 from . import raam
 from . import weights
 from . import helpers
+from . import datasets
 
 access_log_stream = logging.StreamHandler()
 access_log_format = logging.Formatter('%(name)s %(levelname)-8s :: %(message)s')
@@ -84,22 +85,30 @@ class access():
         Examples
         --------
 
-        Import the base class and example data.
+        Import the base `access` class and `datasets`.
 
-        >>> from access import access, examples as ex
+        >>> from access import access, datasets
 
-        Inspect the example data:
+        Load each of the example datasets:
 
-        >>> ex.il_times.head()
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+            chi_population   = datasets.load_data('chi_pop')
+            chi_travel_costs = datasets.load_data('chi_times')
+
+        >>> chi_docs_dents.head()
+
+        >>> chi_population.head()
+
+        >>> chi_travel_costs.head()
 
         Using the example data, create an `access` object.
 
-        >>> illinois_primary_care = access(demand_df = ex.il_pop, demand_index = "geoid",
+        >>> illinois_primary_care = access(demand_df = chi_population, demand_index = "geoid",
                                            demand_value = "pop",
-                                           supply_df = ex.il_doc, supply_index = "geoid",
-                                           supply_value = ["pc_physicians", "dentists"],
-                                           cost_df = ex.il_times, cost_origin  = "origin",
-                                           cost_dest = "dest")
+                                           supply_df = chi_docs_dents, supply_index = "geoid",
+                                           supply_value = ["doc", "dentist"],
+                                           cost_df = chi_travel_costs, cost_origin  = "origin",
+                                           cost_dest = "destination")
 
         Attempt to calculate floating catchment area method:
 
@@ -935,6 +944,7 @@ class access():
         >>> chi_pop =   ex.load_data('chi_pop')
             chi_doc =   ex.load_data('chi_doc')
             chi_times = ex.load_data('chi_times')
+            chi_neighbor_cost = ex.load_data('chi_neighbor_cost') # Not yet implemented
 
         >>> chi_doc.head()
                      geoid  doc  dentist
@@ -1130,17 +1140,17 @@ class access():
             self.neighbor_default_cost = name
 
 
-class examples():
-    """Load example Illinois dataset used in API examples.
-    """
-    chi_time_path = './examples/chi_med/chi_times_subset.csv'
-
-    chi_doc_cols = ['geoid','doc','dentist']
-    chi_pop_cols = ['geoid','pop']
-    chi_doc_path = './examples/chi_med/docs_dentists_pcsa_subset.csv'
-    datasets = {'chi_times':pd.read_csv(chi_time_path),
-                'chi_doc':  pd.read_csv(chi_doc_path)[chi_doc_cols],
-                'chi_pop':  pd.read_csv(chi_doc_path)[chi_pop_cols]}
-
-    def load_data(dataset):
-        return examples.datasets[dataset].copy()
+# class examples():
+#     """Load example Illinois dataset used in API examples.
+#     """
+#     chi_time_path = './examples/chi_med/chi_times_subset.csv'
+#
+#     chi_doc_cols = ['geoid','doc','dentist']
+#     chi_pop_cols = ['geoid','pop']
+#     chi_doc_path = './examples/chi_med/docs_dentists_pcsa_subset.csv'
+#     datasets = {'chi_times':pd.read_csv(chi_time_path),
+#                 'chi_doc':  pd.read_csv(chi_doc_path)[chi_doc_cols],
+#                 'chi_pop':  pd.read_csv(chi_doc_path)[chi_pop_cols]}
+#
+#     def load_data(dataset):
+#         return examples.datasets[dataset].copy()
