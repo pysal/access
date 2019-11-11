@@ -92,23 +92,41 @@ class access():
         Load each of the example datasets:
 
         >>> chi_docs_dents   = datasets.load_data('chi_doc')
-            chi_population   = datasets.load_data('chi_pop')
-            chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
         >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
         >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
         Using the example data, create an `access` object.
 
-        >>> illinois_primary_care = access(demand_df = chi_population, demand_index = "geoid",
-                                           demand_value = "pop",
-                                           supply_df = chi_docs_dents, supply_index = "geoid",
-                                           supply_value = ["doc", "dentist"],
-                                           cost_df = chi_travel_costs, cost_origin  = "origin",
-                                           cost_dest = "destination")
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost")
 
         Attempt to calculate floating catchment area method:
 
@@ -387,17 +405,61 @@ class access():
         Examples
         --------
 
-        Create an access object, as detailed in __init__.py
+        Import the base `access` class and `datasets`.
 
-        >>> illinois_primary_care = access(<...>)
+        >>> from access import access, datasets
 
-        This method will utilize the parameters passed into the access object at time of instantiation.
-        Any calls of floating catchment area need only provide method-specific parameters.
+        Load each of the example datasets:
 
-        Call the floating catchment area with max_cost only
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
 
-        >>> illinois_primary_care.fca_ratio(max_cost = 30)
+        >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
+        >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        Using the example data, create an `access` object.
+
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost",
+                                          neighbor_cost_df = chi_travel_costs, neighbor_cost_origin = "origin",
+                                          neighbor_cost_dest = 'dest', neighbor_cost_name = 'cost')
+
+        >>> chicago_primary_care.fca_ratio(name='fca',max_cost=30)
+                      fca_doc  fca_dentist
+        geoid
+        17031010100  0.001630     0.000807
+        17031010201  0.001524     0.000904
+        17031010202  0.001521     0.000908
+        ...........  ........     ........
+        17197884101  0.000437     0.000442
+        17197884103  0.000510     0.000498
+        17197980100  0.000488     0.000432
         """
 
         supply_cost   = helpers.sanitize_supply_cost(self, supply_cost, name)
@@ -471,91 +533,93 @@ class access():
 
         Examples
         --------
-        Import the `access` class and the Chicago subset example data in the `example` class.
 
-        >>> from access import access, examples as ex
+        Import the base `access` class and `datasets`.
 
-        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists) and cost (travel time), respectively. The sample data only represents 50 Chicago Census Tracts.
+        >>> from access import access, datasets
 
-        >>> chi_pop =   ex.load_data('chi_pop')
-            chi_doc =   ex.load_data('chi_doc')
-            chi_times = ex.load_data('chi_times')
+        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
+        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_doc.head()
-                     geoid  doc  dentist
-            0  17031080100    1        3
-            1  17031080201    1        0
-            2  17031080202    0        4
-            3  17031080300   13        7
-            4  17031081000    9        1
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
 
-        >>> chi_pop.head()
-                     geoid   pop
-            0  17031080100  6013
-            1  17031080201  3287
-            2  17031080202  3498
-            3  17031080300  4315
-            4  17031081000  7546
+        >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        The `chi_times` dataset is the cost matrix, showing the travel time between each of the 50 Census Tracts to the other 49.
+        >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        >>> chi_times.head()
-                    origin  destination      cost
-            0  17031080100  17031081202  1.142298
-            1  17031080201  17031081202  2.365533
-            2  17031080202  17031081202  1.573745
-            3  17031080300  17031081202  2.730388
-            4  17031081000  17031081202  1.658106
+        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts.
+
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
         Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
 
-        >>> chicago_primary_care = access(demand_df = chi_pop,
-                                          demand_value = "pop", demand_index = "geoid",
-                                          supply_df = chi_doc, supply_index = "geoid",
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
-                                          cost_df = chi_times, cost_origin  = "origin",
-                                          cost_dest = "destination", cost_name = "cost")
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "dest", cost_name = "cost")
 
-        With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 5 minutes by setting the tau value to 5 (default is 60 minutes).
+        With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 30 minutes by setting the tau value to 30 (60 minutes is the default).
 
-        >>> chicago_primary_care.raam(tau = 5)
-                         raam_doc  raam_dentist
-            geoid
-            17031080100  1.728150      1.689390
-            17031080201  1.653890      1.601826
-            17031080202  1.754975      1.674575
-            ...........  ........      ........
-            17031842200  2.006535      1.870467
-            17031842300  1.983064      2.126776
-            17031842900  1.589178      1.899403
+        >>> chicago_primary_care.raam(tau = 30)
+                     raam_doc  raam_dentist
+        geoid
+        17031010100  1.027597      1.137901
+        17031010201  0.940239      1.332557
+        17031010202  1.031144      1.413279
+        ...........  ........      ........
+        17197884101  2.365171      1.758800
+        17197884103  2.244007      1.709857
+        17197980100  2.225820      1.778264
 
         You can access the results stored in the `access.access_df` attribute.
 
         >>> chicago_primary_care.access_df
-                           pop  raam_doc  raam_dentist
-            geoid
-            17031080100   6013  1.728150      1.689390
-            17031080201   3287  1.653890      1.601826
-            17031080202   3498  1.754975      1.674575
-            ...........   ....  ........      ........
-            17031842200   2603  2.006535      1.870467
-            17031842300   3244  1.983064      2.126776
-            17031842900   2341  1.589178      1.899403
+                      pop  raam_doc  raam_dentist
+        geoid
+        17031010100  4854  1.027597      1.137901
+        17031010201  6450  0.940239      1.332557
+        17031010202  2818  1.031144      1.413279
+        ...........   ....  ........      ........
+        17197884101  4166  2.365171      1.758800
+        17197884103  2776  2.244007      1.709857
+        17197980100  3264  2.225820      1.778264
+
 
         By providing a string to the `name` argument, you can call the `access.raam` method again using a different parameter of tau and save the outputs without overwriting previous ones.
 
         >>> chicago_primary_care.raam(name = "raam2", tau = 2)
-            chicago_primary_care.access_df
-                           pop  raam_doc  raam_dentist  raam2_doc  raam2_dentist
-            geoid
-            17031080100   6013  1.728150      1.689390   2.700206       2.516147
-            17031080201   3287  1.653890      1.601826   2.427319       2.159599
-            17031080202   3498  1.754975      1.674575   2.607731       2.252086
-            ...........   ....  ........      ........   ........       ........
-            17031842200   2603  2.006535      1.870467   3.252330       2.921684
-            17031842300   3244  1.983064      2.126776   3.076450       3.198503
-            17031842900   2341  1.589178      1.899403   2.703044       2.793372
-
+        >>> chicago_primary_care.access_df
+                      pop  raam_doc  raam_dentist  raam45_doc  raam45_dentist
+        geoid
+        17031010100  4854  1.027597      1.137901    0.967900        1.075116
+        17031010201  6450  0.940239      1.332557    0.908518        1.133207
+        17031010202  2818  1.031144      1.413279    0.962915        1.206775
+        ...........   ....  ........      ........   ........       ........
+        17197884101  4166  2.365171      1.758800    1.921161        1.495642
+        17197884103  2776  2.244007      1.709857    1.900596        1.517022
+        17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
         If euclidean costs are available (see 'access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>'),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
@@ -621,8 +685,73 @@ class access():
         Examples
         --------
 
+        Import the base `access` class and `datasets`.
 
+        >>> from access import access, datasets
 
+        Load each of the example datasets:
+
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
+
+        >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        Using the example data, create an `access` object.
+
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost",
+                                          neighbor_cost_df = chi_travel_costs, neighbor_cost_origin = "origin",
+                                          neighbor_cost_dest = 'dest', neighbor_cost_name = 'cost')
+
+        >>> chicago_primary_care.two_stage_fca(name = '2sfca', max_cost = 60)
+                      pop  2sfca_doc  2sfca_dentist
+        geoid
+        17031010100  4854   0.000697       0.000402
+        17031010201  6450   0.000754       0.000455
+        17031010202  2818   0.000717       0.000424
+        ...........  ....   ........       ........
+        17197884101  4166   0.000562       0.000370
+        17197884103  2776   0.000384       0.000291
+        17197980100  3264   0.000457       0.000325
+
+        To create new values for two-stage catchment areas using a different `max_cost`, you can use a new `name` and a different `max_cost` parameter.
+        >>> chicago_primary_care.two_stage_fca(name = '2sfca30', max_cost = 30)
+                      pop  2sfca_doc  2sfca_dentist  2sfca30_doc  2sfca30_dentist
+        geoid
+        17031010100  4854   0.000697       0.000402     0.000963         0.000479
+        17031010201  6450   0.000754       0.000455     0.000991         0.000551
+        17031010202  2818   0.000717       0.000424     0.000973         0.000541
+        ...........  ....   ........       ........     ........         ........
+        17197884101  4166   0.000562       0.000370     0.000222         0.000255
+        17197884103  2776   0.000384       0.000291     0.000371         0.000377
+        17197980100  3264   0.000457       0.000325     0.000348         0.000314
         """
 
         if cost is None:
@@ -834,78 +963,76 @@ class access():
 
         Examples
         --------
-        Import the `access` class and the Chicago subset example data in the `example` class.
 
-        >>> from access import access, examples as ex
+        Import the base `access` class and `datasets`.
 
-        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists) and cost (travel time), respectively. The sample data only represents 50 Chicago Census Tracts.
+        >>> from access import access, datasets
 
-        >>> chi_pop =   ex.load_data('chi_pop')
-            chi_doc =   ex.load_data('chi_doc')
-            chi_times = ex.load_data('chi_times')
+        Load each of the example datasets:
 
-        >>> chi_doc.head()
-                     geoid  doc  dentist
-            0  17031080100    1        3
-            1  17031080201    1        0
-            2  17031080202    0        4
-            3  17031080300   13        7
-            4  17031081000    9        1
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
 
-        >>> chi_pop.head()
-                     geoid   pop
-            0  17031080100  6013
-            1  17031080201  3287
-            2  17031080202  3498
-            3  17031080300  4315
-            4  17031081000  7546
+        >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        The `chi_times` dataset is the cost matrix, showing the travel time between each of the 50 Census Tracts to the other 49.
+        >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        >>> chi_times.head()
-                    origin  destination      cost
-            0  17031080100  17031081202  1.142298
-            1  17031080201  17031081202  2.365533
-            2  17031080202  17031081202  1.573745
-            3  17031080300  17031081202  2.730388
-            4  17031081000  17031081202  1.658106
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Using the example data, create an `access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_pop,
-                                          demand_value = "pop", demand_index = "geoid",
-                                          supply_df = chi_doc, supply_index = "geoid",
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
-                                          cost_df = chi_times, cost_origin  = "origin",
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
                                           cost_dest = "destination", cost_name = "cost")
 
         To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_cost = pd.read_csv("euclidean_cost.csv")
+        >>> euclidean_cost = datasets.load_data('chi_euclidean')
             euclidean_cost.head()
-                       origin  destination  euclidean
-            0     17031080100  17031080100       2200
-            1     17031080201  17031080201     241307
-            2     17031080202  17031080202     126109
-            3     17031080300  17031080300     167737
-            4     17031081000  17031081000      29138
-
+                origin         dest     euclidean
+        0  17093890101  17031010100  63630.788476
+        1  17093890101  17031010201  62632.675522
+        2  17093890101  17031010202  63073.735631
+        3  17093890101  17031010300  63520.029749
+        4  17093890101  17031010400  63268.514352
 
         Add new cost data to existing `access` instance.
 
         >>> chicago_primary_care.user_cost(new_cost_df = euclidean_cost,
                                            name = "euclidean",
                                            origin = "origin",
-                                           destination = "destination")
-            chicago_primary_care.cost_df
-                       origin  destination      cost  euclidean
-            0     17031080100  17031081202  1.142298        NaN
-            1     17031080201  17031081202  2.365533        NaN
-            2     17031080202  17031081202  1.573745        NaN
-            .     ...........  ...........  ........        ...
-            4897  17031832900  17031832900        NaN     3651.0
-            3898  17031280800  17031280800        NaN     3710.0
-            4899  17031842300  17031842300        NaN     3794.0
+                                           destination = "dest")
+
+        >>> chicago_primary_care.cost_df.head()
+                origin         dest   cost     euclidean
+        0  17093890101  17031010100  91.20  63630.788476
+        1  17093890101  17031010201  92.82  62632.675522
+        2  17093890101  17031010202  92.95  63073.735631
+        3  17093890101  17031010300  89.40  63520.029749
+        4  17093890101  17031010400  84.97  63268.514352
+
         """
 
         # Add it to the list of costs.
@@ -933,86 +1060,75 @@ class access():
 
         Examples
         --------
-        Examples
-        --------
-        Import the `access` class and the Chicago subset example data in the `example` class.
 
-        >>> from access import access, examples as ex
+        Import the base `access` class and `datasets`.
 
-        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists) and cost (travel time), respectively. The sample data only represents 50 Chicago Census Tracts.
+        >>> from access import access, datasets
 
-        >>> chi_pop =   ex.load_data('chi_pop')
-            chi_doc =   ex.load_data('chi_doc')
-            chi_times = ex.load_data('chi_times')
-            chi_neighbor_cost = ex.load_data('chi_neighbor_cost') # Not yet implemented
+        Load each of the example datasets:
 
-        >>> chi_doc.head()
-                     geoid  doc  dentist
-            0  17031080100    1        3
-            1  17031080201    1        0
-            2  17031080202    0        4
-            3  17031080300   13        7
-            4  17031081000    9        1
+        >>> chi_docs_dents   = datasets.load_data('chi_doc')
+        >>> chi_population   = datasets.load_data('chi_pop')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
 
-        >>> chi_pop.head()
-                     geoid   pop
-            0  17031080100  6013
-            1  17031080201  3287
-            2  17031080202  3498
-            3  17031080300  4315
-            4  17031081000  7546
+        >>> chi_docs_dents.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        The `chi_times` dataset is the cost matrix, showing the travel time between each of the 50 Census Tracts to the other 49.
+        >>> chi_population.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        >>> chi_times.head()
-                    origin  destination      cost
-            0  17031080100  17031081202  1.142298
-            1  17031080201  17031081202  2.365533
-            2  17031080202  17031081202  1.573745
-            3  17031080300  17031081202  2.730388
-            4  17031081000  17031081202  1.658106
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Using the example data, create an `access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_pop,
-                                          demand_value = "pop", demand_index = "geoid",
-                                          supply_df = chi_doc, supply_index = "geoid",
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
-                                          cost_df = chi_times, cost_origin  = "origin",
-                                          cost_dest = "destination", cost_name = "cost",
-                                          neighbor_cost_df = chi_neighbor_cost,
-                                          neighbor_cost_origin = "origin",
-                                          neighbor_cost_dest = "destination",
-                                          neighbor_cost_name = "cost")
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "destination", cost_name = "cost")
 
-        To add a new cost from supply to supply locations, first load the new cost data.
+        To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_neighbor_cost = pd.read_csv("euclidean_neighbor_cost.csv")
-            euclidean_neighbor_cost.head()
-                       origin  destination  euclidean
-            0     17031080100  17031080100       2200
-            1     17031080201  17031080201     241307
-            2     17031080202  17031080202     126109
-            3     17031080300  17031080300     167737
-            4     17031081000  17031081000      29138
+        >>> euclidean_cost_neighbors = datasets.load_data('chi_euclidean_neighbors')
+            euclidean_cost_neighbors.head()
+                origin         dest  euclidean_neighbors
+        0  17031010100  17031010100             0.000000
+        1  17031010100  17031010201           998.259243
+        2  17031010100  17031010202           635.203387
+        3  17031010100  17031010300           653.415713
+        4  17031010100  17031010400          2065.375554
 
+        Add new cost data to existing `access` instance.
 
-        Add new neighbor cost data to existing `access` instance.
-
-        >>> chicago_primary_care.user_cost_neighbors(new_cost_df = euclidean_neighbor_cost,
-                                                     name = "euclidean",
+        >>> chicago_primary_care.user_cost_neighbors(new_cost_df = euclidean_cost_neighbors,
+                                                     name = "euclidean_neighbors",
                                                      origin = "origin",
-                                                     destination = "destination")
-            chicago_primary_care.neighbor_cost_df
-                       origin  destination      cost  euclidean
-            0     17031080100  17031081202  1.142298        NaN
-            1     17031080201  17031081202  2.365533        NaN
-            2     17031080202  17031081202  1.573745        NaN
-            .     ...........  ...........  ........        ...
-            4897  17031832900  17031832900        NaN     3651.0
-            3898  17031280800  17031280800        NaN     3710.0
-            4899  17031842300  17031842300        NaN     3794.0
+                                                     destination = "dest")
 
+        >>> chicago_primary_care.neighbor_cost_df.head()
+                origin         dest   cost     euclidean
+        0  17093890101  17031010100  91.20  63630.788476
+        1  17093890101  17031010201  92.82  62632.675522
+        2  17093890101  17031010202  92.95  63073.735631
+        3  17093890101  17031010300  89.40  63520.029749
+        4  17093890101  17031010400  84.97  63268.514352
         """
 
         # Add it to the list of costs.
@@ -1042,6 +1158,64 @@ class access():
         Examples
         --------
 
+        Import the base `access` class and `datasets`.
+
+        >>> from access import access, datasets
+
+        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
+        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
+
+        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
+        >>> chi_population   = datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
+
+        >>> chi_docs_dents.head()
+                     doc  dentist                       geometry
+        geoid
+        17031010100    1        1  POINT (354916.992 594670.505)
+        17031010201    0        1  POINT (354105.876 594088.600)
+        17031010202    4        1  POINT (354650.684 594093.822)
+        17031010300    4        1  POINT (355209.361 594086.149)
+        17031010400    0        2  POINT (355809.748 592808.043)
+
+        >>> chi_population.head()
+                      pop                       geometry
+        geoid
+        17031010100  4854  POINT (354916.992 594670.505)
+        17031010201  6450  POINT (354105.876 594088.600)
+        17031010202  2818  POINT (354650.684 594093.822)
+        17031010300  6236  POINT (355209.361 594086.149)
+        17031010400  5042  POINT (355809.748 592808.043)
+
+
+        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts.
+
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "dest", cost_name = "cost")
+
+        >>> chicago_primary_care.euclidean_distance(threshold = 250000, centroid_o = True, centroid_d = True)
+
+        >>> chicago_primary_care_geom.cost_df.head()
+                origin         dest   cost     euclidean
+        0  17093890101  17031010100  91.20  63630.788476
+        1  17093890101  17031010201  92.82  62632.675522
+        2  17093890101  17031010202  92.95  63073.735631
+        3  17093890101  17031010300  89.40  63520.029749
+        4  17093890101  17031010400  84.97  63268.514352
         """
 
         if not HAS_GEOPANDAS:
@@ -1053,7 +1227,7 @@ class access():
 
         # Continue if the dataframes are geodataframes, else throw an error
         if type(self.demand_df) is not gpd.GeoDataFrame:
-            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+            raise ValueError("Cannot calculate euclidean distance without a geometry of demand side")
 
         if type(self.supply_df) is not gpd.GeoDataFrame:
             raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
@@ -1099,6 +1273,68 @@ class access():
                               Buffer threshold for non-point geometries, AKA max_distance
         centroid          : bool
                               If True, convert geometries to centroids; otherwise, no change
+
+        Examples
+        --------
+
+        Import the base `access` class and `datasets`.
+
+        >>> from access import access, datasets
+
+        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
+        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
+
+        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
+        >>> chi_population   = datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = datasets.load_data('chi_times')
+
+        >>> chi_docs_dents.head()
+                     doc  dentist                       geometry
+        geoid
+        17031010100    1        1  POINT (354916.992 594670.505)
+        17031010201    0        1  POINT (354105.876 594088.600)
+        17031010202    4        1  POINT (354650.684 594093.822)
+        17031010300    4        1  POINT (355209.361 594086.149)
+        17031010400    0        2  POINT (355809.748 592808.043)
+
+        >>> chi_population.head()
+                      pop                       geometry
+        geoid
+        17031010100  4854  POINT (354916.992 594670.505)
+        17031010201  6450  POINT (354105.876 594088.600)
+        17031010202  2818  POINT (354650.684 594093.822)
+        17031010300  6236  POINT (355209.361 594086.149)
+        17031010400  5042  POINT (355809.748 592808.043)
+
+
+        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts.
+
+        >>> chi_travel_costs.head()
+                 geoid  doc  dentist
+        0  17031010100    1        1
+        1  17031010201    0        1
+        2  17031010202    4        1
+        3  17031010300    4        1
+        4  17031010400    0        2
+
+        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+
+        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+                                          demand_value = "pop",
+                                          supply_df = chi_docs_dents, supply_index = "geoid",
+                                          supply_value = ["doc", "dentist"],
+                                          cost_df = chi_travel_costs, cost_origin  = "origin",
+                                          cost_dest = "dest", cost_name = "cost")
+
+        >>> chicago_primary_care.euclidean_distance_neighbors(name= 'euclidean_neighbors', threshold = 250000, centroid_o = True, centroid_d = True)
+
+        >>> chicago_primary_care_geom.neighbor_cost_df.head()
+                   euclidean_neighbors       origin         dest
+        0             0.000000  17031010100  17031010100
+        1           998.259243  17031010100  17031010201
+        2           635.203387  17031010100  17031010202
+        3           653.415713  17031010100  17031010300
+        4          2065.375554  17031010100  17031010400
         """
 
         # TO-DO: check for unprojected geometries
@@ -1138,19 +1374,3 @@ class access():
         # Set the default cost if it does not exist
         if not hasattr(self, 'neighbor_default_cost'):
             self.neighbor_default_cost = name
-
-
-# class examples():
-#     """Load example Illinois dataset used in API examples.
-#     """
-#     chi_time_path = './examples/chi_med/chi_times_subset.csv'
-#
-#     chi_doc_cols = ['geoid','doc','dentist']
-#     chi_pop_cols = ['geoid','pop']
-#     chi_doc_path = './examples/chi_med/docs_dentists_pcsa_subset.csv'
-#     datasets = {'chi_times':pd.read_csv(chi_time_path),
-#                 'chi_doc':  pd.read_csv(chi_doc_path)[chi_doc_cols],
-#                 'chi_pop':  pd.read_csv(chi_doc_path)[chi_pop_cols]}
-#
-#     def load_data(dataset):
-#         return examples.datasets[dataset].copy()
