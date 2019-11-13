@@ -27,7 +27,7 @@ def load_data(key):
     path = os.path.join(dir_path, datasets[key])
 
     if key in dwnld_data.keys() and not os.path.exists(path):
-        print(f'Downloading {key}...')
+        print('Downloading {key}...'.format(key = key))
         req = requests.get(dwnld_data[key])
         file_path = os.path.join(dir_path, datasets[key])
 
