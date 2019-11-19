@@ -2,7 +2,13 @@ import os
 import requests
 
 import pandas as pd
-import geopandas as gpd
+
+try:
+  import geopandas as gpd
+  HAS_GEOPANDAS = True
+except:
+  HAS_GEOPANDAS = False
+
 
 __all__ = ['get_path']
 
@@ -35,7 +41,10 @@ def load_data(key):
             f.write(req.content)
         print('Download complete.')
 
-    if '.geojson' in path:
+    if '.geojson' in path and HAS_GEOPANDAS:
         return gpd.read_file(path)
+
+    if not HAS_GEOPANDAS:
+        print("Please install geopandas.")
 
     return pd.read_csv(path)
