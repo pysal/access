@@ -572,7 +572,7 @@ class access():
         17197884103  2776  2.244007      1.709857    1.900596        1.517022
         17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
-        If euclidean costs are available (see 'access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>'),
+        If euclidean costs are available (see `access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>`),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
