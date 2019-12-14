@@ -28,7 +28,8 @@ def load_data(key):
                 'chi_doc_geom': 'chicago_metro_docs_dentists.geojson',
                 'chi_pop_geom': 'chicago_metro_pop.geojson',
                 'chi_euclidean': 'chicago_metro_euclidean_costs.csv.bz2',
-                'chi_euclidean_neighbors': 'chicago_metro_euclidean_cost_neighbors.csv.bz2'}
+                'chi_euclidean_neighbors': 'chicago_metro_euclidean_cost_neighbors.csv.bz2',
+                'cook_county_hospitals': 'hospitals_cookcty.geojson'}
 
     path = os.path.join(dir_path, datasets[key])
 
@@ -41,10 +42,11 @@ def load_data(key):
             f.write(req.content)
         print('Download complete.')
 
-    if '.geojson' in path and HAS_GEOPANDAS:
-        return gpd.read_file(path)
+    if '.geojson' in path:
+        if not HAS_GEOPANDAS:
+            print("Please install geopandas.")
+        else:
+            return gpd.read_file(path)
 
-    if not HAS_GEOPANDAS:
-        print("Please install geopandas.")
 
     return pd.read_csv(path)
