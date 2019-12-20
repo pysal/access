@@ -113,5 +113,5 @@ class TestWeightedCatchment(unittest.TestCase):
         self.assertEqual(actual, 25)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
     unittest.main()
