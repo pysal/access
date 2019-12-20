@@ -86,29 +86,29 @@ class TestWeightedCatchment(unittest.TestCase):
                             cost_dest = 'dest',      cost_name = 'cost')
 
 
-    def test_weighted_catchment_small_buffer_weight_1(self):
-        buffer = .5
+    def test_weighted_catchment_small_catchment_weight_1(self):
+        catchment = .5
         weight = 1
         result = self.model.weighted_catchment(name = 'test',
-                                               weight_fn = weights.step_fn({buffer:weight}))
+                                               weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, 1)
 
 
-    def test_weighted_catchment_small_buffer_weight_x(self):
-        buffer = .5
+    def test_weighted_catchment_small_catchment_weight_x(self):
+        catchment = .5
         weight = .5
         result = self.model.weighted_catchment(name = 'test',
-                                               weight_fn = weights.step_fn({buffer:weight}))
+                                               weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, .5)
 
 
-    def test_weighted_catchment_large_buffer_weight_1(self):
-        buffer = 10
+    def test_weighted_catchment_large_catchment_weight_1(self):
+        catchment = 10
         weight = 1
         result = self.model.weighted_catchment(name = 'test',
-                                               weight_fn = weights.step_fn({buffer:weight}))
+                                               weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, 25)
 
