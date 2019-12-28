@@ -420,14 +420,16 @@ class access():
         for s in supply_values:
 
             series = fca.fca_ratio(demand_df = self.demand_df,
-                                                      demand_name = self.demand_value,
-                                                      supply_df = self.supply_df,
-                                                      supply_name = s,
-                                                      demand_cost_df = self.neighbor_cost_df,
-                                                      supply_cost_df = self.cost_df,
-                                                      demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
-                                                      supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
-                                                      max_cost = max_cost, normalize = normalize)
+                                   demand_index = self.demand_df.index.name,
+                                   demand_name = self.demand_value,
+                                   supply_df = self.supply_df,
+                                   supply_index = self.supply_df.index.name,
+                                   supply_name = s,
+                                   demand_cost_df = self.neighbor_cost_df,
+                                   supply_cost_df = self.cost_df,
+                                   demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
+                                   supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
+                                   max_cost = max_cost, normalize = normalize)
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
