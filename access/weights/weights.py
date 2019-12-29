@@ -1,6 +1,10 @@
 import numpy as np
 
 def step_fn(step_dict):
+    for v in step_dict.values():
+        if v < 0:
+            raise ValueError('All weights must be positive.')
+
     def helper(key_to_test):
         for k,v in sorted(step_dict.items()):
             if key_to_test <= k:
@@ -16,5 +20,3 @@ def gaussian(width):
 def gravity(scale = 1, alpha = -1):
 
   return lambda x: np.power(x / scale, alpha)
-
-
