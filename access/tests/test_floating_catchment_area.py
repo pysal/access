@@ -58,6 +58,48 @@ class TestFloatingCatchmentArea(unittest.TestCase):
 
     def test_two_stage_floating_catchment_area_large_catchment(self):
         result = self.model.two_stage_fca()
+        expected = self.model.access_df.iloc[0]['2sfca_value']
+
+        self.assertEqual(expected, 25)
+
 
     def test_two_stage_floating_catchment_area_small_catchment(self):
-        pass
+        small_catchment = .9
+        result = self.model.two_stage_fca(max_cost = small_catchment)
+        expected = self.model.access_df.iloc[0]['2sfca_value']
+
+        self.assertEqual(expected, 1)
+
+
+    def test_two_stage_floating_catchment_area_zero_catchment(self):
+        zero_catchment = 0
+        result = self.model.two_stage_fca(max_cost = zero_catchment)
+        expected = math.isnan(self.model.access_df.iloc[0]['2sfca_value'])
+
+        self.assertEqual(expected, True)
+
+
+    def test_three_stage_floating_catchment_area_large_catchment(self):
+        wfn = weights.step_fn({10:25})
+        result = self.model.three_stage_fca(weight_fn = wfn)
+        expected = self.model.access_df.iloc[0]['3sfca_value']
+
+        self.assertEqual(expected, 25)
+
+
+    def test_three_stage_floating_catchment_area_small_catchment(self):
+        small_catchment = .9
+        wfn = weights.step_fn({10:25})
+        result = self.model.three_stage_fca(max_cost = small_catchment,
+                                            weight_fn = wfn)
+        expected = self.model.access_df.iloc[0]['3sfca_value']
+
+        self.assertEqual(expected, 1)
+
+
+    def test_three_stage_floating_catchment_area_zero_catchment(self):
+        zero_catchment = 0
+        result = self.model.three_stage_fca(max_cost = zero_catchment)
+        expected = math.isnan(self.model.access_df.iloc[0]['3sfca_value'])
+
+        self.assertEqual(expected, True)
