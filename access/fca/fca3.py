@@ -20,7 +20,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
     The ratio of providers per patient is then calculated at each care destination,
       and that ratio is weighted and summed at each corresponding demand site.
     The only difference weight respect to the 2SFCA method is that,
-      in addition to a distance-dependent weight (`weight_fn`), 
+      in addition to a distance-dependent weight (`weight_fn`),
       a preference weight $G$ is calculated.  That calculation
       uses the value $\beta$.
     See the original paper by: .
@@ -53,7 +53,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                  This is the maximum cost to consider in the weighted sum;
                    note that it applies _along with_ the weight function.
     preference_weight_beta : float
-                             Parameter scaling with the gaussian weights, 
+                             Parameter scaling with the gaussian weights,
                                used to generate preference weights.
 
     Returns
@@ -61,41 +61,40 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
     access     : pandas.Series
                  A -- potentially-weighted -- three-stage access ratio.
     """
-    
+
     #create preference weight 'G', which is the weight
     cost_df["W3"] = cost_df[cost_name].apply(weight_fn)
     W3sum_frame = cost_df[["origin", "W3"]].groupby('origin').sum().rename(columns = {"W3" : "W3sum"}).reset_index()
     cost_df = pd.merge(cost_df, W3sum_frame)
     cost_df["G"] = cost_df.W3 / cost_df.W3sum
-    
+
     #get a series of total demand then calculate the supply to total demand ratio for each location
-    total_demand_series = weighted_catchment(demand_df, cost_df, max_cost, 
+    total_demand_series = weighted_catchment(demand_df, cost_df, max_cost,
                                           cost_source = cost_origin, cost_dest = cost_dest, cost_cost = cost_name,
-                                          loc_index = demand_index, loc_value = demand_name, 
+                                          loc_index = demand_index, loc_value = demand_name,
                                           weight_fn = weight_fn, three_stage_weight = True)
-    
+
     #create a temporary dataframe, temp, that holds the supply and aggregate demand at each location
-    temp = supply_df.join(total_demand_series, how = 'right')
-    
-    #there may be NA values due to a shorter supply dataframe than the demand dataframe. 
+    temp = supply_df.join(total_demand_series, how = 'right', rsuffix = 'r')
+
+    #there may be NA values due to a shorter supply dataframe than the demand dataframe.
     #in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.
-    temp.fillna(0, inplace = True)
-    
+    temp[supply_name].fillna(0, inplace = True)
+
     #calculate the fractional ratio of supply to aggregate demand at each location, or Rl
     temp['Rl'] = temp[supply_name] / temp[demand_name]
-        
+
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
     supply_to_total_demand_frame.index.name = 'geoid'
-    
+
     #sum, into a series, the supply to total demand ratios for each location
-    three_stage_fca_series = weighted_catchment(supply_to_total_demand_frame, cost_df.sort_index(), max_cost, 
+    three_stage_fca_series = weighted_catchment(supply_to_total_demand_frame, cost_df.sort_index(), max_cost,
                                           cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
-                                          loc_index = 'geoid', loc_value = "Rl", 
+                                          loc_index = 'geoid', loc_value = "Rl",
                                           weight_fn = weight_fn, three_stage_weight = True)
-        
+
     #remove the preference weight G from the original costs dataframe
     cost_df.drop(columns = ["G", "W3", "W3sum"], inplace = True)
-    
-    return three_stage_fca_series
 
+    return three_stage_fca_series
