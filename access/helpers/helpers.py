@@ -48,4 +48,3 @@ def normalized_access(a, columns):
                           / a.access_df[a.demand_value].sum()
 
     return a.access_df[columns].divide(mean_access_values)
-
