@@ -736,8 +736,10 @@ class access():
         for s in supply_values:
 
             series = fca.two_stage_fca(demand_df = self.demand_df,
+                                       demand_index = self.demand_df.index.name,
                                        demand_name = self.demand_value,
                                        supply_df = self.supply_df,
+                                       supply_index = self.supply_df.index.name,
                                        supply_name = s,
                                        cost_df = self.cost_df,
                                        cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,

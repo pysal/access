@@ -2,15 +2,15 @@ import pandas as pd
 import numpy as np
 import warnings
 
-def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin", cost_dest = "dest", cost_cost = "cost", 
+def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin", cost_dest = "dest", cost_cost = "cost",
                        loc_index = "geoid", loc_value = None, weight_fn = None, three_stage_weight = None):
     """
     Calculation of the floating catchment (buffered) accessibility
     sum, from DataFrames with computed distances.
-    This catchment may be either a simple buffer -- with cost 
+    This catchment may be either a simple buffer -- with cost
       below a single threshold -- or an additional weight may be applied
       as a function of the access cost.
- 
+
     Parameters
     ----------
 
@@ -49,10 +49,10 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
     else:
         temp = pd.merge(cost_df, loc_df, left_on = cost_source, right_on = loc_index)
 
-    # constrain by max cost 
+    # constrain by max cost
     if max_cost is not None: temp = temp[temp[cost_cost] < max_cost].copy()
-   
-     
+
+
     #apply a weight function if inputted -- either enhanced two stage or three stage
     if weight_fn:
         if three_stage_weight is not None:
@@ -137,23 +137,23 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
 
 
     #get a series of the total demand within the buffer zone
-    total_demand_series = weighted_catchment(demand_df, demand_cost_df, max_cost, 
+    total_demand_series = weighted_catchment(demand_df, demand_cost_df, max_cost,
                                           cost_source = demand_cost_dest, cost_dest = demand_cost_origin, cost_cost = demand_cost_name,
-                                          loc_index = demand_index, loc_value = demand_name, 
+                                          loc_index = demand_index, loc_value = demand_name,
                                           weight_fn = weight_fn)
     #get a series of the total supply within the buffer zone
-    total_supply_series = weighted_catchment(supply_df, supply_cost_df, max_cost, 
+    total_supply_series = weighted_catchment(supply_df, supply_cost_df, max_cost,
                                              cost_source = supply_cost_dest, cost_dest = supply_cost_origin, cost_cost = supply_cost_name,
-                                             loc_index = supply_index, loc_value = supply_name, 
+                                             loc_index = supply_index, loc_value = supply_name,
                                              weight_fn = weight_fn)
-    
+
     #join the aggregate demand and the aggregate supply into one dataframe
     temp = total_supply_series.to_frame(name = 'supply').join(total_demand_series.to_frame(name = 'demand'), how = 'right').fillna(0)
-    
-    #calculate the floating catchement area, or supply divided by demand 
+
+    #calculate the floating catchement area, or supply divided by demand
     temp['FCA'] = temp['supply'] / temp['demand']
     base_FCA_series = temp['FCA']
-    
+
     if noise != 'quiet':
         #depending on the version history of the census tract data you use, this will print out the tracts that have undefined FCA values
         print(base_FCA_series[pd.isna(base_FCA_series)])
