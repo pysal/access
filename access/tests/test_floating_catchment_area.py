@@ -11,7 +11,7 @@ from access import access, weights
 from access.util import testing as tu
 
 
-class TestFloatingCatchmentAreaRatio(unittest.TestCase):
+class TestFloatingCatchmentArea(unittest.TestCase):
 
     def setUp(self):
         n = 5
@@ -54,3 +54,10 @@ class TestFloatingCatchmentAreaRatio(unittest.TestCase):
         expected = math.isnan(self.model.access_df.iloc[0]['fca_value'])
 
         self.assertEqual(expected, True)
+
+
+    def test_two_stage_floating_catchment_area_large_catchment(self):
+        result = self.model.two_stage_fca()
+
+    def test_two_stage_floating_catchment_area_small_catchment(self):
+        pass
