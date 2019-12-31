@@ -63,7 +63,7 @@ Authors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Spatial access package: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_
-- Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ (`CDAC Internship <https://cdac.uchicago.edu/engage/internships/>`_), `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Vidal Anguiano <https://www.linkedin.com/in/vidalanguiano/>`_
+- Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ (`CDAC Internship <https://cdac.uchicago.edu/engage/internships/>`_), `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Vidal Anguiano, MPP <https://www.linkedin.com/in/vidalanguiano/>`_
 - Pre-Computed Cost Matrices: `Dan Snow, MPP <https://www.linkedin.com/in/dfsnow/>`_
 - Concept and Documentation: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_ and `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_
 |
