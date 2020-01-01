@@ -3,6 +3,7 @@ sudo: false
 branches:
   only:
     - master
+    - example_updates
 python:
   - 3.5
   - 3.6
