@@ -31,11 +31,11 @@ class TestFloatingCatchmentArea(unittest.TestCase):
 
     def test_floating_catchment_area_ratio_large_catchment(self):
         result = self.model.fca_ratio()
-        expected = self.model.access_df.iloc[0]['fca_value']
+        actual = self.model.access_df.iloc[0]['fca_value']
 
         total_demand = self.model.access_df['value'].sum()
         total_supply = self.model.supply_df['value'].sum()
-        actual = total_supply/total_demand
+        expected = total_supply/total_demand
 
         self.assertEqual(expected, actual)
 
@@ -43,48 +43,48 @@ class TestFloatingCatchmentArea(unittest.TestCase):
     def test_floating_catchment_area_ratio_small_catchment(self):
         small_catchment = .9
         result = self.model.fca_ratio(max_cost = small_catchment)
-        expected = self.model.access_df.iloc[0]['fca_value']
+        actual = self.model.access_df.iloc[0]['fca_value']
 
-        self.assertEqual(expected, 1)
+        self.assertEqual(actual, 1)
 
 
     def test_floating_catchment_area_ratio_zero_catchment(self):
         zero_catchment = 0
         result = self.model.fca_ratio(max_cost = zero_catchment)
-        expected = math.isnan(self.model.access_df.iloc[0]['fca_value'])
+        actual = math.isnan(self.model.access_df.iloc[0]['fca_value'])
 
-        self.assertEqual(expected, True)
+        self.assertEqual(actual, True)
 
 
     def test_two_stage_floating_catchment_area_large_catchment(self):
         result = self.model.two_stage_fca()
-        expected = self.model.access_df.iloc[0]['2sfca_value']
+        actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(expected, 25)
+        self.assertEqual(actual, 25)
 
 
     def test_two_stage_floating_catchment_area_small_catchment(self):
         small_catchment = .9
         result = self.model.two_stage_fca(max_cost = small_catchment)
-        expected = self.model.access_df.iloc[0]['2sfca_value']
+        actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(expected, 1)
+        self.assertEqual(actual, 1)
 
 
     def test_two_stage_floating_catchment_area_zero_catchment(self):
         zero_catchment = 0
         result = self.model.two_stage_fca(max_cost = zero_catchment)
-        expected = math.isnan(self.model.access_df.iloc[0]['2sfca_value'])
+        actual = math.isnan(self.model.access_df.iloc[0]['2sfca_value'])
 
-        self.assertEqual(expected, True)
+        self.assertEqual(actual, True)
 
 
     def test_three_stage_floating_catchment_area_large_catchment(self):
         wfn = weights.step_fn({10:25})
         result = self.model.three_stage_fca(weight_fn = wfn)
-        expected = self.model.access_df.iloc[0]['3sfca_value']
+        actual = self.model.access_df.iloc[0]['3sfca_value']
 
-        self.assertEqual(expected, 25)
+        self.assertEqual(actual, 25)
 
 
     def test_three_stage_floating_catchment_area_small_catchment(self):
@@ -92,14 +92,37 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         wfn = weights.step_fn({10:25})
         result = self.model.three_stage_fca(max_cost = small_catchment,
                                             weight_fn = wfn)
-        expected = self.model.access_df.iloc[0]['3sfca_value']
+        actual = self.model.access_df.iloc[0]['3sfca_value']
 
-        self.assertEqual(expected, 1)
+        self.assertEqual(actual, 1)
 
 
     def test_three_stage_floating_catchment_area_zero_catchment(self):
         zero_catchment = 0
         result = self.model.three_stage_fca(max_cost = zero_catchment)
-        expected = math.isnan(self.model.access_df.iloc[0]['3sfca_value'])
+        actual = math.isnan(self.model.access_df.iloc[0]['3sfca_value'])
 
-        self.assertEqual(expected, True)
+        self.assertEqual(actual, True)
+
+
+    def test_enhanced_two_stage_floating_catchment_area_large_catchment(self):
+        result = self.model.enhanced_two_stage_fca()
+        actual = self.model.access_df.iloc[0]['e2sfca_value']
+
+        self.assertEqual(actual, 25)
+
+
+    def test_enhanced_two_stage_floating_catchment_area_small_catchment(self):
+        small_catchment = .9
+        result = self.model.enhanced_two_stage_fca(max_cost = small_catchment)
+        actual = self.model.access_df.iloc[0]['e2sfca_value']
+
+        self.assertEqual(actual, 1)
+
+
+    def test_enhanced_two_stage_floating_catchment_area_zero_catchment(self):
+        zero_catchment = 0
+        result = self.model.enhanced_two_stage_fca(max_cost = zero_catchment)
+        actual = math.isnan(self.model.access_df.iloc[0]['e2sfca_value'])
+
+        self.assertEqual(actual, True)
