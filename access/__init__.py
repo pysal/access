@@ -759,6 +759,7 @@ class access():
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
+
     def enhanced_two_stage_fca(self, name = "e2sfca", cost = None, supply_values = None,
                                max_cost = None, weight_fn = None, normalize = False):
         """Calculate the enhanced two-stage floating catchment area access score.
@@ -1004,12 +1005,14 @@ class access():
 
         return self.access_df.filter(regex = "^" + name, axis = 1)
 
+
     @property
     def norm_access_df(self):
         for column in self.access_df.columns.difference([self.demand_value]):
             mean_access = (self.access_df[column] * self.access_df[self.demand_value]).sum() / self.access_df[self.demand_value].sum()
             self.access_df[column] /= mean_access
         return self.access_df[self.access_df.columns.difference([self.demand_value])]
+
 
     def score(self, col_dict, name = "score"):
         """Weighted aggregate of multiple already-calculated, normalized access components.
@@ -1128,6 +1131,7 @@ class access():
 
         else:
             raise ValueError("Tried to set cost not available in cost df")
+
 
     def set_neighbor_cost(self, new_cost):
         """Change the default cost measure."""
@@ -1335,6 +1339,7 @@ class access():
                                                             right_on = [origin, destination])
         self.neighbor_cost_names.append(name)
 
+
     def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
            This is simply the geopandas `distance` function.
@@ -1463,6 +1468,7 @@ class access():
         if not hasattr(self, 'default_cost'):
             self.default_cost = name
 
+
     def euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
         """Calculate the Euclidean distance among demand locations.
 
@@ -1472,7 +1478,7 @@ class access():
                               Column name for euclidean distances neighbors
         threshold           : int
                               Buffer threshold for non-point geometries, AKA max_distance
-        centroid          : bool
+        centroid            : bool
                               If True, convert geometries to centroids; otherwise, no change
 
         Examples
