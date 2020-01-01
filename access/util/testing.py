@@ -5,13 +5,14 @@ import pandas as pd
 import geopandas as gpd
 from access.util import testing as tu
 
-def create_nxn_grid(n):
+def create_nxn_grid(n, buffer = 0):
     '''
     Helper function to create an n x n matrix in a GeoDataFrame.
 
     Parameters
     ----------
     n: integer determining the size of the resulting grid
+    buffer: create points with a buffer of radius size given
 
     Returns
     -------
@@ -29,6 +30,9 @@ def create_nxn_grid(n):
 
     data = pd.DataFrame(rows, columns=['id','x','y','value'])
     grid = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(data.x,data.y))
+
+    if buffer:
+        grid = grid.buffer(buffer)
 
     return grid
 
