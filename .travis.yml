@@ -48,7 +48,7 @@ install:
 script:
   - python setup.py sdist >/dev/null
   - python setup.py install
-  - nosetests --verbose --with-coverage --cover-package=PACKAGE_NAME
+  - nosetests --verbose --with-coverage --cover-package=access
 
 notifications:
     email:
