@@ -3,6 +3,7 @@ sudo: false
 branches:
   only:
     - master
+    - example_updates
 python:
   - 3.5
   - 3.6
@@ -48,7 +49,7 @@ install:
 script:
   - python setup.py sdist >/dev/null
   - python setup.py install
-  - nosetests --verbose --with-coverage --cover-package=PACKAGE_NAME
+  - nosetests --verbose --with-coverage --cover-package=access
 
 notifications:
     email:
