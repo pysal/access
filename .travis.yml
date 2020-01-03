@@ -32,7 +32,6 @@ before_install:
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
   - conda config --append channels conda-forge
-  - conda install "poppler<0.62" --yes
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
@@ -41,6 +40,7 @@ install:
   - conda install --yes --file requirements.txt;
   - conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
   - pip install -r requirements_tests.txt
+  - conda install "poppler<0.62" --yes
   # configure dual tests (for dependency libpysal)
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
