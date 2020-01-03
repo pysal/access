@@ -40,7 +40,6 @@ install:
   - conda install --yes --file requirements.txt;
   - conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
   - pip install -r requirements_tests.txt
-  - conda install "poppler=0.65.0" --yes
   # configure dual tests (for dependency libpysal)
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
