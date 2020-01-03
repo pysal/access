@@ -32,7 +32,7 @@ before_install:
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
   - conda config --append channels conda-forge
-  - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION -c conda-forge --strict-channel-priority
+  - conda create -y -q --override-channels -c conda-forge -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
 install:
