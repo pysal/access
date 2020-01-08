@@ -1,11 +1,12 @@
 import math
+import random
 
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 from access.util import testing as tu
 
-def create_nxn_grid(n, buffer = 0):
+def create_nxn_grid(n, buffer = 0, random_values=False, seed=44):
     '''
     Helper function to create an n x n matrix in a GeoDataFrame.
 
@@ -20,13 +21,19 @@ def create_nxn_grid(n, buffer = 0):
     '''
     rows = []
     id = 0
+    value = 1
+
+    random.seed(seed)
+
     for x in range(n):
         for y in range(n):
+            if random_values:
+                value = random.randint(1,200)
             id += 1
             rows.append({'id'    :id,
                           'x'    :x,
                           'y'    :y,
-                          'value':1})
+                          'value':value})
 
     data = pd.DataFrame(rows, columns=['id','x','y','value'])
     grid = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(data.x,data.y))
