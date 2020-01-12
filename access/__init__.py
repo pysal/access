@@ -1335,7 +1335,7 @@ class access():
         self.neighbor_cost_df = self.neighbor_cost_df.merge(new_cost_df[[origin, destination, name]],
                                                             how = 'outer',
                                                             left_on = [self.neighbor_cost_origin,
-                                                                       self.neighbor_cost_destination],
+                                                                       self.neighbor_cost_dest],
                                                             right_on = [origin, destination])
         self.neighbor_cost_names.append(name)
 
