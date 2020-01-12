@@ -86,3 +86,22 @@ class TestWeights(unittest.TestCase):
         with self.assertRaises(ValueError):
             weight_fn = weights.gaussian(0)
             w_applied = self.apply_weight_fn(weight_fn)
+
+
+    def test_gaussian_weight_width_one(self):
+        weight_fn = weights.gaussian(1)
+        w_applied = self.apply_weight_fn(weight_fn)
+
+        actual = w_applied.loc[0]
+
+        self.assertAlmostEqual(actual, .24197072)
+
+
+    def test_gravity_with_default_params(self):
+        rand_int = randint(1,100)
+        weight_fn = weights.gravity(scale=rand_int)
+        w_applied = self.apply_weight_fn(weight_fn)
+
+        actual = w_applied.loc[0]
+
+        self.assertEqual(actual, rand_int)
