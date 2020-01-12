@@ -329,7 +329,8 @@ class access():
 
 
     def fca_ratio(self, name = "fca", demand_cost = None, supply_cost = None,
-                  supply_values = None, max_cost = None, normalize = False):
+                  supply_values = None, max_cost = None, normalize = False,
+                  noise = 'quiet'):
         """
         Calculate the floating catchment area (buffer) ratio access score.
 
@@ -347,9 +348,11 @@ class access():
                               Cutoff of cost values
         normalize           : bool
                               If True, return normalized access values; otherwise, return raw access values
+        noise              : str
+                             Default 'quiet', otherwise gives messages that indicate potential issues.
+
         Returns
         -------
-
         access              : pandas Series
                               Accessibility score for origin locations.
 
@@ -429,7 +432,7 @@ class access():
                                    supply_cost_df = self.cost_df,
                                    demand_cost_origin = self.neighbor_cost_origin, demand_cost_dest = self.neighbor_cost_dest, demand_cost_name = demand_cost,
                                    supply_cost_origin = self.cost_origin,          supply_cost_dest = self.cost_dest,          supply_cost_name = supply_cost,
-                                   max_cost = max_cost, normalize = normalize)
+                                   max_cost = max_cost, normalize = normalize, noise = noise)
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:

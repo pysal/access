@@ -48,6 +48,20 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         self.assertEqual(actual, 1)
 
 
+    def test_floating_catchment_warns_if_demand_supply_locs_diff_and_noise(self):
+        new_dem_row = pd.DataFrame([[1,1,1,None]], columns=['x', 'y', 'value', 'geometry'])
+        self.model.demand_df.append(new_dem_row)
+
+        result = self.model.fca_ratio(noise=True)
+        actual = self.model.access_df.iloc[0]['fca_value']
+
+        total_demand = self.model.access_df['value'].sum()
+        total_supply = self.model.supply_df['value'].sum()
+        expected = total_supply/total_demand
+
+        self.assertEqual(expected, actual)
+
+
     def test_floating_catchment_area_ratio_zero_catchment(self):
         zero_catchment = 0
         result = self.model.fca_ratio(max_cost = zero_catchment)

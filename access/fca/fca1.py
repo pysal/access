@@ -66,10 +66,10 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
             temp[loc_value] = new_loc_value_column
 
     # return either the count or the summation of the values of the desired weighted catchment
-    if loc_value is None:
-        return temp.groupby([cost_dest])[cost_source].count()
-    else:
-        return temp.groupby([cost_dest])[loc_value].sum()
+    # if loc_value is None:
+    #     return temp.groupby([cost_dest])[cost_source].count()
+    # else:
+    return temp.groupby([cost_dest])[loc_value].sum()
 
 
 def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
