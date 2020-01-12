@@ -580,7 +580,6 @@ class access():
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
 
         """
-
         cost          = helpers.sanitize_supply_cost(self, cost, name)
         supply_values = helpers.sanitize_supplies   (self, supply_values)
 
