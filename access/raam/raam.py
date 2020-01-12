@@ -44,11 +44,12 @@ def iterate_raam(demand, supply, travel,
         if type(initial_step) is float:
             step_size = initial_step * 0.5 ** (i / half_life)
             if step_size < min_step: step_size = min_step
+
             delta = np.minimum(delta, step_size * demand).astype(int)
 
         else:
 
-            step_size = int(np.rount(initial_step * 0.5 ** (i / half_life)))
+            step_size = int(np.round(initial_step * 0.5 ** (i / half_life)))
             if step_size < min_step: step_size = min_step
 
             delta = np.minimum(delta, step_size).astype(int)
@@ -85,10 +86,6 @@ def iterate_raam(demand, supply, travel,
     raam_cost = (total_cost * assignment).sum(axis = 1) / assignment.sum(axis = 1)
 
     return raam_cost
-
-
-
-
 
 
 def raam(demand_df, supply_df, cost_df,
@@ -155,10 +152,8 @@ def raam(demand_df, supply_df, cost_df,
     supply_locations = list(set(cost_df[cost_dest])   & set(supply_df.index))
 
     cost_pivot = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
-    if int(pd.__version__[2:4]) >= 24:
-        travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
-    else:
-        travel_np = cost_pivot.loc[demand_locations, supply_locations].values.copy()
+    if int(pd.__version__[2:4]) >= 24: travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
+    else: travel_np = cost_pivot.loc[demand_locations, supply_locations].values.copy()
 
     travel_np  = travel_np / tau
     travel_np  = np.ma.masked_array(travel_np, np.isnan(travel_np))
@@ -166,18 +161,14 @@ def raam(demand_df, supply_df, cost_df,
     # If it is not specified, rho is the average demand to supply ratio.
     if rho is None: rho = demand_df[demand_name].sum() / supply_df[supply_name].sum()
 
-    if int(pd.__version__[2:4]) >= 24:
-        supply_np = supply_df.loc[supply_locations, supply_name].to_numpy().copy()
-    else:
-        supply_np = supply_df.loc[supply_locations, supply_name].values.copy()
+    if int(pd.__version__[2:4]) >= 24: supply_np = supply_df.loc[supply_locations, supply_name].to_numpy().copy()
+    else: supply_np = supply_df.loc[supply_locations, supply_name].values.copy()
 
     supply_np = supply_np * rho
 
     # Change this -- should be
-    if int(pd.__version__[2:4]) >= 24:
-        demand_np = demand_df.loc[demand_locations, demand_name].to_numpy().copy()
-    else:
-        demand_np = demand_df.loc[demand_locations, demand_name].values.copy()
+    if int(pd.__version__[2:4]) >= 24: demand_np = demand_df.loc[demand_locations, demand_name].to_numpy().copy()
+    else: demand_np = demand_df.loc[demand_locations, demand_name].values.copy()
 
     raam_cost = iterate_raam(demand_np, supply_np, travel_np, verbose = verbose,
                              max_cycles = max_cycles, initial_step = initial_step,
