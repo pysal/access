@@ -155,7 +155,11 @@ def raam(demand_df, supply_df, cost_df,
     supply_locations = list(set(cost_df[cost_dest])   & set(supply_df.index))
 
     cost_pivot = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
-    travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
+    try:
+        travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
+    except:
+        travel_np1 = cost_pivot.loc[demand_locations, supply_locations].values
+
     travel_np  = travel_np / tau
     travel_np  = np.ma.masked_array(travel_np, np.isnan(travel_np))
 

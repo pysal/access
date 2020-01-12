@@ -49,7 +49,7 @@ install:
 script:
   - python setup.py sdist >/dev/null
   - python setup.py install
-  - nosetests --verbose --with-coverage --cover-package=access --exclude_dir=access/datasets --exclude-dir=access/util
+  - nosetests --verbose --with-coverage --cover-package=access --exclude-dir=access/datasets --exclude-dir=access/util
 
 notifications:
     email:
