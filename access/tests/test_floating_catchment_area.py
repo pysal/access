@@ -53,14 +53,17 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         self.model.demand_df.append(new_dem_row)
 
         result = self.model.fca_ratio(noise=True)
+
+
+    def test_floating_catchment_overwrites_column(self):
+        small_catchment = .9
+        result = self.model.fca_ratio(max_cost = small_catchment)
+        small_catchment = .8
+        result = self.model.fca_ratio(max_cost = small_catchment)
+
         actual = self.model.access_df.iloc[0]['fca_value']
 
-        total_demand = self.model.access_df['value'].sum()
-        total_supply = self.model.supply_df['value'].sum()
-        expected = total_supply/total_demand
-
-        self.assertEqual(expected, actual)
-
+        self.assertEqual(actual, 1)
 
     def test_floating_catchment_area_ratio_zero_catchment(self):
         zero_catchment = 0
