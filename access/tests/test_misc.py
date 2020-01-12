@@ -55,6 +55,7 @@ class TestMisc(unittest.TestCase):
 
         self.assertEqual(actual, 'new_cost')
 
+
     def test_user_cost_adds_new_column_to_cost_df(self):
         new_cost = self.model.cost_df.copy()
         new_cost['new_cost'] = 0
