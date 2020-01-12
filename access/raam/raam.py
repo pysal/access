@@ -155,10 +155,10 @@ def raam(demand_df, supply_df, cost_df,
     supply_locations = list(set(cost_df[cost_dest])   & set(supply_df.index))
 
     cost_pivot = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
-    if int(pd.__version__[2:4]) < 24:
-        travel_np = cost_pivot.loc[demand_locations, supply_locations].values.copy()
-    else:
+    if int(pd.__version__[2:4]) >= 24:
         travel_np  = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
+    else:
+        travel_np = cost_pivot.loc[demand_locations, supply_locations].values.copy()
 
     travel_np  = travel_np / tau
     travel_np  = np.ma.masked_array(travel_np, np.isnan(travel_np))
@@ -166,7 +166,7 @@ def raam(demand_df, supply_df, cost_df,
     # If it is not specified, rho is the average demand to supply ratio.
     if rho is None: rho = demand_df[demand_name].sum() / supply_df[supply_name].sum()
 
-    if int(pd.__version__[2:4]) < 24:
+    if int(pd.__version__[2:4]) >= 24:
         supply_np = supply_df.loc[supply_locations, supply_name].to_numpy().copy()
     else:
         supply_np = supply_df.loc[supply_locations, supply_name].values.copy()
@@ -174,7 +174,7 @@ def raam(demand_df, supply_df, cost_df,
     supply_np = supply_np * rho
 
     # Change this -- should be
-    if int(pd.__version__[2:4]) < 24:
+    if int(pd.__version__[2:4]) >= 24:
         demand_np = demand_df.loc[demand_locations, demand_name].to_numpy().copy()
     else:
         demand_np = demand_df.loc[demand_locations, demand_name].values.copy()
