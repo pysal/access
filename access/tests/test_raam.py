@@ -47,7 +47,7 @@ class TestRAAM(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_raam_single_demand_location_equals_sum_of_supply_min_step(self):
-        self.model.raam(min_step=1)
+        self.model.raam(min_step=1, verbose=True)
 
         expected = self.model.supply_df.value.sum()
         actual = self.model.access_df['raam_value'].iloc[0]
