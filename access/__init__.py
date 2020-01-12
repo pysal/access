@@ -590,7 +590,11 @@ class access():
                                    demand_name = self.demand_value,
                                    supply_name = s,
                                    cost_origin = self.cost_origin, cost_dest = self.cost_dest, cost_name = cost,
-                                   max_cycles = max_cycles, tau = tau, verbose = verbose)
+                                   max_cycles = max_cycles,
+                                   tau = tau,
+                                   verbose = verbose,
+                                   initial_step = initial_step,
+                                   min_step = min_step)
 
             raam_costs.name = name + "_" + s
             if raam_costs.name in self.access_df.columns:
