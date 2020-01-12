@@ -38,6 +38,18 @@ class TestMisc(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+    def test_score_run_again_and_test_overwrite(self):
+        self.model.raam()
+        self.model.score(col_dict={"raam_value":.5})
+
+
+        self.model.score(col_dict={"raam_value": .25})
+        expected = self.model.access_df['raam_value'].iloc[0] / 4
+        actual = self.model.access_df['score'].iloc[0]
+
+        self.assertEqual(actual, expected)
+
+
     def test_set_cost_reconizes_column_newly_added(self):
         self.model.cost_names.append('new_cost')
 
