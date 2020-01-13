@@ -63,6 +63,18 @@ class TestEuclidean(unittest.TestCase):
         self.assertAlmostEqual(actual, 0)
 
 
+    def test_euclidean_initialize_without_geopandas_dataframe_raises_TypeError(self):
+        with self.assertRaises(TypeError):
+            self.model.demand_df = self.model.demand_df[['x','y','value']]
+            self.model.euclidean_distance()
+
+
+    def test_euclidean_geopandas_not_installed_raises_ModuleNotFoundError(self):
+        self.model.HAS_GEOPANDAS = False
+        with self.assertRaises(ModuleNotFoundError):
+            self.model.euclidean_distance()
+
+
 class TestEuclideanNeighbors(unittest.TestCase):
 
     def setUp(self):

@@ -53,3 +53,21 @@ class TestRAAM(unittest.TestCase):
         actual = self.model.access_df['raam_value'].iloc[0]
 
         self.assertEqual(expected, actual)
+
+
+    def test_raam_run_again_and_test_overwrite(self):
+        self.model.raam()
+        self.model.raam()
+
+        expected = self.model.supply_df.value.sum()
+        actual = self.model.access_df['raam_value'].iloc[0]
+
+        self.assertEqual(expected, actual)
+
+
+    def test_raam_single_demand_location_equals_sum_of_supply_normalize(self):
+        self.model.raam(normalize=True)
+
+        actual = self.model.access_df['raam_value'].iloc[0]
+
+        self.assertEqual(actual, 25)

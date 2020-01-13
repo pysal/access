@@ -30,7 +30,7 @@ class TestWeightedCatchment(unittest.TestCase):
     def test_weighted_catchment_small_catchment_weight_1(self):
         catchment = .5
         weight = 1
-        result = self.model.weighted_catchment(name = 'test',
+        result = self.model.weighted_catchment(name      = 'test',
                                                weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, 1)
@@ -39,7 +39,7 @@ class TestWeightedCatchment(unittest.TestCase):
     def test_weighted_catchment_small_catchment_weight_x(self):
         catchment = .5
         weight = .5
-        result = self.model.weighted_catchment(name = 'test',
+        result = self.model.weighted_catchment(name      = 'test',
                                                weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, .5)
@@ -48,10 +48,31 @@ class TestWeightedCatchment(unittest.TestCase):
     def test_weighted_catchment_large_catchment_weight_1(self):
         catchment = 10
         weight = 1
-        result = self.model.weighted_catchment(name = 'test',
+        result = self.model.weighted_catchment(name      = 'test',
                                                weight_fn = weights.step_fn({catchment:weight}))
         actual = result.iloc[0]['test_value']
         self.assertEqual(actual, 25)
+
+
+    def test_weighted_catchment_run_again_and_test_overwrite(self):
+        catchment = .5
+        weight = 1
+        result = self.model.weighted_catchment(name      = 'test',
+                                               weight_fn = weights.step_fn({catchment:weight}))
+        result = self.model.weighted_catchment(name      = 'test',
+                                               weight_fn = weights.step_fn({catchment:weight}))
+        actual = result.iloc[0]['test_value']
+        self.assertEqual(actual, 1)
+
+
+    def test_weighted_catchment_large_catchment_weight_1_normalized(self):
+        catchment = 10
+        weight = 1
+        result = self.model.weighted_catchment(name      = 'test',
+                                               weight_fn = weights.step_fn({catchment:weight}),
+                                               normalize = True)
+        actual = result.iloc[0]['test_value']
+        self.assertEqual(actual, 1)
 
 
 if __name__ == '__main__':

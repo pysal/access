@@ -50,6 +50,12 @@ class TestMisc(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+    def test_score_invalid_access_value_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            bad_access_value = 'Not in access df'
+            self.model.score(col_dict={bad_access_value:.5})
+
+
     def test_set_cost_reconizes_column_newly_added(self):
         self.model.cost_names.append('new_cost')
 
@@ -59,6 +65,12 @@ class TestMisc(unittest.TestCase):
         self.assertEqual(actual, 'new_cost')
 
 
+    def test_set_cost_unavailable_cost_measure_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            bad_cost_name = 'Not an available cost name'
+            self.model.set_cost(bad_cost_name)
+
+
     def test_set_neighbor_cost(self):
         self.model.neighbor_cost_names.append('new_cost')
 
@@ -66,6 +78,12 @@ class TestMisc(unittest.TestCase):
         actual = self.model.neighbor_default_cost
 
         self.assertEqual(actual, 'new_cost')
+
+
+    def test_set_neighbor_cost_unavailable_cost_measure_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            bad_cost_name = 'Not an available cost name'
+            self.model.set_neighbor_cost(bad_cost_name)
 
 
     def test_user_cost_adds_new_column_to_cost_df(self):
@@ -122,3 +140,18 @@ class TestMisc(unittest.TestCase):
         actual = 'new_cost' in self.model.neighbor_cost_names
 
         self.assertEqual(actual, True)
+
+
+    def test_norm_access_df(self):
+        self.model.raam()
+        self.model.fca_ratio()
+
+        normalized_df = self.model.norm_access_df
+
+        actual1 = normalized_df['fca_value'].iloc[0]
+
+        self.assertEqual(actual1, 1)
+
+        actual2 = normalized_df['raam_value'].iloc[0]
+
+        self.assertEqual(actual2, 1)
