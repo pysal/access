@@ -234,3 +234,34 @@ class TestAccess(unittest.TestCase):
                    neighbor_cost_origin = 'origin',
                    neighbor_cost_dest = 'dest',
                    neighbor_cost_name = bad_cost_name)
+
+
+    def test_access_initialize_with_valid_neighbor_cost_name_in_list(self):
+        cost_name_list = ['cost']
+
+        self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+                             demand_value = 'value',
+                             supply_df = self.supply_grid, supply_index = 'id',
+                             supply_value = 'value',
+                             neighbor_cost_df = self.cost_matrix,
+                             neighbor_cost_origin = 'origin',
+                             neighbor_cost_dest = 'dest',
+                             neighbor_cost_name = cost_name_list)
+
+        actual = self.model.neighbor_cost_names
+
+        self.assertEqual(actual, ['cost'])
+
+
+    def test_access_initialize_with_valid_neighbor_cost_name_in_dict_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            cost_name_dict = {'cost':''}
+
+            self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+                                 demand_value = 'value',
+                                 supply_df = self.supply_grid, supply_index = 'id',
+                                 supply_value = 'value',
+                                 neighbor_cost_df = self.cost_matrix,
+                                 neighbor_cost_origin = 'origin',
+                                 neighbor_cost_dest = 'dest',
+                                 neighbor_cost_name = cost_name_dict)
