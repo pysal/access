@@ -53,6 +53,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         self.model.demand_df.append(new_dem_row)
 
         result = self.model.fca_ratio(noise=True)
+        actual = self.model.access_df.iloc[0]['fca_value']
 
 
     def test_floating_catchment_overwrites_column(self):
