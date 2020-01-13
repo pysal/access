@@ -77,7 +77,7 @@ class TestEuclidean(unittest.TestCase):
 
     def test_euclidean_geopandas_not_installed_raises_ModuleNotFoundError(self):
         self.model.HAS_GEOPANDAS = False
-        with self.assertRaises(ModuleNotFoundError):
+        with self.assertRaises(SystemError):
             self.model.euclidean_distance()
 
 
