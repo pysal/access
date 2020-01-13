@@ -1566,7 +1566,7 @@ class access():
 
         # Continue if the dataframes are geodataframes, else throw an error
         if type(self.demand_df) is not gpd.GeoDataFrame:
-            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+            raise TypeError("Cannot calculate euclidean distance without a geometry of supply side")
 
         # Reset the index so that the geoids are accessible
         df1 = self.demand_df.rename_axis('origin').reset_index()

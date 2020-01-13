@@ -116,7 +116,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         self.assertEqual(actual, 'cost')
 
 
-    def test_two_stage_floating_catchment_area_warning_default_cost_if_more_than_one(self):
+    def test_two_stage_floating_catchment_area_unavailable_cost_name_raises_ValueError(self):
         with self.assertRaises(ValueError):
             bad_cost_name = 'euclidean'
             self.model.two_stage_fca(cost = bad_cost_name)

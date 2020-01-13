@@ -63,9 +63,15 @@ class TestEuclidean(unittest.TestCase):
         self.assertAlmostEqual(actual, 0)
 
 
-    def test_euclidean_initialize_without_geopandas_dataframe_raises_TypeError(self):
+    def test_euclidean_without_geopandas_demand_dataframe_raises_TypeError(self):
         with self.assertRaises(TypeError):
             self.model.demand_df = self.model.demand_df[['x','y','value']]
+            self.model.euclidean_distance()
+
+
+    def test_euclidean_without_geopandas_supply_dataframe_raises_TypeError(self):
+        with self.assertRaises(TypeError):
+            self.model.supply_df = self.model.supply_df[['x','y','value']]
             self.model.euclidean_distance()
 
 
@@ -73,6 +79,15 @@ class TestEuclidean(unittest.TestCase):
         self.model.HAS_GEOPANDAS = False
         with self.assertRaises(ModuleNotFoundError):
             self.model.euclidean_distance()
+
+
+    def test_euclidean_sets_euclidean_as_default_if_no_default_exists(self):
+        delattr(self.model, 'default_cost')
+        self.model.euclidean_distance()
+
+        actual = hasattr(self.model, 'default_cost')
+
+        self.assertEquals(actual, True)
 
 
 class TestEuclideanNeighbors(unittest.TestCase):
@@ -121,3 +136,18 @@ class TestEuclideanNeighbors(unittest.TestCase):
         actual2 = self.model.neighbor_cost_df['euclidian'][2]
         self.assertAlmostEqual(actual1, 0)
         self.assertAlmostEqual(actual2, 0)
+
+
+    def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_TypeError(self):
+        with self.assertRaises(TypeError):
+            self.model.demand_df = self.model.demand_df[['x','y','value']]
+            self.model.euclidean_distance_neighbors()
+
+
+    def test_euclidean_neighbors_sets_euclidean_as_default_if_no_default_exists(self):
+        delattr(self.model, 'neighbor_default_cost')
+        self.model.euclidean_distance_neighbors()
+
+        actual = hasattr(self.model, 'neighbor_default_cost')
+
+        self.assertEquals(actual, True)
