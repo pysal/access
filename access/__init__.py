@@ -1432,7 +1432,7 @@ class access():
         """
 
         if not self.HAS_GEOPANDAS:
-          raise ModuleNotFoundError("System does not have geopandas installed.  Cannot calculate distances.")
+          raise SystemError("System does not have geopandas installed.  Cannot calculate distances.")
 
 
         # TO-DO: check for unprojected geometries
