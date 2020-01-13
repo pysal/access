@@ -129,6 +129,7 @@ class access():
                                           cost_dest = "destination", cost_name = "cost")
         """
 
+        self.HAS_GEOPANDAS = HAS_GEOPANDAS
         self.log = logging.getLogger("access")
         self.log.addHandler(access_log_stream)
         self.log.setLevel(logging.INFO)
@@ -1430,7 +1431,7 @@ class access():
         4  17093890101  17031010400  84.97  63268.514352
         """
 
-        if not HAS_GEOPANDAS:
+        if not self.HAS_GEOPANDAS:
           raise ModuleNotFoundError("System does not have geopandas installed.  Cannot calculate distances.")
 
 
@@ -1439,10 +1440,10 @@ class access():
 
         # Continue if the dataframes are geodataframes, else throw an error
         if type(self.demand_df) is not gpd.GeoDataFrame:
-            raise ValueError("Cannot calculate euclidean distance without a geometry of demand side")
+            raise TypeError("Cannot calculate euclidean distance without a geometry of demand side")
 
         if type(self.supply_df) is not gpd.GeoDataFrame:
-            raise ValueError("Cannot calculate euclidean distance without a geometry of supply side")
+            raise TypeError("Cannot calculate euclidean distance without a geometry of supply side")
 
         # Reset the index so that the geoids are accessible
         df1 = self.demand_df.rename_axis('origin').reset_index()
