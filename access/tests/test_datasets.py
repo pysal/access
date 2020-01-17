@@ -27,11 +27,5 @@ class TestDatasets(unittest.TestCase):
         self.assertEqual(actual, True)
 
 
-    def test_raises_error_if_geopandas_not_installed(self):
-        datasets.HAS_GEOPANDAS = False
-        with self.assertRaises(SystemError):
-            datasets.load_data('chi_doc_geom')
-
-
     def test_prints_available_datasets(self):
         datasets.available_datasets()
