@@ -36,7 +36,7 @@ def sanitize_supplies(a, supply_values):
     elif supply_values is None:
         supply_values = a.supply_types
     elif type(supply_values) is not list:
-        ValueError("supply_values should be a list or string (or -- default -- None)")
+        raise ValueError("supply_values should be a list or string (or -- default -- None)")
 
     return supply_values
 

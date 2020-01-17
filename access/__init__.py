@@ -19,7 +19,7 @@ from . import fca
 from . import raam
 from . import weights
 from . import helpers
-from . import datasets
+from .datasets import datasets
 
 access_log_stream = logging.StreamHandler()
 access_log_format = logging.Formatter('%(name)s %(levelname)-8s :: %(message)s')

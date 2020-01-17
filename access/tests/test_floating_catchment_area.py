@@ -55,13 +55,12 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         self.assertEqual(actual, 5)
 
 
-    def test_floating_catchment_area_ratio_warns_if_demand_supply_locs_diff_and_noise(self):
-        new_dem_row = pd.DataFrame([[1,1,1,None]], columns=['x', 'y', 'value', 'geometry'])
+    def test_floating_catchment_area_ratio_warns_if_demand_supply_locs_differ_and_noise(self):
+        new_dem_row = pd.DataFrame([[1,1,1,None],[1,1,1,None]], columns=['x', 'y', 'value', 'geometry'])
         self.model.demand_df.append(new_dem_row)
-
+        # diff = len(set(self.model.demand_df.index.tolist()) - set(self.model.supply_df[''].unique()))
         result = self.model.fca_ratio(noise=True)
-        actual = self.model.access_df.iloc[0]['fca_value']
-
+        # self.assertEqual(diff, 0)
 
     def test_floating_catchment_area_ratio_overwrites_column(self):
         small_catchment = .9
