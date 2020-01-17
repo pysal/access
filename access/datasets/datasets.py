@@ -3,18 +3,8 @@ import requests
 
 import pandas as pd
 
-try:
-  import geopandas as gpd
-  HAS_GEOPANDAS = True
-except:
-  HAS_GEOPANDAS = False
-
-
-__all__ = ['get_path']
 
 class datasets(object):
-
-    HAS_GEOPANDAS = HAS_GEOPANDAS
 
     _dir_path = os.path.join(os.path.dirname(__file__), 'chi_med')
 
@@ -51,10 +41,12 @@ class datasets(object):
             print('Download complete.')
 
         if '.geojson' in path:
-            if not datasets.HAS_GEOPANDAS:
+            try:
+                import geopandas as gpd
+            except:
                 raise SystemError("Please install geopandas.")
-            else:
-                return gpd.read_file(path)
+
+            return gpd.read_file(path)
 
 
         return pd.read_csv(path)

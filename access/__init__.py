@@ -9,12 +9,6 @@ import requests
 import warnings
 import logging
 
-try:
-  import geopandas as gpd
-  HAS_GEOPANDAS = True
-except:
-  HAS_GEOPANDAS = False
-
 from . import fca
 from . import raam
 from . import weights
@@ -129,7 +123,6 @@ class access():
                                           cost_dest = "destination", cost_name = "cost")
         """
 
-        self.HAS_GEOPANDAS = HAS_GEOPANDAS
         self.log = logging.getLogger("access")
         self.log.addHandler(access_log_stream)
         self.log.setLevel(logging.INFO)
@@ -1430,11 +1423,7 @@ class access():
         3  17093890101  17031010300  89.40  63520.029749
         4  17093890101  17031010400  84.97  63268.514352
         """
-
-        if not self.HAS_GEOPANDAS:
-          raise SystemError("System does not have geopandas installed.  Cannot calculate distances.")
-
-
+        import geopandas as gpd
         # TO-DO: check for unprojected geometries
 
 
@@ -1560,7 +1549,7 @@ class access():
         3  17031010100  17031010300           653.415713
         4  17031010100  17031010400          2065.375554
         """
-
+        import geopandas as gpd
         # TO-DO: check for unprojected geometries
 
 
