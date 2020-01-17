@@ -27,5 +27,12 @@ class TestDatasets(unittest.TestCase):
         self.assertEqual(actual, True)
 
 
+    def test_load_geopandas_dataset(self):
+        result = datasets.load_data('chi_doc_geom')
+        actual = type(result) == gpd.geodataframe.GeoDataFrame
+
+        self.assertEqual(actual, True)
+
+
     def test_prints_available_datasets(self):
         datasets.available_datasets()

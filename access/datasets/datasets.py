@@ -41,11 +41,8 @@ class datasets(object):
             print('Download complete.')
 
         if '.geojson' in path:
-            try:
-                import geopandas as gpd
-            except:
-                raise SystemError("Please install geopandas.")
-
+            import geopandas as gpd
+            
             return gpd.read_file(path)
 
 
