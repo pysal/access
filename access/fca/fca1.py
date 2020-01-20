@@ -32,7 +32,7 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
     cost_cost  : str
                  This is is the name of the cost column.
     weight_fn  : function
-                 This fucntion will weight the value of resources/facilities,
+                 This function will weight the value of resources/facilities,
                  as a function of the raw cost.
     max_cost   : float
                  This is the maximum cost to consider in the weighted sum;

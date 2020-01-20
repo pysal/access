@@ -68,7 +68,7 @@ class access():
     """
 
 
-    def __init__(self, demand_df, demand_value, supply_df, supply_value,
+    def __init__(self, demand_df, demand_value, supply_df, supply_value=False,
                  demand_index = True, supply_index = True,
                  cost_df = None, cost_origin = None, cost_dest = None, cost_name = None,
                  neighbor_cost_df = None, neighbor_cost_origin = None, neighbor_cost_dest = None, neighbor_cost_name = None):
@@ -188,6 +188,10 @@ class access():
 
         self.supply_df    = supply_df.copy()
 
+        if supply_value == False:
+            supply_value = 'value'
+            self.supply_df[supply_value] = 1
+
         if type(supply_value) is str:
             self.supply_types = [supply_value]
         elif type(supply_value) is list:
@@ -303,7 +307,8 @@ class access():
 
             # Bryan consistently flipped origin and destination in this one -- very confusing.
             series = fca.weighted_catchment(loc_df = self.supply_df, loc_index = True, loc_value = s,
-                                            cost_df = self.cost_df, cost_source = self.cost_dest, cost_dest = self.cost_origin,
+                                            cost_df = self.cost_df, cost_source = self.cost_dest,
+                                            cost_dest = self.cost_origin, cost_cost= self.default_cost,
                                             weight_fn = weight_fn, max_cost = max_cost)
 
             series.name = name + "_" + s
