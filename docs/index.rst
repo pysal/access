@@ -10,6 +10,8 @@ Whether you work with data in health, retail, employment or other domains, spati
 
 .. image:: _static/images/access_cook_hospitals.png
    :width: 30%
+.. image:: _static/images/access_cook_hospitals_2.png
+   :width: 30%
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Motivation
