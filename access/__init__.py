@@ -128,6 +128,8 @@ class access():
         self.log.setLevel(logging.INFO)
         self.log.propagate = False
 
+        self.supply_value_provided = True
+
         ### First all the dummy checks...
 
         if demand_index is not True and demand_index not in demand_df.columns:
@@ -189,6 +191,11 @@ class access():
         self.supply_df    = supply_df.copy()
 
         if supply_value == False:
+            self.log.info('''Warning: A supply value was not provided, so a default
+                             supply value of 1 was created in the column named "value".
+                             Note that without a supply value, you cannot use any of the
+                             floating catchment area methods.''')
+            self.supply_value_provided = False
             supply_value = 'value'
             self.supply_df[supply_value] = 1
 
@@ -415,6 +422,8 @@ class access():
         17197980100  0.000488     0.000432
         """
 
+        assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
+
         supply_cost   = helpers.sanitize_supply_cost(self, supply_cost, name)
         demand_cost   = helpers.sanitize_demand_cost(self, demand_cost, name)
         supply_values = helpers.sanitize_supplies   (self, supply_values)
@@ -582,6 +591,9 @@ class access():
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
 
         """
+
+        assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
+
         cost          = helpers.sanitize_supply_cost(self, cost, name)
         supply_values = helpers.sanitize_supplies   (self, supply_values)
 
@@ -722,6 +734,8 @@ class access():
         17197884103  2776   0.000384       0.000291     0.000371         0.000377
         17197980100  3264   0.000457       0.000325     0.000348         0.000314
         """
+
+        assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
 
         if cost is None:
 
@@ -881,6 +895,8 @@ class access():
         17031010400  5042     0.000900         0.000514     0.000786         0.000430
         """
 
+        assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
+
         if weight_fn is None: weight_fn = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})
 
         return self.two_stage_fca(name, cost, max_cost, supply_values, weight_fn, normalize)
@@ -976,6 +992,8 @@ class access():
 
 
         """
+
+        assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
 
         if weight_fn is None:
             weight_fn = weights.step_fn({10 : 0.962, 20 : 0.704, 30 : 0.377, 60 : 0.042})
