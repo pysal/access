@@ -80,7 +80,6 @@ Authors
 
    Installation <installation>
    API <api>
-   Tutorials <tutorials>
    Cost Matrices <resources>
    Live App <app>
    References <references>
