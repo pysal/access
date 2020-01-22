@@ -14,7 +14,10 @@ class datasets(object):
                    'chi_doc': 'https://drive.google.com/uc?authuser=0&id=12QXTHucipDfa-8KCThVdoHjx2LYEkAdI&export=download',
                    'chi_pop': 'https://drive.google.com/uc?authuser=0&id=1PFXuuZBwOxMn2P-KVjdPOBslghoPOdGy&export=download',
                    'chi_doc_geom': 'https://drive.google.com/uc?authuser=0&id=1rSuhCqCF64SVdoeiv8RbqGnJOg1Y8-rQ&export=download',
-                   'chi_pop_geom': 'https://drive.google.com/uc?authuser=0&id=1P83jZSzf3cGC0lTqfuhSFx4VlcLv0JJr&export=download',}
+                   'chi_pop_geom': 'https://drive.google.com/uc?authuser=0&id=1P83jZSzf3cGC0lTqfuhSFx4VlcLv0JJr&export=download',
+                   'cook_county_hospitals_geom': 'https://drive.google.com/uc?authuser=0&id=1hBXhC1kohwcxgw--iGSSQEcewTLMtB3p&export=download',
+                   'cook_county_hospitals': 'https://drive.google.com/uc?authuser=0&id=1GZj5Rtkcbyj83ZXLcsETzGNCV2RiVAcW&export=download',
+                   'cook_county_tracts': 'https://drive.google.com/uc?authuser=0&id=1GXStA35qG6odMJv8cGYlt-dDOQPEZB6t&export=download'}
 
     _datasets = {'chi_times': 'chicago_metro_times.csv.bz2',
                  'chi_doc': 'chicago_metro_docs_dentists.csv',
@@ -23,7 +26,9 @@ class datasets(object):
                  'chi_pop_geom': 'chicago_metro_pop.geojson',
                  'chi_euclidean': 'chicago_metro_euclidean_costs.csv.bz2',
                  'chi_euclidean_neighbors': 'chicago_metro_euclidean_cost_neighbors.csv.bz2',
-                 'cook_county_hospitals': 'hospitals_cookcty.geojson'}
+                 'cook_county_hospitals': 'cook_county_hospitals.csv',
+                 'cook_county_hospitals_geom': 'hospitals_cookcty.geojson',
+                 'cook_county_tracts': 'cook_county_tracts.geojson'}
 
 
     @staticmethod
