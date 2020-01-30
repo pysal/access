@@ -45,3 +45,8 @@ Access Functions
 Helper Classes
 --------------
 
+.. autosummary::
+   :toctree: generated/
+
+    access.weights.step_fn
+
