@@ -6,7 +6,7 @@ API reference
 =============
 
 If you're just getting started, have a look at :mod:`access.access`
-(or the :ref:`Tutorials`!)
+(or the :ref:`Tutorials`_!)
 to see the basic structure of the package and its applications.
 
 Accessibility Class
