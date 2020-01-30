@@ -1368,8 +1368,8 @@ class access():
 
     def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
-           This is simply the geopandas `distance` function.
-           The user is responsible for putting the geometries into an appropriate reference system.
+        This is simply the geopandas `distance` function.
+        The user is responsible for putting the geometries into an appropriate reference system.
 
         Parameters
         ----------

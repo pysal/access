@@ -86,13 +86,13 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
     Parameters
     ----------
 
-    demand_df          : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
+    demand_df          : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ 
                          The origins dataframe, containing a location index and a total demand.
-    supply_df          : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
+    supply_df          : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                          The origins dataframe, containing a location index and level of supply
-    demand_cost_df     : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
+    demand_cost_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                          This dataframe contains a link between neighboring demand locations, and a cost between them.
-    supply_cost_df     : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
+    supply_cost_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                          This dataframe contains a link between neighboring supply locations, and a cost between them.
     max_cost           : float
                          This is the maximum cost to consider in the weighted sum;
