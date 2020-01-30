@@ -7,14 +7,14 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
     """
     Calculation of the floating catchment (buffered) accessibility
     sum, from DataFrames with computed distances.
-    This catchment may be either a simple buffer -- with cost
-    below a single threshold -- or an additional weight may be applied
+    This catchment may be either a simple buffer -- with cost below 
+    a single threshold -- or an additional weight may be applied
     as a function of the access cost.
 
     Parameters
     ----------
 
-    loc_df         : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    loc_df         : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ 
                  should contain at _least_ a list of the locations (`df_dest`) at which facilities are located.
     loc_index   : {bool, str}
                  is the the name of the df column that holds the facility locations.
@@ -22,7 +22,7 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
     loc_value   : str
                  If this value is `None`, a count will be used in place of a weight.
                  Use this, for instance, to count restaurants, instead of total doctors in a practice.
-    cost_df    : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    cost_df    : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ 
                  This dataframe contains the precomputed costs from an origin/index location to destinations.
     cost_source : str
                  The name of the column name of the index locations -- this is what will be grouped.
@@ -36,7 +36,7 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
                  as a function of the raw cost.
     max_cost   : float
                  This is the maximum cost to consider in the weighted sum;
-                   note that it applies _along with_ the weight function.
+                 note that it applies _along with_ the weight function.
 
     Returns
     -------
@@ -78,9 +78,8 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
               demand_cost_origin = "origin", demand_cost_dest = "dest", demand_cost_name = "cost",
               supply_cost_origin = "origin", supply_cost_dest = "dest", supply_cost_name = "cost",
               weight_fn = None, normalize = False, noise = 'quiet'):
-    """
-    Calculation of the floating catchment accessibility
-      ratio, from DataFrames with precomputed distances.
+    """Calculation of the floating catchment accessibility
+    ratio, from DataFrames with precomputed distances.
     This is accomplished through two calls of the `access.weighted_catchment` method.
 
     Parameters
