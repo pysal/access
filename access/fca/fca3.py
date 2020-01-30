@@ -11,7 +11,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                   weight_fn = None, normalize = False):
     """Calculation of the floating catchment accessibility
     ratio, from DataFrames with precomputed distances.
-    This is accomplished through a single call of the `access.weighted_catchment` method,
+    This is accomplished through a single call of the :meth:`access.access.weighted_catchment` method,
     to retrieve the patients using each provider.
     The ratio of providers per patient is then calculated at each care destination,
     and that ratio is weighted and summed at each corresponding demand site.
