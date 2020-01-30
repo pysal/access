@@ -5,6 +5,10 @@
 API reference
 =============
 
+If you're just getting started, have a look at :mod:`access.access`
+(or the :ref:`Tutorials`!)
+to see the basic structure of the package and its applications.
+
 Accessibility Class
 ----------------------
 
@@ -38,5 +42,6 @@ Access Functions
     access.fca.two_stage_fca
     access.fca.three_stage_fca
     
-    
+Helper Classes
+--------------
 
