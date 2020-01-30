@@ -47,7 +47,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                  as a function of the raw cost.
     max_cost   : float
                  This is the maximum cost to consider in the weighted sum;
-                 note that it applies _along with_ the weight function.
+                 note that it applies *along with* the weight function.
     preference_weight_beta : float
                              Parameter scaling with the gaussian weights,
                              used to generate preference weights.
