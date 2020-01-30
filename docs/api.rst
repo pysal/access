@@ -12,15 +12,19 @@ Accessibility Class
    :toctree: generated/
 
     access.access
-    access.access.raam
+    access.access.weighted_catchment 
     access.access.fca_ratio
     access.access.two_stage_fca
+    access.access.enhanced_two_stage_fca
     access.access.three_stage_fca
+    access.access.raam
     access.access.score
     access.access.euclidean_distance
     access.access.euclidean_distance_neighbors
     access.access.user_cost
     access.access.user_cost_neighbors
+    access.access.set_cost
+    access.access.set_cost_neighbors
 
 Access Functions
 ----------------

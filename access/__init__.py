@@ -585,7 +585,7 @@ class access():
         17197884103  2776  2.244007      1.709857    1.900596        1.517022
         17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
-        If euclidean costs are available (see `access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>`),
+        If euclidean costs are available (see :meth:`mymodule.MyClass.mymethod`),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
@@ -904,6 +904,7 @@ class access():
 
     def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
+
         Parameters
         ----------
         name                : str
@@ -916,11 +917,13 @@ class access():
                               Weight to be applied to access values
         normalize           : bool
                               If True, return normalized access values; otherwise, return raw access values
+
         Returns
         -------
 
         access              : pandas Series
                               Accessibility score for origin locations.
+
         Examples
         --------
 
@@ -1156,7 +1159,7 @@ class access():
             raise ValueError("Tried to set cost not available in cost df")
 
 
-    def set_neighbor_cost(self, new_cost):
+    def set_cost_neighbors(self, new_cost):
         """Change the default cost measure."""
 
         if new_cost in self.neighbor_cost_names:
@@ -1382,7 +1385,7 @@ class access():
         Examples
         --------
 
-        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`.
+        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
         Import the base `access` class and `datasets`.
 

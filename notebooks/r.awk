@@ -1,9 +1,9 @@
 
-FNR == 1 { f+=1 }
+FNR == 1 { file+=1 }
 
-f   == 1 { A[$1]=1 ; next } 
+file == 1 { ORIGINS[$1]=1 ; next } 
 
-f   == 2 { B[$1]=1 ; next } 
+file == 2 { DESTINATIONS[$1]=1 ; next } 
 
-($1 in A) && ($2 in B)
+($1 in ORIGINS) && ($2 in DESTINATIONS)
 
