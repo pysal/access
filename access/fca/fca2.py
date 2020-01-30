@@ -10,31 +10,31 @@ def two_stage_fca(demand_df, supply_df, cost_df, max_cost = None,
                   cost_origin = "origin", cost_dest = "dest", cost_name = "cost",
                   weight_fn = None, normalize = False):
     """Calculation of the floating catchment accessibility
-       ratio, from DataFrames with precomputed distances.
-       This is accomplished through a single call of the `access.weighted_catchment` method,
-       to retrieve the patients using each provider.
-       The ratio of providers per patient is then calculated at each care destination,
-       and that ratio is weighted and summed at each corresponding demand site.
-       This is based on the original paper by Luo and Wang :cite:`2002_luo_spatial_accessibility_chicago`,
-       as extended by Luo and Qi :cite:`2009_luo_qi_E2SFCA` 
-       and McGrail and Humphreys:cite:`2009_mcgrail_improved_2SFCA`.
+    ratio, from DataFrames with precomputed distances.
+    This is accomplished through a single call of the `access.weighted_catchment` method,
+    to retrieve the patients using each provider.
+    The ratio of providers per patient is then calculated at each care destination,
+    and that ratio is weighted and summed at each corresponding demand site.
+    This is based on the original paper by Luo and Wang :cite:`2002_luo_spatial_accessibility_chicago`,
+    as extended by Luo and Qi :cite:`2009_luo_qi_E2SFCA` 
+    and McGrail and Humphreys :cite:`2009_mcgrail_improved_2SFCA`.
 
     Parameters
     ----------
 
-    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    demand_df     : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
                     The origins dataframe, containing a location index and a total demand.
     demand_origin : str
                     is the name of the column of `demand_df` that holds the origin ID.
     demand_value  : str
                     is the name of the column of `demand_df` that holds the aggregate demand at a location.
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    supply_df     : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
                     The origins dataframe, containing a location index and level of supply
     supply_origin : str
                     is the name of the column of `supply_df` that holds the origin ID.
     supply_value  : str
                     is the name of the column of `supply_df` that holds the aggregate demand at a location.
-    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    cost_df       : `[pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)`_
                     This dataframe contains a link between neighboring demand locations, and a cost between them.
     cost_origin   : str
                     The column name of the locations of users or consumers.

@@ -8,8 +8,8 @@ def weighted_catchment(loc_df, cost_df, max_cost = None, cost_source = "origin",
     Calculation of the floating catchment (buffered) accessibility
     sum, from DataFrames with computed distances.
     This catchment may be either a simple buffer -- with cost
-      below a single threshold -- or an additional weight may be applied
-      as a function of the access cost.
+    below a single threshold -- or an additional weight may be applied
+    as a function of the access cost.
 
     Parameters
     ----------
