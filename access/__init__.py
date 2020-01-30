@@ -1506,7 +1506,7 @@ class access():
         Examples
         --------
 
-        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`.
+        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
         Import the base `access` class and `datasets`.
 
