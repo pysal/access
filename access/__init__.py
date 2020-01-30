@@ -29,14 +29,14 @@ class access():
                            The origins dataframe, containing a location index and, optionally, a level of demand and geometry.
     demand_index         : {bool, str}
                            boolean of True indicates that the locations are already on the df index;
-                             otherwise the argument is a string containing the name of the column of `demand_df` that holds the origin ID.
+                           otherwise the argument is a string containing the name of the column of `demand_df` that holds the origin ID.
     demand_value         : str
                            is the name of the column of `demand` that holds the aggregate demand at a location.
     supply_df            : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ or `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_
                            The origins dataframe, containing a location index and, optionally, level of supply and geometry.
     supply_index         : {bool, str}
                            boolean of True indicates that the locations are already on the df index;
-                             otherwise the argument is a string containing the name of the column of `supply_df` that holds the origin ID.
+                           otherwise the argument is a string containing the name of the column of `supply_df` that holds the origin ID.
     supply_value         : {str, list}
                            is the name of the column of `supply` that holds the aggregate supply at a location, or a list of such columns.
     cost_df              : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_

@@ -95,18 +95,17 @@ def raam(demand_df, supply_df, cost_df,
          tau = 60, rho = None,
          max_cycles = 150, initial_step = 0.2, min_step = 0.005, half_life = 50,
          verbose = False):
-    """
-    Calculate the rational agent access model's total cost --
-      a weighted travel and congestion cost.
-    The balance of the two costs is expressed by the
-      $\tau$ parameter, which corresponds to the travel time
-      required to accept of congestion by 100% of the mean demand to supply ratio
-      in the study area.
+    """Calculate the rational agent access model's total cost --
+       a weighted travel and congestion cost.
+       The balance of the two costs is expressed by the
+       $\\tau$ parameter, which corresponds to the travel time
+       required to accept of congestion by 100% of the mean demand to supply ratio
+       in the study area.
 
     Parameters
     ----------
 
-    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
                     The origins dataframe, containing a location index and a total demand.
     demand_origin : str
                     is the name of the column of `demand` that holds the origin ID.
@@ -114,9 +113,9 @@ def raam(demand_df, supply_df, cost_df,
                     is the name of the column of `demand` that holds the aggregate demand at a location.
     supply_origin : str
                     is the name of the column of `demand` that holds the origin ID.
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
                     The origins dataframe, containing a location index and level of supply
-    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
                     This dataframe contains a link between neighboring demand locations, and a cost between them.
     cost_origin   : str
                     The column name of the locations of users or consumers.
@@ -133,13 +132,13 @@ def raam(demand_df, supply_df, cost_df,
                   This is the maximum number to shift in each cycle.
     max_cost   : float
                   This is the maximum cost to consider in the weighted sum;
-                    note that it applies _along with_ the weight function.
+                  note that it applies along with the weight function.
 
     Returns
     -------
     access     : pandas.Series
 
-                  A -- potentially-weighted -- Rational Agengmailt Access Model cost.
+                  A -- potentially-weighted -- Rational Agent Access Model cost.
     """
 
     if demand_index is not True: demand_df = demand_df.set_index(demand_index)
