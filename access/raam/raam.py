@@ -96,16 +96,16 @@ def raam(demand_df, supply_df, cost_df,
          max_cycles = 150, initial_step = 0.2, min_step = 0.005, half_life = 50,
          verbose = False):
     """Calculate the rational agent access model's total cost --
-       a weighted travel and congestion cost.
-       The balance of the two costs is expressed by the
-       :math:`\\tau` parameter, which corresponds to the travel time
-       required to accept of congestion by 100% of the mean demand to supply ratio
-       in the study area.
+    a weighted travel and congestion cost.
+    The balance of the two costs is expressed by the
+    :math:`\\tau` parameter, which corresponds to the travel time
+    required to accept of congestion by 100% of the mean demand to supply ratio
+    in the study area.
 
     Parameters
     ----------
 
-    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    demand_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     The origins dataframe, containing a location index and a total demand.
     demand_origin : str
                     is the name of the column of `demand` that holds the origin ID.
@@ -113,9 +113,9 @@ def raam(demand_df, supply_df, cost_df,
                     is the name of the column of `demand` that holds the aggregate demand at a location.
     supply_origin : str
                     is the name of the column of `demand` that holds the origin ID.
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    supply_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     The origins dataframe, containing a location index and level of supply
-    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)_
+    cost_df       : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     This dataframe contains a link between neighboring demand locations, and a cost between them.
     cost_origin   : str
                     The column name of the locations of users or consumers.

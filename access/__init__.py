@@ -287,6 +287,7 @@ class access():
                               Cutoff of cost values
         normalize           : bool
                               If True, return normalized access values; otherwise, return raw access values
+
         Returns
         -------
 
