@@ -98,7 +98,7 @@ def raam(demand_df, supply_df, cost_df,
     """Calculate the rational agent access model's total cost --
        a weighted travel and congestion cost.
        The balance of the two costs is expressed by the
-       $\\tau$ parameter, which corresponds to the travel time
+       :math:`\\tau` parameter, which corresponds to the travel time
        required to accept of congestion by 100% of the mean demand to supply ratio
        in the study area.
 

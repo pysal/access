@@ -17,8 +17,8 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
        and that ratio is weighted and summed at each corresponding demand site.
        The only difference weight respect to the 2SFCA method is that,
        in addition to a distance-dependent weight (`weight_fn`),
-       a preference weight $G$ is calculated.  That calculation
-       uses the value $\\beta$.
+       a preference weight *G* is calculated.  That calculation
+       uses the value :math:`\\beta`.
        See the original paper by Wan, Zou, and Sternberg. :cite:`2012_wan_3SFCA`
 
     Parameters
