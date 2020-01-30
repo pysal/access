@@ -80,7 +80,7 @@ def fca_ratio(demand_df, supply_df, demand_cost_df, supply_cost_df, max_cost,
               weight_fn = None, normalize = False, noise = 'quiet'):
     """Calculation of the floating catchment accessibility
     ratio, from DataFrames with precomputed distances.
-    This is accomplished through two calls of the `:meth:`access.access.weighted_catchment` method.
+    This is accomplished through two calls of the :meth:`access.access.weighted_catchment` method.
 
     Parameters
     ----------
