@@ -9,33 +9,32 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                   supply_index = "geoid",   supply_name   = "supply",
                   cost_origin = "origin", cost_dest = "dest", cost_name = "cost",
                   weight_fn = None, normalize = False):
-    """
-    Calculation of the floating catchment accessibility
-      ratio, from DataFrames with precomputed distances.
-    This is accomplished through a single call of the `access.weighted_catchment` method,
-      to retrieve the patients using each provider.
+    """Calculation of the floating catchment accessibility
+    ratio, from DataFrames with precomputed distances.
+    This is accomplished through a single call of the :meth:`access.access.weighted_catchment` method,
+    to retrieve the patients using each provider.
     The ratio of providers per patient is then calculated at each care destination,
-      and that ratio is weighted and summed at each corresponding demand site.
+    and that ratio is weighted and summed at each corresponding demand site.
     The only difference weight respect to the 2SFCA method is that,
-      in addition to a distance-dependent weight (`weight_fn`),
-      a preference weight $G$ is calculated.  That calculation
-      uses the value $\beta$.
-    See the original paper by: .
+    in addition to a distance-dependent weight (`weight_fn`),
+    a preference weight *G* is calculated.  That calculation
+    uses the value :math:`\\beta`.
+    See the original paper by Wan, Zou, and Sternberg. :cite:`2012_wan_3SFCA`
 
     Parameters
     ----------
 
-    demand_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    demand_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     The origins dataframe, containing a location index and a total demand.
     demand_origin : str
                     is the name of the column of `demand` that holds the origin ID.
     demand_value  : str
                     is the name of the column of `demand` that holds the aggregate demand at a location.
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    supply_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     The origins dataframe, containing a location index and level of supply
-    supply_df     : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    supply_df     : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     The origins dataframe, containing a location index and level of supply
-    cost_df       : [pandas.DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+    cost_df       : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
                     This dataframe contains a link between neighboring demand locations, and a cost between them.
     cost_origin   : str
                     The column name of the locations of users or consumers.
@@ -48,10 +47,10 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                  as a function of the raw cost.
     max_cost   : float
                  This is the maximum cost to consider in the weighted sum;
-                   note that it applies _along with_ the weight function.
+                 note that it applies *along with* the weight function.
     preference_weight_beta : float
                              Parameter scaling with the gaussian weights,
-                               used to generate preference weights.
+                             used to generate preference weights.
 
     Returns
     -------

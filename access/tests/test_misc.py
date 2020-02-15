@@ -71,19 +71,19 @@ class TestMisc(unittest.TestCase):
             self.model.set_cost(bad_cost_name)
 
 
-    def test_set_neighbor_cost(self):
+    def test_set_cost_neighbors(self):
         self.model.neighbor_cost_names.append('new_cost')
 
-        self.model.set_neighbor_cost('new_cost')
+        self.model.set_cost_neighbors('new_cost')
         actual = self.model.neighbor_default_cost
 
         self.assertEqual(actual, 'new_cost')
 
 
-    def test_set_neighbor_cost_unavailable_cost_measure_raises_value_error(self):
+    def test_set_cost_neighbors_unavailable_cost_measure_raises_value_error(self):
         with self.assertRaises(ValueError):
             bad_cost_name = 'Not an available cost name'
-            self.model.set_neighbor_cost(bad_cost_name)
+            self.model.set_cost_neighbors(bad_cost_name)
 
 
     def test_user_cost_adds_new_column_to_cost_df(self):

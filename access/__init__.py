@@ -29,14 +29,14 @@ class access():
                            The origins dataframe, containing a location index and, optionally, a level of demand and geometry.
     demand_index         : {bool, str}
                            boolean of True indicates that the locations are already on the df index;
-                             otherwise the argument is a string containing the name of the column of `demand_df` that holds the origin ID.
+                           otherwise the argument is a string containing the name of the column of `demand_df` that holds the origin ID.
     demand_value         : str
                            is the name of the column of `demand` that holds the aggregate demand at a location.
     supply_df            : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_ or `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_
                            The origins dataframe, containing a location index and, optionally, level of supply and geometry.
     supply_index         : {bool, str}
                            boolean of True indicates that the locations are already on the df index;
-                             otherwise the argument is a string containing the name of the column of `supply_df` that holds the origin ID.
+                           otherwise the argument is a string containing the name of the column of `supply_df` that holds the origin ID.
     supply_value         : {str, list}
                            is the name of the column of `supply` that holds the aggregate supply at a location, or a list of such columns.
     cost_df              : `pandas.DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
@@ -287,6 +287,7 @@ class access():
                               Cutoff of cost values
         normalize           : bool
                               If True, return normalized access values; otherwise, return raw access values
+
         Returns
         -------
 
@@ -585,7 +586,7 @@ class access():
         17197884103  2776  2.244007      1.709857    1.900596        1.517022
         17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
-        If euclidean costs are available (see `access.access.euclidean_distance <https://access.readthedocs.io/en/latest/generated/access.access.euclidean_distance.html#access.access.euclidean_distance>`),
+        If euclidean costs are available (see :meth:`access.access.euclidean_distance`),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
@@ -904,6 +905,7 @@ class access():
 
     def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
+
         Parameters
         ----------
         name                : str
@@ -916,11 +918,13 @@ class access():
                               Weight to be applied to access values
         normalize           : bool
                               If True, return normalized access values; otherwise, return raw access values
+
         Returns
         -------
 
         access              : pandas Series
                               Accessibility score for origin locations.
+
         Examples
         --------
 
@@ -1156,7 +1160,7 @@ class access():
             raise ValueError("Tried to set cost not available in cost df")
 
 
-    def set_neighbor_cost(self, new_cost):
+    def set_cost_neighbors(self, new_cost):
         """Change the default cost measure."""
 
         if new_cost in self.neighbor_cost_names:
@@ -1365,8 +1369,8 @@ class access():
 
     def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
-           This is simply the geopandas `distance` function.
-           The user is responsible for putting the geometries into an appropriate reference system.
+        This is simply the geopandas `distance` function.
+        The user is responsible for putting the geometries into an appropriate reference system.
 
         Parameters
         ----------
@@ -1382,7 +1386,7 @@ class access():
         Examples
         --------
 
-        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`.
+        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
         Import the base `access` class and `datasets`.
 
@@ -1503,7 +1507,7 @@ class access():
         Examples
         --------
 
-        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`.
+        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
         Import the base `access` class and `datasets`.
 
