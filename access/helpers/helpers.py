@@ -19,7 +19,7 @@ def sanitize_demand_cost(a, cost, name):
 
         cost = a.neighbor_default_cost
         if len(a.cost_names) > 1:
-            a.log.info("Using default cost, {}, for {}.".format(cost, name))
+            a.log.info("Using default neighbor cost, {}, for {}.".format(cost, name))
 
 
     if cost not in a.neighbor_cost_names:
