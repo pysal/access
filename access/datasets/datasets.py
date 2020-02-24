@@ -5,8 +5,10 @@ import pandas as pd
 
 
 class datasets(object):
+    _dir = 'chi_med_data'
 
-    _dir_path = os.path.join(os.path.dirname(__file__), 'chi_med')
+    _dir_path = os.path.join('./', _dir)
+    _abs_path = os.path.abspath(_dir_path)
 
     _dwnld_data = {'chi_times' : 'https://drive.google.com/uc?authuser=0&id=1IcfJimPj4C5ZN5Xc-nvq_DModcCO6GY3&export=download',
                    'chi_euclidean' : 'https://drive.google.com/uc?authuser=0&id=1qq5ZWOaq5uxJOu9QzsNCw5WhdATgIhzK&export=download',
@@ -36,30 +38,48 @@ class datasets(object):
         """
         Return path for available datasets.
         """
+        if not os.path.exists(datasets._dir_path):
+            os.mkdir(datasets._dir_path)
+            print('Creating directory chi_med_data...')
+
         if key not in datasets._datasets.keys():
-            print('Not an available dataset. Use datasets.available_datasets to see the available datasets.')
-            self.available_datasets()
-
-        path = os.path.join(datasets._dir_path, datasets._datasets[key])
-
-        if key in datasets._dwnld_data.keys() and not os.path.exists(path):
-            print('Downloading {key}...'.format(key = key))
-            req = requests.get(datasets._dwnld_data[key])
-            file_path = os.path.join(datasets._dir_path, datasets._datasets[key])
-
-            with open(file_path, 'wb') as f:
-                f.write(req.content)
-            print('Download complete.')
-
-        if '.geojson' in path:
-            import geopandas as gpd
-
-            return gpd.read_file(path)
+            print('{key} not an available dataset. Use datasets.available_datasets to see the available datasets.'.format(key=key))
 
 
-        return pd.read_csv(path)
+        else:
+
+            path = os.path.join(datasets._dir_path, datasets._datasets[key])
+
+            if key in datasets._dwnld_data.keys() and not os.path.exists(path):
+                print('Downloading {key} to {path}...'.format(key = key, path = datasets._abs_path))
+                req = requests.get(datasets._dwnld_data[key])
+                file_path = os.path.join(datasets._dir_path, datasets._datasets[key])
+
+                with open(file_path, 'wb') as f:
+                    f.write(req.content)
+                print('Download complete.')
+
+            if '.geojson' in path:
+                import geopandas as gpd
+
+                return gpd.read_file(path)
+
+
+            return pd.read_csv(path)
 
 
     @staticmethod
     def available_datasets():
-        print(datasets._datasets)
+        desc =  '''
+chi_times: Cost matrix with travel times from each Chicago Census Tract to all others.\n
+chi_doc: Doctor and dentist counts for each Chicago Census Tract.\n
+chi_pop: Population counts for each Chicago Census Tract.\n
+chi_doc_geom: Doctor and dentist counts for each Chicago Census Tract along with geometric representations for Census Tracts.\n
+chi_pop_geom: Population counts for each Chicago Census Tract along with geometric representations for Census Tracts.\n
+chi_euclidean: Euclidean distance cost matrix with distances from each demand Chicago Census Tract to all others.\n
+chi_euclidean_neighbors: Euclidean distance cost matrix with distances from each supply Census Tract to all others.\n
+cook_county_hospitals: Contains data for each hospital location in Cook County including X Y coordinates.\n
+cook_county_hospitals_geom: Contains data for each hospital location in Cook County including X Y coordinates, and geometric points for each hospital.\n
+cook_county_tracts: Geometric representation of each Census Tract in Cook County.
+        '''
+        print(desc)

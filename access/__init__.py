@@ -67,6 +67,7 @@ class access():
                            Describes each of the currently-available supply to demand costs.
     """
 
+    logger_initialized = False
 
     def __init__(self, demand_df, demand_value, supply_df, supply_value=False,
                  demand_index = True, supply_index = True,
@@ -122,11 +123,13 @@ class access():
                                           cost_df = chi_travel_costs, cost_origin  = "origin",
                                           cost_dest = "destination", cost_name = "cost")
         """
-
         self.log = logging.getLogger("access")
-        self.log.addHandler(access_log_stream)
-        self.log.setLevel(logging.INFO)
-        self.log.propagate = False
+
+        if not access.logger_initialized:
+            self.log.addHandler(access_log_stream)
+            self.log.setLevel(logging.INFO)
+            self.log.propagate = False
+            access.logger_initialized = True
 
         self.supply_value_provided = True
 
@@ -1485,9 +1488,16 @@ class access():
 
         # Add it to the cost df.
         df1and2 = df1and2[df1and2[name] < threshold]
+
+        if name in self.cost_df.columns:
+            self.log.info("Overwriting {}.".format(name))
+            self.cost_df.drop(name, axis = 1, inplace = True)
+
         self.cost_df = self.cost_df.merge(df1and2[[name,'origin','dest']], how = 'outer', left_on = [self.cost_origin, self.cost_dest], right_on = ['origin', 'dest'])
+
         # Add it to the list of costs.
-        self.cost_names.append(name)
+        if name not in self.cost_names:
+            self.cost_names.append(name)
         # Set the default cost if it does not exist
         if not hasattr(self, 'default_cost'):
             self.default_cost = name
