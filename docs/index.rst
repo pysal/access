@@ -8,6 +8,11 @@ Spatial Access for PySAL
 
 Whether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
 
+.. image:: _static/images/access_cook_hospitals.png
+   :width: 30%
+.. image:: _static/images/access_cook_hospitals_2.png
+   :width: 30%
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Motivation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,7 +68,7 @@ Authors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Spatial access package: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_
-- Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ (`CDAC Internship <https://cdac.uchicago.edu/engage/internships/>`_), `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Vidal Anguiano, MPP <https://www.linkedin.com/in/vidalanguiano/>`_
+- Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ (`CDAC Internship <https://cdac.uchicago.edu/engage/internships/>`_), `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Vidal Anguiano Jr., MSCAPP <https://www.linkedin.com/in/vidalanguiano/>`_
 - Pre-Computed Cost Matrices: `Dan Snow, MPP <https://www.linkedin.com/in/dfsnow/>`_
 - Concept and Documentation: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_ and `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_
 |
@@ -75,6 +80,7 @@ Authors
 
    Installation <installation>
    API <api>
+   Tutorials <tutorials>
    Cost Matrices <resources>
    Live App <app>
    References <references>

@@ -169,6 +169,7 @@ html_theme_options = {
     'navbar_links': [
                      ("Installation", "installation"),
                      ("API", "api"),
+                     ("Tutorials", "tutorials"),
                      ("Cost Matrices", "resources"),
                      ("Live App", "app"),
                      ("References", "references"),
@@ -261,4 +262,3 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/3.6/': None}
-

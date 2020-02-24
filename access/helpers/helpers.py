@@ -19,7 +19,7 @@ def sanitize_demand_cost(a, cost, name):
 
         cost = a.neighbor_default_cost
         if len(a.cost_names) > 1:
-            a.log.info("Using default cost, {}, for {}.".format(cost, name))
+            a.log.info("Using default neighbor cost, {}, for {}.".format(cost, name))
 
 
     if cost not in a.neighbor_cost_names:
@@ -36,7 +36,7 @@ def sanitize_supplies(a, supply_values):
     elif supply_values is None:
         supply_values = a.supply_types
     elif type(supply_values) is not list:
-        ValueError("supply_values should be a list or string (or -- default -- None)")
+        raise ValueError("supply_values should be a list or string (or -- default -- None)")
 
     return supply_values
 
@@ -48,4 +48,3 @@ def normalized_access(a, columns):
                           / a.access_df[a.demand_value].sum()
 
     return a.access_df[columns].divide(mean_access_values)
-
