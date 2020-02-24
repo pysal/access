@@ -1050,6 +1050,7 @@ class access():
                               Column name for access values
         col_dict            : dict
                               Column names (keys) and weights.
+
         Returns
         -------
 
