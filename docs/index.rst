@@ -10,7 +10,7 @@ Whether you work with data in health, retail, employment or other domains, spati
 
 
 .. image:: _static/images/access_cook_hospitals.png
-   :target: google.com
+   :target: https://google.com
    :width: 30%
 
 .. image:: _static/images/access_cook_hospitals_2.png
