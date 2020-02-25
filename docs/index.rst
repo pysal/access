@@ -9,11 +9,13 @@ Spatial Access for PySAL
 Whether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.
 
 `Calculate Euclidean Distances <https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb#Add-an-Additional-Distance-Measure---Euclidean-Distance>`_
+
 .. image:: _static/images/euclidean_distance.png
    :target: https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb#Add-an-Additional-Distance-Measure---Euclidean-Distance
    :width: 350px
 
 `Generate and Plot Gravity Model <https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/example_updates/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb#Gravity-Model>`_
+
 .. image:: _static/images/gravity_model.png
    :target: https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/example_updates/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb#Gravity-Model
    :width: 350px
