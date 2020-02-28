@@ -4,6 +4,8 @@
 Tutorials
 =========
 
+- `Generating and Contrasting Access Measures <https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb#Ready-to-roll...>`_
+
 Data Preparation
 ----------------
 - `How to Subset Travel Cost Matricies <https://nbviewer.jupyter.org/github/JamesSaxon/access/blob/example_updates/notebooks/How%20to%20Subset%20the%20Travel%20Cost%20Matricies.ipynb>`_
