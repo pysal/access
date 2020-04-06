@@ -72,6 +72,11 @@ Figure 1 shows the workflow that our PySAL package uses to calculate these model
 
 As shown, all measures depend on travel times or distances between origins and destinations. This is the most computationally expensive part of calculating spatial access measures. The `Cost Matrix <https://access.readthedocs.io/en/latest/resources.html>`_ section outlines how these travel times can be computed or how you can access our pre-computed matrices for the US.
 
+Figure 2 shows the workflow from data input to data output. The most time-consuming and computationally intensive aspect of the workflow is the calculation of travel times (cost matrix).
+
+.. image:: https://geoda.s3.amazonaws.com/docs/workflow.png
+   :width: 100%
+
 |
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Authors
