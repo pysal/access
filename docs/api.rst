@@ -33,6 +33,11 @@ Accessibility Class
 Access Functions
 ----------------
 
+These are the lower-level functions that the access class uses
+for accessibility calculations.
+In most cases, we do not expect users to call these directly.
+But it may be useful to understand how these calculations are constructed.
+
 .. autosummary::
    :toctree: generated/
 
