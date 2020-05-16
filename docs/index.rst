@@ -96,7 +96,7 @@ Authors
    Installation <installation>
    API <api>
    Tutorials <tutorials>
-   Cost Matrices <resources>
+   Travel Times <resources>
    Live App <app>
    References <references>
 
