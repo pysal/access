@@ -633,6 +633,8 @@ class access():
     def two_stage_fca(self, name = "2sfca", cost = None, max_cost = None,
                       supply_values = None, weight_fn = None, normalize = False):
         """Calculate the two-stage floating catchment area access score.
+        Note that while the 'traditional' 2SFCA method does not weight inputs,
+        most modern implementations do, and `weight_fn` is allowed as an argument.
 
         Parameters
         ----------
@@ -786,6 +788,9 @@ class access():
     def enhanced_two_stage_fca(self, name = "e2sfca", cost = None, supply_values = None,
                                max_cost = None, weight_fn = None, normalize = False):
         """Calculate the enhanced two-stage floating catchment area access score.
+        Note that the only 'practical' difference between this function and the 
+        :meth:`access.access.two_stage_fca` is that the weight function from the original paper, 
+        `weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})` is applied if none is provided.
 
         Parameters
         ----------
