@@ -13,7 +13,7 @@ def step_fn(step_dict):
     -------
 
     weight_function     : function
-                          Function returning weight, for input distance or time, _x_.
+                          Function returning weight, for input distance or time, *x*.
                           Values beyond the largest threshold will return 0.
 
     Examples
@@ -54,8 +54,8 @@ def gaussian(sigma):
     Create a gaussian weight function, for a specified width, :math:`\sigma`.
     The mean / location parameter is assumed to be 0.
     Note that the standard normalization of the Gaussian, :math:`1 / \sqrt{2\pi\sigma^2}`,
-    is _not_ applied, so :math:`f(0) = 1` regardless of the value of sigma..
-    Of course, this effect does not matter if the ultimate access values are normalized.
+    is *not* applied, so :math:`f(0) = 1` regardless of the value of sigma..
+    Of course, this is irrelevant if the ultimate access values are ultimately normalized.
 
     Parameters
     ----------
@@ -66,7 +66,7 @@ def gaussian(sigma):
     -------
 
     weight_function     : function
-                          Function returning weight, for input distance or time, _x_.
+                          Function returning weight, for input distance or time, *x*.
 
     Examples
     --------
@@ -99,8 +99,8 @@ def gaussian(sigma):
 def gravity(scale, alpha, min_dist = 0):
     """
     Create a gravity function from a scale :math:`s` and :math:`\\alpha` parameters
-    as well as an optional minimum distance :math:`\\underbar{x}`.
-    The function is of the form :math:`f(x) = (\\text{max}(x, \\underbar{x})/s)^\\alpha`.
+    as well as an optional minimum distance :math:`x_\\text{min}`.
+    The function is of the form :math:`f(x) = (\\text{max}(x, x_\\text{min})/s)^\\alpha`.
     Note that there is no overall normalization.
 
     Parameters
@@ -120,7 +120,7 @@ def gravity(scale, alpha, min_dist = 0):
     -------
 
     weight_function     : function
-                          Function returning weight, for input distance or time, _x_.
+                          Function returning weight, for input distance or time, *x*.
 
     Examples
     --------
