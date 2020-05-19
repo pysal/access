@@ -1,8 +1,5 @@
 .. live app
 
-Live App
-========
-
 .. raw:: html
 
    <figure class="figure">
