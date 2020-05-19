@@ -45,6 +45,6 @@ Internal Access Functions
 
 The access class uses lower-level functions for its internal calculations.
 In most cases, we do not expect users to call these directly.
-However, users seeking to understand these calculations and their inputs,
-can still find them at :ref:`afunctions`.
+However, users seeking to understand these calculations and their inputs
+can still consult the :ref:`afunctions`.
 
