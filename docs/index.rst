@@ -96,6 +96,7 @@ Authors
    Installation <installation>
    API <api>
    Tutorials <tutorials>
+   Internal Access Functions <afunctions>
    Travel Times <resources>
    Live App <app>
    References <references>
