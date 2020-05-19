@@ -1,4 +1,4 @@
-.. _afunction_ref:
+.. _afunction:
 
 .. currentmodule:: access
 
