@@ -109,7 +109,7 @@ def gravity(scale, alpha, min_dist = 0):
                           Scaling value, normalizing the function input.
     alpha               : float
                           Power to which the normalized inputs are raised.
-                          Note that it is _not_ implicitly negative (i.e., :math:`x^\\alpha` instead of :math:`1/x^\\alpha`.
+                          Note that it is not implicitly negative (i.e., :math:`x^\\alpha` instead of :math:`1/x^\\alpha`.
     min_dist            : float
                           A 'standard' issue with gravity model is the infinite potential at 0 distance or time.
                           This can be rectified crudely by specifying a minimum distance, 
