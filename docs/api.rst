@@ -30,8 +30,8 @@ Accessibility Class
     access.access.set_cost
     access.access.set_cost_neighbors
 
-Helper Classes
---------------
+Helper Functions
+----------------
 
 .. autosummary::
    :toctree: generated/
@@ -40,11 +40,11 @@ Helper Classes
     access.weights.gravity
     access.weights.gaussian
 
-Access Functions
-----------------
+Internal Access Functions
+-------------------------
 
 The access class uses lower-level functions for its internal calculations.
 In most cases, we do not expect users to call these directly.
-However, users seek to understand these calculations and their inputs,
+However, users seeking to understand these calculations and their inputs,
 can still find them at :ref:`afunctions`.
 
