@@ -54,7 +54,7 @@ def gaussian(sigma):
     Create a gaussian weight function, for a specified width, :math:`\sigma`.
     The mean / location parameter is assumed to be 0.
     Note that the standard normalization of the Gaussian, :math:`1 / \sqrt{2\pi\sigma^2}`,
-    is *not* applied, so :math:`f(0) = 1` regardless of the value of sigma..
+    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\sigma`.
     Of course, this is irrelevant if the ultimate access values are ultimately normalized.
 
     Parameters
