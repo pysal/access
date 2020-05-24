@@ -221,7 +221,7 @@ class access():
             else:
                 raise ValueError("cost_name must be string or list of strings.")
 
-            self.default_cost = self.cost_names[0]
+            self._default_cost = self.cost_names[0]
 
         else:
             self.cost_df = pd.DataFrame(columns = ['origin', 'dest'])
@@ -245,7 +245,7 @@ class access():
             else:
                 raise ValueError("neighbor_cost_name must be string or list of strings.")
 
-            self.neighbor_default_cost = self.neighbor_cost_names[0]
+            self._neighbor_default_cost = self.neighbor_cost_names[0]
 
         else:
             self.neighbor_cost_df = pd.DataFrame(columns = ['origin', 'dest'])
@@ -313,7 +313,7 @@ class access():
             # Bryan consistently flipped origin and destination in this one -- very confusing.
             series = fca.weighted_catchment(loc_df = self.supply_df, loc_index = True, loc_value = s,
                                             cost_df = self.cost_df, cost_source = self.cost_dest,
-                                            cost_dest = self.cost_origin, cost_cost= self.default_cost,
+                                            cost_dest = self.cost_origin, cost_cost= self._default_cost,
                                             weight_fn = weight_fn, max_cost = max_cost)
 
             series.name = name + "_" + s
@@ -739,7 +739,7 @@ class access():
 
         if cost is None:
 
-            cost = self.default_cost
+            cost = self._default_cost
             if len(self.cost_names) > 1:
                 self.log.info("Using default cost, {}, for {}.".format(cost, name))
 
@@ -1151,22 +1151,32 @@ class access():
 
         return weighted_score
 
+    @property
+    def default_cost(self):
+        return self._default_cost
 
-    def set_cost(self, new_cost):
+    @default_cost.setter
+    def default_cost(self, new_cost):
         """Change the default cost measure."""
 
         if new_cost in self.cost_names:
-            self.default_cost = new_cost
+            self._default_cost = new_cost
 
         else:
             raise ValueError("Tried to set cost not available in cost df")
 
 
-    def set_cost_neighbors(self, new_cost):
+    @property
+    def neighbor_default_cost(self):
+        return self._neighbor_default_cost
+
+
+    @neighbor_default_cost.setter
+    def neighbor_default_cost(self, new_cost):
         """Change the default cost measure."""
 
         if new_cost in self.neighbor_cost_names:
-            self.neighbor_default_cost = new_cost
+            self._neighbor_default_cost = new_cost
 
         else:
             raise ValueError("Tried to set cost not available in cost df")
@@ -1497,8 +1507,8 @@ class access():
         if name not in self.cost_names:
             self.cost_names.append(name)
         # Set the default cost if it does not exist
-        if not hasattr(self, 'default_cost'):
-            self.default_cost = name
+        if not hasattr(self, '_default_cost'):
+            self._default_cost = name
 
 
     def euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
@@ -1621,5 +1631,5 @@ class access():
         # Add it to the list of costs.
         self.neighbor_cost_names.append(name)
         # Set the default cost if it does not exist
-        if not hasattr(self, 'neighbor_default_cost'):
-            self.neighbor_default_cost = name
+        if not hasattr(self, '_neighbor_default_cost'):
+            self._neighbor_default_cost = name

@@ -59,7 +59,7 @@ class TestMisc(unittest.TestCase):
     def test_set_cost_reconizes_column_newly_added(self):
         self.model.cost_names.append('new_cost')
 
-        self.model.set_cost('new_cost')
+        self.model.default_cost = 'new_cost'
         actual = self.model.default_cost
 
         self.assertEqual(actual, 'new_cost')
@@ -68,13 +68,13 @@ class TestMisc(unittest.TestCase):
     def test_set_cost_unavailable_cost_measure_raises_value_error(self):
         with self.assertRaises(ValueError):
             bad_cost_name = 'Not an available cost name'
-            self.model.set_cost(bad_cost_name)
+            self.model.default_cost = bad_cost_name
 
 
     def test_set_cost_neighbors(self):
         self.model.neighbor_cost_names.append('new_cost')
 
-        self.model.set_cost_neighbors('new_cost')
+        self.model.neighbor_default_cost = 'new_cost'
         actual = self.model.neighbor_default_cost
 
         self.assertEqual(actual, 'new_cost')
@@ -83,7 +83,7 @@ class TestMisc(unittest.TestCase):
     def test_set_cost_neighbors_unavailable_cost_measure_raises_value_error(self):
         with self.assertRaises(ValueError):
             bad_cost_name = 'Not an available cost name'
-            self.model.set_cost_neighbors(bad_cost_name)
+            self.model.neighbor_default_cost = bad_cost_name
 
 
     def test_user_cost_adds_new_column_to_cost_df(self):

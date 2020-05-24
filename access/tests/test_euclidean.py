@@ -76,10 +76,10 @@ class TestEuclidean(unittest.TestCase):
 
 
     def test_euclidean_sets_euclidean_as_default_if_no_default_exists(self):
-        delattr(self.model, 'default_cost')
+        delattr(self.model, '_default_cost')
         self.model.euclidean_distance()
 
-        actual = hasattr(self.model, 'default_cost')
+        actual = hasattr(self.model, '_default_cost')
 
         self.assertEquals(actual, True)
 
@@ -139,9 +139,9 @@ class TestEuclideanNeighbors(unittest.TestCase):
 
 
     def test_euclidean_neighbors_sets_euclidean_as_default_if_no_default_exists(self):
-        delattr(self.model, 'neighbor_default_cost')
+        delattr(self.model, '_neighbor_default_cost')
         self.model.euclidean_distance_neighbors()
 
-        actual = hasattr(self.model, 'neighbor_default_cost')
+        actual = hasattr(self.model, '_neighbor_default_cost')
 
         self.assertEquals(actual, True)
