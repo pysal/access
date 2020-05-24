@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from access.datasets import datasets
-from access.util import testing as tu
+import util as tu
 
 
 class TestDatasets(unittest.TestCase):

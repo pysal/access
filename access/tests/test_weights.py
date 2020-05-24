@@ -8,7 +8,7 @@ from random import randint
 import numpy as np
 import pandas as pd
 from access import weights
-from access.util import testing as tu
+import util as tu
 
 
 class TestWeights(unittest.TestCase):
@@ -94,14 +94,14 @@ class TestWeights(unittest.TestCase):
 
         actual = w_applied.loc[0]
 
-        self.assertAlmostEqual(actual, .24197072)
+        self.assertAlmostEqual(actual, 0.6065306597)
 
 
     def test_gravity_with_default_params(self):
         rand_int = randint(1,100)
-        weight_fn = weights.gravity(scale=rand_int)
+        weight_fn = weights.gravity(scale=rand_int, alpha = 0)
         w_applied = self.apply_weight_fn(weight_fn)
 
         actual = w_applied.loc[0]
 
-        self.assertEqual(actual, rand_int)
+        self.assertEqual(actual, 1)
