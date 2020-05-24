@@ -1182,7 +1182,7 @@ class access():
             raise ValueError("Tried to set cost not available in cost df")
 
 
-    def user_cost(self, new_cost_df, origin, destination, name):
+    def append_user_cost(self, new_cost_df, origin, destination, name):
         """Create a user cost, from demand to supply locations.
 
         Parameters
@@ -1255,7 +1255,7 @@ class access():
 
         Add new cost data to existing `access` instance.
 
-        >>> chicago_primary_care.user_cost(new_cost_df = euclidean_cost,
+        >>> chicago_primary_care.append_user_cost(new_cost_df = euclidean_cost,
                                            name = "euclidean",
                                            origin = "origin",
                                            destination = "dest")
@@ -1281,7 +1281,7 @@ class access():
         self.cost_names.append(name)
 
 
-    def user_cost_neighbors(self, new_cost_df, origin, destination, name):
+    def append_user_cost_neighbors(self, new_cost_df, origin, destination, name):
         """Create a user cost, from supply locations to other supply locations.
 
         Parameters
@@ -1354,7 +1354,7 @@ class access():
 
         Add new cost data to existing `access` instance.
 
-        >>> chicago_primary_care.user_cost_neighbors(new_cost_df = euclidean_cost_neighbors,
+        >>> chicago_primary_care.append_user_cost_neighbors(new_cost_df = euclidean_cost_neighbors,
                                                      name = "euclidean_neighbors",
                                                      origin = "origin",
                                                      destination = "dest")

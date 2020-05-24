@@ -90,7 +90,7 @@ class TestMisc(unittest.TestCase):
         new_cost = self.model.cost_df.copy()
         new_cost['new_cost'] = 0
 
-        self.model.user_cost(new_cost_df = new_cost,
+        self.model.append_user_cost(new_cost_df = new_cost,
                              name        = 'new_cost',
                              origin      = 'origin',
                              destination = 'dest')
@@ -104,7 +104,7 @@ class TestMisc(unittest.TestCase):
         new_cost = self.model.cost_df.copy()
         new_cost['new_cost'] = 0
 
-        self.model.user_cost(new_cost_df = new_cost,
+        self.model.append_user_cost(new_cost_df = new_cost,
                              name        = 'new_cost',
                              origin      = 'origin',
                              destination = 'dest')
@@ -118,7 +118,7 @@ class TestMisc(unittest.TestCase):
         new_cost = self.model.neighbor_cost_df.copy()
         new_cost['new_cost'] = 0
 
-        self.model.user_cost_neighbors(new_cost_df = new_cost,
+        self.model.append_user_cost_neighbors(new_cost_df = new_cost,
                                        name        = 'new_cost',
                                        origin      = 'origin',
                                        destination = 'dest')
@@ -132,7 +132,7 @@ class TestMisc(unittest.TestCase):
         new_cost = self.model.neighbor_cost_df.copy()
         new_cost['new_cost'] = 0
 
-        self.model.user_cost_neighbors(new_cost_df = new_cost,
+        self.model.append_user_cost_neighbors(new_cost_df = new_cost,
                                        name        = 'new_cost',
                                        origin      = 'origin',
                                        destination = 'dest')
