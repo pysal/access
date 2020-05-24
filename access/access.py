@@ -583,7 +583,7 @@ class access():
         17197884103  2776  2.244007      1.709857    1.900596        1.517022
         17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
-        If euclidean costs are available (see :meth:`access.access.euclidean_distance`),
+        If euclidean costs are available (see :meth:`access.access.create_euclidean_distance`),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
@@ -1379,7 +1379,7 @@ class access():
         self.neighbor_cost_names.append(name)
 
 
-    def euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
+    def create_euclidean_distance(self, name = "euclidean", threshold = 0, centroid_o = False, centroid_d = False):
         """Calculate the Euclidean distance from demand to supply locations.
         This is simply the geopandas `distance` function.
         The user is responsible for putting the geometries into an appropriate reference system.
@@ -1450,7 +1450,7 @@ class access():
 
         To calculate euclidean distances between Census Tracts within 250km of eachother, you can set the `threshold` to 250000 (meters). Setting `centroid_o` and `centroid_d` to `True` calculates the centroid of the geom in your dataset.
 
-        >>> chicago_primary_care.euclidean_distance(threshold = 250000, centroid_o = True, centroid_d = True)
+        >>> chicago_primary_care.create_euclidean_distance(threshold = 250000, centroid_o = True, centroid_d = True)
 
         The newly calculated euclidean costs are added to the `cost_df` attribute of the `access` class.
 
@@ -1511,7 +1511,7 @@ class access():
             self._default_cost = name
 
 
-    def euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
+    def create_euclidean_distance_neighbors(self, name = "euclidean", threshold = 0, centroid = False):
         """Calculate the Euclidean distance among demand locations.
 
         Parameters
@@ -1583,7 +1583,7 @@ class access():
 
         To calculate euclidean distances between Census Tracts within 250km of eachother, you can set the `threshold` to 250000 (meters). Setting `centroid_o` and `centroid_d` to `True` calculates the centroid of the geom in your dataset.
 
-        >>> chicago_primary_care.euclidean_distance_neighbors(name= 'euclidean_neighbors', threshold = 250000, centroid_o = True, centroid_d = True)
+        >>> chicago_primary_care.create_euclidean_distance_neighbors(name= 'euclidean_neighbors', threshold = 250000, centroid_o = True, centroid_d = True)
 
         The newly calculated euclidean distance is stored in the `neighbor_cost_df` attribute.
 

@@ -40,7 +40,7 @@ class TestEuclidean(unittest.TestCase):
 
 
     def test_euclidean_point_to_point(self):
-        self.model.euclidean_distance(name = 'euclidian', threshold = 2,
+        self.model.create_euclidean_distance(name = 'euclidian', threshold = 2,
                                       centroid_o = True, centroid_d = True)
         actual = self.model.cost_df['euclidian'][0]
 
@@ -48,7 +48,7 @@ class TestEuclidean(unittest.TestCase):
 
 
     def test_euclidean_point_to_poly(self):
-        self.model.euclidean_distance(name = 'euclidian', threshold = 2,
+        self.model.create_euclidean_distance(name = 'euclidian', threshold = 2,
                                       centroid_o = True, centroid_d = False)
         actual = self.model.cost_df['euclidian'][0]
 
@@ -56,7 +56,7 @@ class TestEuclidean(unittest.TestCase):
 
 
     def test_euclidean_poly_to_poly(self):
-        self.model.euclidean_distance(name = 'euclidian', threshold = 2,
+        self.model.create_euclidean_distance(name = 'euclidian', threshold = 2,
                                       centroid_o = False, centroid_d = False)
         actual = self.model.cost_df['euclidian'][0]
 
@@ -66,18 +66,18 @@ class TestEuclidean(unittest.TestCase):
     def test_euclidean_without_geopandas_demand_dataframe_raises_TypeError(self):
         with self.assertRaises(TypeError):
             self.model.demand_df = self.model.demand_df[['x','y','value']]
-            self.model.euclidean_distance()
+            self.model.create_euclidean_distance()
 
 
     def test_euclidean_without_geopandas_supply_dataframe_raises_TypeError(self):
         with self.assertRaises(TypeError):
             self.model.supply_df = self.model.supply_df[['x','y','value']]
-            self.model.euclidean_distance()
+            self.model.create_euclidean_distance()
 
 
     def test_euclidean_sets_euclidean_as_default_if_no_default_exists(self):
         delattr(self.model, '_default_cost')
-        self.model.euclidean_distance()
+        self.model.create_euclidean_distance()
 
         actual = hasattr(self.model, '_default_cost')
 
@@ -115,7 +115,7 @@ class TestEuclideanNeighbors(unittest.TestCase):
 
 
     def test_euclidean_neighbors_centroids(self):
-        self.model.euclidean_distance_neighbors(name = 'euclidian', threshold=2,
+        self.model.create_euclidean_distance_neighbors(name = 'euclidian', threshold=2,
                                                 centroid = True)
         actual1 = self.model.neighbor_cost_df['euclidian'][0]
         actual2 = self.model.neighbor_cost_df['euclidian'][2]
@@ -124,7 +124,7 @@ class TestEuclideanNeighbors(unittest.TestCase):
 
 
     def test_euclidean_neighbors_poly(self):
-        self.model.euclidean_distance_neighbors(name = 'euclidian', threshold=2,
+        self.model.create_euclidean_distance_neighbors(name = 'euclidian', threshold=2,
                                                 centroid = False)
         actual1 = self.model.neighbor_cost_df['euclidian'][0]
         actual2 = self.model.neighbor_cost_df['euclidian'][2]
@@ -135,12 +135,12 @@ class TestEuclideanNeighbors(unittest.TestCase):
     def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_TypeError(self):
         with self.assertRaises(TypeError):
             self.model.demand_df = self.model.demand_df[['x','y','value']]
-            self.model.euclidean_distance_neighbors()
+            self.model.create_euclidean_distance_neighbors()
 
 
     def test_euclidean_neighbors_sets_euclidean_as_default_if_no_default_exists(self):
         delattr(self.model, '_neighbor_default_cost')
-        self.model.euclidean_distance_neighbors()
+        self.model.create_euclidean_distance_neighbors()
 
         actual = hasattr(self.model, '_neighbor_default_cost')
 
