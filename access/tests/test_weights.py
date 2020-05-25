@@ -88,16 +88,32 @@ class TestWeights(unittest.TestCase):
             w_applied = self.apply_weight_fn(weight_fn)
 
 
-    def test_gaussian_weight_width_one(self):
+    def test_gaussian_weight_sigma_one(self):
         weight_fn = weights.gaussian(1)
         w_applied = self.apply_weight_fn(weight_fn)
 
         actual = w_applied.loc[0]
+        actual
 
         self.assertAlmostEqual(actual, 0.6065306597)
 
 
-    def test_gravity_with_default_params(self):
+    def test_gaussian_weight_sigma_varied(self):
+        sigma_vals    = [-50, -2, 2, 50]
+        expected_vals = [0.99980001,
+                         0.88249690,
+                         0.88249690,
+                         0.99980001,]
+        for sigma, expected in zip(sigma_vals, expected_vals):
+            weight_fn = weights.gaussian(sigma)
+            w_applied = self.apply_weight_fn(weight_fn)
+            print(w_applied.loc[0])
+            actual = w_applied.loc[0]
+
+            self.assertAlmostEqual(actual, expected)
+
+
+    def test_gravity_with_zero_alpha(self):
         rand_int = randint(1,100)
         weight_fn = weights.gravity(scale=rand_int, alpha = 0)
         w_applied = self.apply_weight_fn(weight_fn)

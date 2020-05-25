@@ -75,5 +75,33 @@ class TestWeightedCatchment(unittest.TestCase):
         self.assertEqual(actual, 1)
 
 
+    def test_weighted_catchment_with_gravity_weights(self):
+        n = 5
+        supply_grid = tu.create_nxn_grid(n)
+        demand_grid = supply_grid
+        cost_matrix = tu.create_cost_matrix(supply_grid, 'euclidean')
+
+        self.model = access(demand_df = demand_grid, demand_index = 'id',
+                            demand_value = 'value',
+                            supply_df = supply_grid, supply_index = 'id',
+                            supply_value = 'value',
+                            cost_df   = cost_matrix, cost_origin  = 'origin',
+                            cost_dest = 'dest',      cost_name = 'cost')
+
+        gravity = weights.gravity(scale=60, alpha=1)
+        self.model.weighted_catchment(name = 'gravity', weight_fn = gravity)
+
+        ids = [1, 5, 13, 19, 24]
+        expected_vals = [1.322340210,
+                         1.322340210,
+                         0.780985109,
+                         0.925540119,
+                         1.133733026,]
+
+        for id, expected in zip(ids, expected_vals):
+            actual = self.model.access_df.gravity_value.loc[id]
+
+            self.assertAlmostEqual(actual, expected)
+
 if __name__ == '__main__':
     unittest.main()
