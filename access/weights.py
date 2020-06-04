@@ -59,7 +59,7 @@ def gaussian(sigma):
 
     Parameters
     ----------
-    sigma               : float 
+    sigma               : float
                           This the classical width parameter of the Gaussian / Normal distriution.
 
     Returns
@@ -91,8 +91,8 @@ def gaussian(sigma):
     """
 
     if sigma == 0:
-        raise ValueError("Width must be non-zero.")
-  
+        raise ValueError("Sigma must be non-zero.")
+
     return lambda x: np.exp(-x*x / (2 * sigma**2)) # / np.sqrt(2*np.pi*sigma**2)
 
 
@@ -112,7 +112,7 @@ def gravity(scale, alpha, min_dist = 0):
                           Note that it is not implicitly negative (i.e., :math:`x^\\alpha` instead of :math:`1/x^\\alpha`.
     min_dist            : float
                           A 'standard' issue with gravity model is the infinite potential at 0 distance or time.
-                          This can be rectified crudely by specifying a minimum distance, 
+                          This can be rectified crudely by specifying a minimum distance,
                           and setting any input exceeding that minimum to the minimum itself.
                           The default threshold is 0.
 
@@ -139,4 +139,3 @@ def gravity(scale, alpha, min_dist = 0):
     """
 
     return lambda x: np.power(max(x, min_dist) / scale, alpha)
-

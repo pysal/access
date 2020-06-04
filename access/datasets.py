@@ -4,11 +4,11 @@ import requests
 import pandas as pd
 
 
-class datasets(object):
+class Datasets(object):
     _dir = 'chi_med_data'
 
-    _dir_path = os.path.join('./', _dir)
-    _abs_path = os.path.abspath(_dir_path)
+    _homedir = os.path.expanduser("~")
+    _dir_path = os.path.join(_homedir, _dir)
 
     _dwnld_data = {'chi_times' : 'https://drive.google.com/uc?authuser=0&id=1IcfJimPj4C5ZN5Xc-nvq_DModcCO6GY3&export=download',
                    'chi_euclidean' : 'https://drive.google.com/uc?authuser=0&id=1qq5ZWOaq5uxJOu9QzsNCw5WhdATgIhzK&export=download',
@@ -38,22 +38,22 @@ class datasets(object):
         """
         Return path for available datasets.
         """
-        if not os.path.exists(datasets._dir_path):
-            os.mkdir(datasets._dir_path)
+        if not os.path.exists(Datasets._dir_path):
+            os.mkdir(Datasets._dir_path)
             print('Creating directory chi_med_data...')
 
-        if key not in datasets._datasets.keys():
-            print('{key} not an available dataset. Use datasets.available_datasets to see the available datasets.'.format(key=key))
+        if key not in Datasets._datasets.keys():
+            print('{key} not an available dataset. Use Datasets.available_datasets to see the available datasets.'.format(key=key))
 
 
         else:
 
-            path = os.path.join(datasets._dir_path, datasets._datasets[key])
+            path = os.path.join(Datasets._dir_path, Datasets._datasets[key])
 
-            if key in datasets._dwnld_data.keys() and not os.path.exists(path):
-                print('Downloading {key} to {path}...'.format(key = key, path = datasets._abs_path))
-                req = requests.get(datasets._dwnld_data[key])
-                file_path = os.path.join(datasets._dir_path, datasets._datasets[key])
+            if key in Datasets._dwnld_data.keys() and not os.path.exists(path):
+                print('Downloading {key} to {path}...'.format(key = key, path = Datasets._dir_path))
+                req = requests.get(Datasets._dwnld_data[key])
+                file_path = os.path.join(Datasets._dir_path, Datasets._datasets[key])
 
                 with open(file_path, 'wb') as f:
                     f.write(req.content)

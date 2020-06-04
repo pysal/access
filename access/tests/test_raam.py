@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from access import access, weights
-from access.util import testing as tu
+import util as tu
 
 
 class TestRAAM(unittest.TestCase):

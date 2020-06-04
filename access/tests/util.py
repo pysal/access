@@ -4,7 +4,6 @@ import random
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from access.util import testing as tu
 
 def create_nxn_grid(n, buffer = 0, random_values=False, seed=44):
     '''
