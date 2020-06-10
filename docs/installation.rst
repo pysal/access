@@ -18,7 +18,7 @@ You can also clone the master branch from github:
 
 .. code-block:: bash
   
-  git clone git@github.com:JamesSaxon/access.git
+  git clone git@github.com:pysal/access.git
   cd access/
   python setup.py install
 |
