@@ -18,7 +18,7 @@ Whether you work with data in health, retail, employment or other domains, spati
    :width: 250px
 
 .. image:: _static/images/gravity_model.png
-   :target: https://nbviewer.jupyter.org/github/pysal/access/blob/example_updates/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb#Gravity-Model
+   :target: https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb#Gravity-Model
    :width: 250px
 
 
