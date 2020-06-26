@@ -3,16 +3,15 @@
 Installation
 ============
 
-Easy!  
+Easy!  You can get the package from either pip or conda-forge:
 
 .. code-block:: bash
 
   pip install access
 |
 
-or 
-
 .. code-block:: bash
+
    conda install -c conda-forge access
 |
 
