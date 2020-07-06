@@ -4,22 +4,13 @@ import requests
 import pandas as pd
 
 
-class Datasets(object):
+class datasets(object):
     _dir = 'chi_med_data'
 
     _homedir = os.path.expanduser("~")
     _dir_path = os.path.join(_homedir, _dir)
 
-    _dwnld_data = {'chi_times' : 'https://drive.google.com/uc?authuser=0&id=1IcfJimPj4C5ZN5Xc-nvq_DModcCO6GY3&export=download',
-                   'chi_euclidean' : 'https://drive.google.com/uc?authuser=0&id=1qq5ZWOaq5uxJOu9QzsNCw5WhdATgIhzK&export=download',
-                   'chi_euclidean_neighbors' : 'https://drive.google.com/uc?authuser=0&id=1GQFBbWEtltT5MhbtC3iJXXfPCoXUPfTJ&export=download',
-                   'chi_doc': 'https://drive.google.com/uc?authuser=0&id=12QXTHucipDfa-8KCThVdoHjx2LYEkAdI&export=download',
-                   'chi_pop': 'https://drive.google.com/uc?authuser=0&id=1PFXuuZBwOxMn2P-KVjdPOBslghoPOdGy&export=download',
-                   'chi_doc_geom': 'https://drive.google.com/uc?authuser=0&id=1rSuhCqCF64SVdoeiv8RbqGnJOg1Y8-rQ&export=download',
-                   'chi_pop_geom': 'https://drive.google.com/uc?authuser=0&id=1P83jZSzf3cGC0lTqfuhSFx4VlcLv0JJr&export=download',
-                   'cook_county_hospitals_geom': 'https://drive.google.com/uc?authuser=0&id=1hBXhC1kohwcxgw--iGSSQEcewTLMtB3p&export=download',
-                   'cook_county_hospitals': 'https://drive.google.com/uc?authuser=0&id=1GZj5Rtkcbyj83ZXLcsETzGNCV2RiVAcW&export=download',
-                   'cook_county_tracts': 'https://drive.google.com/uc?authuser=0&id=1GXStA35qG6odMJv8cGYlt-dDOQPEZB6t&export=download'}
+    _bucket_url = 'https://uchicago-csds-access.s3.amazonaws.com/ex_datasets'
 
     _datasets = {'chi_times': 'chicago_metro_times.csv.bz2',
                  'chi_doc': 'chicago_metro_docs_dentists.csv',
@@ -38,22 +29,22 @@ class Datasets(object):
         """
         Return path for available datasets.
         """
-        if not os.path.exists(Datasets._dir_path):
-            os.mkdir(Datasets._dir_path)
+        if not os.path.exists(datasets._dir_path):
+            os.mkdir(datasets._dir_path)
             print('Creating directory chi_med_data...')
 
-        if key not in Datasets._datasets.keys():
+        if key not in datasets._datasets.keys():
             print('{key} not an available dataset. Use Datasets.available_datasets to see the available datasets.'.format(key=key))
 
 
         else:
 
-            path = os.path.join(Datasets._dir_path, Datasets._datasets[key])
+            path = os.path.join(datasets._dir_path, datasets._datasets[key])
 
-            if key in Datasets._dwnld_data.keys() and not os.path.exists(path):
-                print('Downloading {key} to {path}...'.format(key = key, path = Datasets._dir_path))
-                req = requests.get(Datasets._dwnld_data[key])
-                file_path = os.path.join(Datasets._dir_path, Datasets._datasets[key])
+            if key in datasets._datasets.keys() and not os.path.exists(path):
+                print('Downloading {key} to {path}...'.format(key = key, path = datasets._dir_path))
+                req = requests.get(os.path.join(datasets._bucket_url, datasets._datasets[key]))
+                file_path = os.path.join(datasets._dir_path, datasets._datasets[key])
 
                 with open(file_path, 'wb') as f:
                     f.write(req.content)
