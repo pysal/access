@@ -34,7 +34,7 @@ class datasets(object):
             print('Creating directory chi_med_data...')
 
         if key not in datasets._datasets.keys():
-            print('{key} not an available dataset. Use Datasets.available_datasets to see the available datasets.'.format(key=key))
+            print('{key} not an available dataset. Use datasets.available_datasets to see the available datasets.'.format(key=key))
 
 
         else:
