@@ -3,8 +3,8 @@
 =========
 Tutorials
 =========
-- `PySAL Package Documentation: Explanation and Comparison of Spatial Access Methods (PDF) <https://geoda.s3.amazonaws.com/docs/PySALAccess+Package_Documentation.pdf>`_
-- How to Get Results for Your Own Data with the LiveApp `(PDF) <https://geoda.s3.amazonaws.com/docs/LiveAPP_Documentation.pdf>`_ and `(R code) <https://uchicago.box.com/s/676pmr9nfyx5c5g9a73gbc5kq8wqkwkd>`_
+- `PySAL Package Documentation: Explanation and Comparison of Spatial Access Methods (PDF) <http://geodacenter.github.io/docs/PySALAccess%20Package_Documentation.pdf>`_
+- How to Get Results for Your Own Data with the LiveApp `(PDF) <https://github.com/GeoDaCenter/GeoDaCenter.github.io/blob/master/docs/LiveAPP_Documentation.pdf>`_ and `(R code) <https://uchicago.box.com/s/676pmr9nfyx5c5g9a73gbc5kq8wqkwkd>`_
 - `Generating and Contrasting Access Measures (Notebook) <https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb>`_
 - `Package Overview (15-minute conference presentation J. Koschinsky) <https://www.youtube.com/watch?v=MshrZc_4oVY&t=1s>`_
 
