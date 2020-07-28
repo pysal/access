@@ -45,9 +45,9 @@ For a full list of origin and destination locations + attached populations, see 
     <tr>
       <th class="tg-1wig">CITY NAME</th>
       <th class="tg-1wig">COUNTY GEOID</th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/walking.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/transit.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/driving.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/walking.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/transit.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/driving.svg" height="42" width="42"/></th>
     </tr>
     <tr>
       <td class="tg-0lax">National</td>
