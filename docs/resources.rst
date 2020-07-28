@@ -444,9 +444,9 @@ available in a given county buffer, including e.g. buses, subways, and lightrail
     <tr>
       <th class="tg-1wig">Setting</th>
       <th class="tg-1wig">Tract / Block</th>
-      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/walking.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/transit.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/driving.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/walking.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/transit.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/driving.svg" height="42" width="42"/></th>
     </tr>
     <tr>
       <td class="tg-0lax">Max Travel Time</td>
