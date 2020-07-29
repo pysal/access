@@ -20,7 +20,7 @@ You can also download these results for driving or transit.
 .. raw:: html
 
    <figure class="figure">
-     <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
+     <embed src="https://128.135.123.230/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
      <figcaption class="figure-caption text-center">
        Web Service to explore and download travel times between tracts
      </figcaption>
