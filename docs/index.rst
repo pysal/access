@@ -85,7 +85,7 @@ Authors
 - Spatial access package: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_
 - Research Assistants: `Yair Atlas <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ (`CDAC Internship <https://cdac.uchicago.edu/engage/internships/>`_), `Bryan Wang <https://spatial.uchicago.edu/directories/full/2019-to-20>`_ and `Vidal Anguiano Jr., MSCAPP <https://www.linkedin.com/in/vidalanguiano/>`_
 - Pre-Computed Cost Matrices: `Dan Snow, MPP <https://www.linkedin.com/in/dfsnow/>`_
-- Concept and Documentation: `James Saxon, PhD <https://saxon.harris.uchicago.edu/>`_ and `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_
+- Concept and Documentation: `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_, `Karina Acosta Ordonez <https://aap.cornell.edu/academics/crp/graduate/planning/phd/student-profiles#science>`_, and `James Saxon, PhD <https://128.135.123.230/>`_
 |
 
 .. toctree::
