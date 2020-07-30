@@ -74,7 +74,7 @@ As shown, all measures depend on travel times or distances between origins and d
 
 Figure 2 shows the workflow from data input to data output. The most time-consuming and computationally intensive aspect of the workflow is the calculation of travel times (cost matrix).
 
-.. image:: https://geoda.s3.amazonaws.com/docs/workflow.png
+.. image:: _static/images/thumbnail_workflow.png
    :width: 100%
 
 |
