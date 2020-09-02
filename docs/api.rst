@@ -13,7 +13,6 @@ Accessibility Class
 ----------------------
 .. autoclass:: access
    :members:
-   :toctree: generated/
 
 .. autosummary::
    :toctree: generated/
