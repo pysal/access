@@ -29,8 +29,8 @@ Accessibility Class
    
 .. autoclass:: access.access
    :members:
-    
-   
+
+
 Helper Functions
 ----------------
 
