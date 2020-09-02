@@ -11,24 +11,21 @@ to see the basic structure of the package and its applications.
 
 Accessibility Class
 ----------------------
-.. autoclass:: access.access
-   :members:
-
 .. autosummary::
    :toctree: generated/
    
-    access.access
-    access.access.weighted_catchment
-    access.access.fca_ratio
-    access.access.two_stage_fca
-    access.access.enhanced_two_stage_fca
-    access.access.three_stage_fca
-    access.access.raam
-    access.access.score
-    access.access.create_euclidean_distance
-    access.access.create_euclidean_distance_neighbors
-    access.access.append_user_cost
-    access.access.append_user_cost_neighbors
+    access
+    access.weighted_catchment
+    access.fca_ratio
+    access.two_stage_fca
+    access.enhanced_two_stage_fca
+    access.three_stage_fca
+    access.raam
+    access.score
+    access.create_euclidean_distance
+    access.create_euclidean_distance_neighbors
+    access.append_user_cost
+    access.append_user_cost_neighbors
 
 Helper Functions
 ----------------
@@ -36,9 +33,9 @@ Helper Functions
 .. autosummary::
    :toctree: generated/
 
-    access.weights.step_fn
-    access.weights.gravity
-    access.weights.gaussian
+    weights.step_fn
+    weights.gravity
+    weights.gaussian
 
 Internal Access Functions
 -------------------------
