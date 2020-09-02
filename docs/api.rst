@@ -28,7 +28,6 @@ Accessibility Class
     access.access.append_user_cost_neighbors
    
 .. autoclass:: access.access
-   :toctree: generated/
    :members:
     
    
