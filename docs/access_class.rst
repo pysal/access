@@ -1,3 +1,5 @@
+.. _access_class:
+
 The "Main" API
 --------------
 
