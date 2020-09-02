@@ -4,3 +4,4 @@ nose-exclude
 coverage
 coveralls
 matplotlib
+scipy>=0.11

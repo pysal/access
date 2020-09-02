@@ -1,4 +1,4 @@
-sphinx>=1.4.3
+Sphinx==2.4.3
 sphinxcontrib-bibtex
 sphinx_bootstrap_theme
 numpydoc
