@@ -10,7 +10,7 @@ to see the basic structure of the package and its applications.
 
 Accessibility Class
 ----------------------
-For the full definitions and examples of each method, see :ref:`access_class`,
+For the full definitions and examples of each method, see the dedicated page, :ref:`access_class`.
 
 .. autosummary::
    :toctree: generated/
