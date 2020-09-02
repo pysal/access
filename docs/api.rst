@@ -11,10 +11,13 @@ to see the basic structure of the package and its applications.
 
 Accessibility Class
 ----------------------
+.. autoclass:: access
+   :members:
+   :toctree: generated/
 
 .. autosummary::
    :toctree: generated/
-
+   
     access.access
     access.access.weighted_catchment
     access.access.fca_ratio
