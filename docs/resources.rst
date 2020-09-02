@@ -20,7 +20,7 @@ You can also download these results for driving or transit.
 .. raw:: html
 
    <figure class="figure">
-     <embed src="https://saxon.harris.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
+     <embed src="https://saxon.cdac.uchicago.edu/mmap/" style="padding: 10pt 0; width:95%; height: 70vh;">
      <figcaption class="figure-caption text-center">
        Web Service to explore and download travel times between tracts
      </figcaption>
@@ -45,9 +45,9 @@ For a full list of origin and destination locations + attached populations, see 
     <tr>
       <th class="tg-1wig">CITY NAME</th>
       <th class="tg-1wig">COUNTY GEOID</th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/walking.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/transit.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/driving.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/walking.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/transit.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/driving.svg" height="42" width="42"/></th>
     </tr>
     <tr>
       <td class="tg-0lax">National</td>
@@ -444,9 +444,9 @@ available in a given county buffer, including e.g. buses, subways, and lightrail
     <tr>
       <th class="tg-1wig">Setting</th>
       <th class="tg-1wig">Tract / Block</th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/walking.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/transit.svg" height="42" width="42"/></th>
-      <th class="tg-1wig"><img src="https://geoda.s3.amazonaws.com/data/otp/icons/driving.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/walking.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/transit.svg" height="42" width="42"/></th>
+      <th class="tg-1wig"><img src="https://github.com/GeoDaCenter/GeoDaCenter.github.io/raw/master/images/driving.svg" height="42" width="42"/></th>
     </tr>
     <tr>
       <td class="tg-0lax">Max Travel Time</td>
