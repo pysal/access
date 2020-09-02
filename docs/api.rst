@@ -5,12 +5,13 @@
 API reference
 =============
 
-If you're just getting started, have a look at :mod:`access.access`
-(or the :ref:`tutorials`!)
+If you're just getting started, have a look at :ref:`access_class` (or the :ref:`tutorials`!)
 to see the basic structure of the package and its applications.
 
 Accessibility Class
 ----------------------
+For the full definitions and examples of each method, see :ref:`access_class`,
+
 .. autosummary::
    :toctree: generated/
    
@@ -26,10 +27,7 @@ Accessibility Class
     access.access.create_euclidean_distance_neighbors
     access.access.append_user_cost
     access.access.append_user_cost_neighbors
-   
-.. autoclass:: access.access
-   :members:
-
+    
 
 Helper Functions
 ----------------
