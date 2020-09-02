@@ -11,7 +11,7 @@ to see the basic structure of the package and its applications.
 
 Accessibility Class
 ----------------------
-.. autoclass:: access
+.. autoclass:: access.access
    :members:
 
 .. autosummary::
