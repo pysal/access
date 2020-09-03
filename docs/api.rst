@@ -27,7 +27,12 @@ For the full definitions and examples of each method, see the dedicated page, :r
     access.access.create_euclidean_distance_neighbors
     access.access.append_user_cost
     access.access.append_user_cost_neighbors
-    
+  
+.. autoclass:: access.access
+
+   .. automethod:: __init__
+   .. automethod:: weighted_catchment
+
 
 Helper Functions
 ----------------
