@@ -16,7 +16,6 @@ For the full definitions and examples of each method, see the dedicated page, :r
    :toctree: generated/
    
     access
-    access.accss.weighted_catchment
     access.weighted_catchment
     access.fca_ratio
     access.two_stage_fca
