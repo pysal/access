@@ -8,11 +8,11 @@ Listing of Internal Access Functions
 .. autosummary::
    :toctree: generated/
 
-    access.raam.raam
-    access.fca.weighted_catchment
-    access.fca.fca_ratio
-    access.fca.two_stage_fca
-    access.fca.three_stage_fca
+    raam.raam
+    fca.weighted_catchment
+    fca.fca_ratio
+    fca.two_stage_fca
+    fca.three_stage_fca
     
 
 
