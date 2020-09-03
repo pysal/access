@@ -1,5 +1,7 @@
 .. _api_ref:
 
+.. currentmodule:: access
+
 API reference
 =============
 
