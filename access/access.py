@@ -904,7 +904,8 @@ class access():
         return self.two_stage_fca(name, cost, max_cost, supply_values, weight_fn, normalize)
 
 
-    def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, max_cost = None, weight_fn = None, normalize = False):
+    def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, 
+                        max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
 
         Parameters
@@ -993,9 +994,6 @@ class access():
         17031010202   0.001420       0.000777
         17031010300   0.001479       0.000742
         17031010400   0.001274       0.000726
-
-
-
         """
 
         assert self.supply_value_provided == True, "You must provide a supply value in order to use this functionality."
