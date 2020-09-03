@@ -168,7 +168,7 @@ def two_stage_fca(demand_df, supply_df, cost_df, max_cost = None,
                   cost_origin = "origin", cost_dest = "dest", cost_name = "cost",
                   weight_fn = None, normalize = False):
     """
-    Calculation of the floating catchment accessibility
+    Calculation of the two-stage floating catchment accessibility
     ratio, from DataFrames with precomputed distances.
     This is accomplished through a single call of the `access.weighted_catchment` method,
     to retrieve the patients using each provider.
@@ -248,7 +248,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                   supply_index = "geoid",   supply_name   = "supply",
                   cost_origin = "origin", cost_dest = "dest", cost_name = "cost",
                   weight_fn = None, normalize = False):
-    """Calculation of the floating catchment accessibility
+    """Calculation of the three-stage floating catchment accessibility
     ratio, from DataFrames with precomputed distances.
     This is accomplished through a single call of the :meth:`access.access.weighted_catchment` method,
     to retrieve the patients using each provider.
