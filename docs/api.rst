@@ -6,8 +6,6 @@ API reference
 If you're just getting started, have a look at :ref:`access_class` (or the :ref:`tutorials`!)
 to see the basic structure of the package and its applications.
 
-# .. currentmodule:: access
-
 Accessibility Class
 ----------------------
 For the full definitions and examples of each method, see the dedicated page, :ref:`access_class`.
