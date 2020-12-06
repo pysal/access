@@ -88,7 +88,7 @@ class TestWeightedCatchment(unittest.TestCase):
                             cost_df   = cost_matrix, cost_origin  = 'origin',
                             cost_dest = 'dest',      cost_name = 'cost')
 
-        gravity = Weights.gravity(scale=60, alpha=1)
+        gravity = weights.gravity(scale=60, alpha=1)
         self.model.weighted_catchment(name = 'gravity', weight_fn = gravity)
 
         ids = [1, 5, 13, 19, 24]
