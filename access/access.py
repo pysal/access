@@ -7,7 +7,7 @@ from . import fca
 from . import raam
 from . import weights
 from . import helpers
-from .datasets import datasets
+from .datasets import Datasets
 
 access_log_stream = logging.StreamHandler()
 access_log_format = logging.Formatter('%(name)s %(levelname)-8s :: %(message)s')
@@ -74,15 +74,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -363,15 +363,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -497,16 +497,16 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -655,15 +655,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -811,15 +811,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -931,15 +931,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1060,16 +1060,16 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1198,15 +1198,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1243,7 +1243,7 @@ class Access():
 
         To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_cost = datasets.load_data('chi_euclidean')
+        >>> euclidean_cost = Datasets.load_data('chi_euclidean')
             euclidean_cost.head()
                 origin         dest     euclidean
         0  17093890101  17031010100  63630.788476
@@ -1297,15 +1297,15 @@ class Access():
         Examples
         --------
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1342,7 +1342,7 @@ class Access():
 
         To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_cost_neighbors = datasets.load_data('chi_euclidean_neighbors')
+        >>> euclidean_cost_neighbors = Datasets.load_data('chi_euclidean_neighbors')
             euclidean_cost_neighbors.head()
                 origin         dest  euclidean_neighbors
         0  17031010100  17031010100             0.000000
@@ -1399,16 +1399,16 @@ class Access():
 
         NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
-        >>> chi_population   = datasets.load_data('chi_pop_geom')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc_geom')
+        >>> chi_population   = Datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                      doc  dentist                       geometry
@@ -1527,16 +1527,16 @@ class Access():
 
         NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
-        Import the base `Access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import Access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
-        >>> chi_population   = datasets.load_data('chi_pop_geom')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc_geom')
+        >>> chi_population   = Datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                      doc  dentist                       geometry

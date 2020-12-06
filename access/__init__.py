@@ -5,4 +5,4 @@ __version__ = "1.1.2"
 """
 
 from .access import Access
-from .datasets import datasets
+from .datasets import Datasets
