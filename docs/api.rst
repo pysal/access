@@ -14,19 +14,19 @@ For the full definitions and examples of each method, see individual functions.
 
 .. autosummary::
    :toctree: generated/
-   
-    access
-    access.weighted_catchment
-    access.fca_ratio
-    access.two_stage_fca
-    access.enhanced_two_stage_fca
-    access.three_stage_fca
-    access.raam
-    access.score
-    access.create_euclidean_distance
-    access.create_euclidean_distance_neighbors
-    access.append_user_cost
-    access.append_user_cost_neighbors
+
+    Access
+    Access.weighted_catchment
+    Access.fca_ratio
+    Access.two_stage_fca
+    Access.enhanced_two_stage_fca
+    Access.three_stage_fca
+    Access.raam
+    Access.score
+    Access.create_euclidean_distance
+    Access.create_euclidean_distance_neighbors
+    Access.append_user_cost
+    Access.append_user_cost_neighbors
 
 
 Helper Functions
