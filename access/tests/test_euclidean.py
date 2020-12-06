@@ -7,7 +7,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from access import access, weights
+from access import Access, weights
 import util as tu
 
 
@@ -28,7 +28,7 @@ class TestEuclidean(unittest.TestCase):
                                     'dest'  : [1],
                                     'cost'  : [1]})
 
-        self.model = access(demand_df = demand_grid, demand_index = 'id',
+        self.model = Access(demand_df = demand_grid, demand_index = 'id',
                                                      demand_value = 'value',
                             supply_df = supply_grid, supply_index = 'id',
                                                      supply_value = 'value',
@@ -103,7 +103,7 @@ class TestEuclideanNeighbors(unittest.TestCase):
                                     'dest'  : [1, 0, 0, 1],
                                     'cost'  : [1, 0, 1, 0]})
 
-        self.model = access(demand_df = demand_grid, demand_index = 'id',
+        self.model = Access(demand_df = demand_grid, demand_index = 'id',
                                                      demand_value = 'value',
                             supply_df = supply_grid, supply_index = 'id',
                                                      supply_value = 'value',

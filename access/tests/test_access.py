@@ -7,7 +7,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from access import access, weights
+from access import Access, weights
 import util as tu
 
 
@@ -24,7 +24,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_index_name = 'Not a col in demand df'
 
-            access(demand_df = self.demand_grid, demand_index = bad_index_name,
+            Access(demand_df = self.demand_grid, demand_index = bad_index_name,
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value')
@@ -34,7 +34,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_index_name = 'Not a col in supply df'
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = bad_index_name,
                    supply_value = 'value')
@@ -44,7 +44,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_value_name = 'Not a col in demand df'
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = bad_value_name,
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value')
@@ -54,7 +54,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_value_name = 'Not a col in supply df'
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = bad_value_name)
@@ -64,7 +64,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_value_name = ['Not a col in supply df']
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = bad_value_name)
@@ -73,7 +73,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_with_supply_value_col_in_list(self):
         value_in_list = ['value']
 
-        self.model = access(demand_df = self.demand_grid, demand_index = 'id',
+        self.model = Access(demand_df = self.demand_grid, demand_index = 'id',
                             demand_value = 'value',
                             supply_df = self.supply_grid, supply_index = 'id',
                             supply_value = value_in_list)
@@ -87,7 +87,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             value_in_dict = {'value':''}
 
-            self.model = access(demand_df = self.demand_grid, demand_index = 'id',
+            self.model = Access(demand_df = self.demand_grid, demand_index = 'id',
                                 demand_value = 'value',
                                 supply_df = self.supply_grid, supply_index = 'id',
                                 supply_value = value_in_dict)
@@ -97,7 +97,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_origin = "Not a valid cost origin column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -111,7 +111,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_dest = "Not a valid cost dest column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -125,7 +125,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_name = "Not a valid cost name column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -139,7 +139,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_name = ["Not a valid cost name column"]
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -152,7 +152,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_with_valid_cost_name_in_list(self):
         cost_name_list = ['cost']
 
-        self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+        self.model =  Access(demand_df = self.demand_grid, demand_index = 'id',
                              demand_value = 'value',
                              supply_df = self.supply_grid, supply_index = 'id',
                              supply_value = 'value',
@@ -170,7 +170,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             cost_name_dict = {'cost':''}
 
-            self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+            self.model =  Access(demand_df = self.demand_grid, demand_index = 'id',
                                  demand_value = 'value',
                                  supply_df = self.supply_grid, supply_index = 'id',
                                  supply_value = 'value',
@@ -184,7 +184,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_origin = "Not a valid cost origin column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -198,7 +198,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_dest = "Not a valid cost dest column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -212,7 +212,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_name = "Not a valid cost name column"
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -226,7 +226,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_cost_name = ["Not a valid cost name column"]
 
-            access(demand_df = self.demand_grid, demand_index = 'id',
+            Access(demand_df = self.demand_grid, demand_index = 'id',
                    demand_value = 'value',
                    supply_df = self.supply_grid, supply_index = 'id',
                    supply_value = 'value',
@@ -239,7 +239,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_with_valid_neighbor_cost_name_in_list(self):
         cost_name_list = ['cost']
 
-        self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+        self.model =  Access(demand_df = self.demand_grid, demand_index = 'id',
                              demand_value = 'value',
                              supply_df = self.supply_grid, supply_index = 'id',
                              supply_value = 'value',
@@ -257,7 +257,7 @@ class TestAccess(unittest.TestCase):
         with self.assertRaises(ValueError):
             cost_name_dict = {'cost':''}
 
-            self.model =  access(demand_df = self.demand_grid, demand_index = 'id',
+            self.model =  Access(demand_df = self.demand_grid, demand_index = 'id',
                                  demand_value = 'value',
                                  supply_df = self.supply_grid, supply_index = 'id',
                                  supply_value = 'value',
