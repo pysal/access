@@ -7,13 +7,13 @@ from . import fca
 from . import raam
 from . import weights
 from . import helpers
-from .datasets import datasets
+from .datasets import Datasets
 
 access_log_stream = logging.StreamHandler()
 access_log_format = logging.Formatter('%(name)s %(levelname)-8s :: %(message)s')
 access_log_stream.setFormatter(access_log_format)
 
-class access():
+class Access():
     """
     Spatial Access Class
 
@@ -53,7 +53,7 @@ class access():
     Attributes
     ----------
 
-    access               : pandas.DataFrame
+    Access               : pandas.DataFrame
                            All of the calculated access measures.
     access_metadata      : pandas.DataFrame
                            Lists currently-available measures of access.
@@ -74,15 +74,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -108,9 +108,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -119,11 +119,11 @@ class access():
         """
         self.log = logging.getLogger("access")
 
-        if not access.logger_initialized:
+        if not Access.logger_initialized:
             self.log.addHandler(access_log_stream)
             self.log.setLevel(logging.INFO)
             self.log.propagate = False
-            access.logger_initialized = True
+            Access.logger_initialized = True
 
         self.supply_value_provided = True
 
@@ -294,9 +294,9 @@ class access():
         Examples
         --------
 
-        Create an access object, as detailed in __init__.py
+        Create an Access object, as detailed in __init__.py
 
-        >>> illinois_primary_care = access(<...>)
+        >>> illinois_primary_care = Access(<...>)
 
         Call the floating catchment area with max_cost only
 
@@ -363,15 +363,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -397,9 +397,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -471,7 +471,8 @@ class access():
         supply_values       : {str, list}
                               Name(s) of supply values in supply_df
         normalize           : bool
-                              If True, return normalized access values; otherwise, return raw access values                               tau                 : float
+                              If True, return normalized access values; otherwise, return raw access values
+        tau                 : float
                               tau parameter (travel time scale)
         rho                 : float
                               rho parameter (congestion cost scale)
@@ -496,16 +497,16 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -533,9 +534,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -555,7 +556,7 @@ class access():
         17197884103  2.244007      1.709857
         17197980100  2.225820      1.778264
 
-        You can access the results stored in the `access.access_df` attribute.
+        You can access the results stored in the `Access.access_df` attribute.
 
         >>> chicago_primary_care.access_df
                       pop  raam_doc  raam_dentist
@@ -569,7 +570,7 @@ class access():
         17197980100  3264  2.225820      1.778264
 
 
-        By providing a string to the `name` argument, you can call the `access.raam` method again using a different parameter of tau and save the outputs without overwriting previous ones.
+        By providing a string to the `name` argument, you can call the `Access.raam` method again using a different parameter of tau and save the outputs without overwriting previous ones.
 
         >>> chicago_primary_care.raam(name = "raam2", tau = 2)
         >>> chicago_primary_care.access_df
@@ -583,7 +584,7 @@ class access():
         17197884103  2776  2.244007      1.709857    1.900596        1.517022
         17197980100  3264  2.225820      1.778264    1.868281        1.582177
 
-        If euclidean costs are available (see :meth:`access.access.create_euclidean_distance`),
+        If euclidean costs are available (see :meth:`Access.access.create_euclidean_distance`),
         you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
@@ -654,15 +655,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -688,9 +689,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -723,7 +724,7 @@ class access():
         17197884103     0.000375         0.000382
         17197980100     0.000352         0.000318
 
-        Both newly created two stage fca measures are stored in the `access_df` attribute of the `access` object.
+        Both newly created two stage fca measures are stored in the `access_df` attribute of the `Access` object.
 
         >>> chicago_primary_care.access_df.head()
                       pop  2sfca_doc  2sfca_dentist  2sfca30_doc  2sfca30_dentist
@@ -783,7 +784,7 @@ class access():
                                max_cost = None, weight_fn = None, normalize = False):
         """Calculate the enhanced two-stage floating catchment area access score.
         Note that the only 'practical' difference between this function and the
-        :meth:`access.access.two_stage_fca` is that the weight function from the original paper,
+        :meth:`Access.access.two_stage_fca` is that the weight function from the original paper,
         `weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})` is applied if none is provided.
 
         Parameters
@@ -810,15 +811,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -845,9 +846,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -885,7 +886,7 @@ class access():
         17197884103     0.000289         0.000243
         17197980100     0.000333         0.000268
 
-        Both newly created enhanced two stage fca measures are stored in the `access_df` attribute of the `access` object.
+        Both newly created enhanced two stage fca measures are stored in the `access_df` attribute of the `Access` object.
 
         >>> chicago_primary_care.access_df.head()
                       pop  2sfca30_doc  2sfca30_dentist  2sfca60_doc  2sfca60_dentist
@@ -904,7 +905,7 @@ class access():
         return self.two_stage_fca(name, cost, max_cost, supply_values, weight_fn, normalize)
 
 
-    def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None, 
+    def three_stage_fca(self, name = "3sfca", cost = None, supply_values = None,
                         max_cost = None, weight_fn = None, normalize = False):
         """Calculate the three-stage floating catchment area access score.
 
@@ -930,15 +931,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -964,9 +965,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -984,7 +985,7 @@ class access():
         17197884103   0.000404       0.000464
         17197980100   0.000365       0.000407
 
-        The newly calculated 3sfca access measure is added to the `access_df` attribute of the `access` object.
+        The newly calculated 3sfca access measure is added to the `access_df` attribute of the `Access` object.
 
         >>> chicago_primary_care.access_df.head()
                              3sfca_doc  3sfca_dentist
@@ -1059,16 +1060,16 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1096,9 +1097,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -1197,15 +1198,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1231,9 +1232,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -1242,7 +1243,7 @@ class access():
 
         To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_cost = datasets.load_data('chi_euclidean')
+        >>> euclidean_cost = Datasets.load_data('chi_euclidean')
             euclidean_cost.head()
                 origin         dest     euclidean
         0  17093890101  17031010100  63630.788476
@@ -1251,7 +1252,7 @@ class access():
         3  17093890101  17031010300  63520.029749
         4  17093890101  17031010400  63268.514352
 
-        Add new cost data to existing `access` instance.
+        Add new cost data to existing `Access` instance.
 
         >>> chicago_primary_care.append_user_cost(new_cost_df = euclidean_cost,
                                            name = "euclidean",
@@ -1296,15 +1297,15 @@ class access():
         Examples
         --------
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets:
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc')
-        >>> chi_population   = datasets.load_data('chi_pop')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc')
+        >>> chi_population   = Datasets.load_data('chi_pop')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                  geoid  doc  dentist
@@ -1330,9 +1331,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Using the example data, create an `access` object.
+        Using the example data, create an `Access` object.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -1341,7 +1342,7 @@ class access():
 
         To add a new cost from demand to supply locations, first load the new cost data.
 
-        >>> euclidean_cost_neighbors = datasets.load_data('chi_euclidean_neighbors')
+        >>> euclidean_cost_neighbors = Datasets.load_data('chi_euclidean_neighbors')
             euclidean_cost_neighbors.head()
                 origin         dest  euclidean_neighbors
         0  17031010100  17031010100             0.000000
@@ -1350,7 +1351,7 @@ class access():
         3  17031010100  17031010300           653.415713
         4  17031010100  17031010400          2065.375554
 
-        Add new cost data to existing `access` instance.
+        Add new cost data to existing `Access` instance.
 
         >>> chicago_primary_care.append_user_cost_neighbors(new_cost_df = euclidean_cost_neighbors,
                                                      name = "euclidean_neighbors",
@@ -1398,16 +1399,16 @@ class access():
 
         NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
-        >>> chi_population   = datasets.load_data('chi_pop_geom')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc_geom')
+        >>> chi_population   = Datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                      doc  dentist                       geometry
@@ -1437,9 +1438,9 @@ class access():
         3  17093890101  17031010300  89.40
         4  17093890101  17031010400  84.97
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],
@@ -1450,7 +1451,7 @@ class access():
 
         >>> chicago_primary_care.create_euclidean_distance(threshold = 250000, centroid_o = True, centroid_d = True)
 
-        The newly calculated euclidean costs are added to the `cost_df` attribute of the `access` class.
+        The newly calculated euclidean costs are added to the `cost_df` attribute of the `Access` class.
 
         >>> chicago_primary_care_geom.cost_df.head()
                 origin         dest   cost     euclidean
@@ -1526,16 +1527,16 @@ class access():
 
         NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame <http://geopandas.org/reference/geopandas.GeoDataFrame.html>`_.
 
-        Import the base `access` class and `datasets`.
+        Import the base `Access` class and `Datasets`.
 
-        >>> from access import access, datasets
+        >>> from access import Access, Datasets
 
         Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
         and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.
 
-        >>> chi_docs_dents   = datasets.load_data('chi_doc_geom')
-        >>> chi_population   = datasets.load_data('chi_pop_geom')
-        >>> chi_travel_costs = datasets.load_data('chi_times')
+        >>> chi_docs_dents   = Datasets.load_data('chi_doc_geom')
+        >>> chi_population   = Datasets.load_data('chi_pop_geom')
+        >>> chi_travel_costs = Datasets.load_data('chi_times')
 
         >>> chi_docs_dents.head()
                      doc  dentist                       geometry
@@ -1570,9 +1571,9 @@ class access():
         >>> chi_population = chi_population.to_crs(epsg = 2790)
         >>> chi_docs_dents = chi_docs_dents.to_crs(epsg = 2790)
 
-        Now, create an instance of the `access` class and specify the demand, supply, and cost datasets.
+        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.
 
-        >>> chicago_primary_care = access(demand_df = chi_population, demand_index = "geoid",
+        >>> chicago_primary_care = Access(demand_df = chi_population, demand_index = "geoid",
                                           demand_value = "pop",
                                           supply_df = chi_docs_dents, supply_index = "geoid",
                                           supply_value = ["doc", "dentist"],

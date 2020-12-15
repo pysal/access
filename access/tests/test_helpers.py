@@ -7,7 +7,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from access import access, weights, helpers
+from access import Access, weights, helpers
 import util as tu
 
 
@@ -19,7 +19,7 @@ class TestHelpers(unittest.TestCase):
         demand_grid = supply_grid.sample(1)
         cost_matrix = tu.create_cost_matrix(supply_grid, 'euclidean')
 
-        self.model = access(demand_df = demand_grid, demand_index = 'id',
+        self.model = Access(demand_df = demand_grid, demand_index = 'id',
                             demand_value = 'value',
                             supply_df = supply_grid, supply_index = 'id',
                             supply_value = 'value',
