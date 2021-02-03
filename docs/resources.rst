@@ -436,7 +436,7 @@ The necessary containers can be found `here <https://github.com/dfsnow/otp-routi
 `here <https://github.com/dfsnow/otp-resources>`_ 
 and are also available on `DockerHub <https://cloud.docker.com/u/snowdfs>`_.
 All matrices were generated with the following settings using all land-based GTFS feeds
-available in a given county buffer, including e.g. buses, subways, and lightrail (no ferries are included). Note that some places do not have
+available in a given county buffer, including e.g. buses, subways, and lightrail (no ferries are included). 
 
 .. raw:: html
 
