@@ -88,6 +88,8 @@ Authors
 - Concept and Documentation: `Julia Koschinsky, PhD <https://www.linkedin.com/in/julia-koschinsky-657599b1/>`_, `Karina Acosta Ordonez <https://aap.cornell.edu/academics/crp/graduate/planning/phd/student-profiles#science>`_, and `James Saxon, PhD <https://128.135.123.230/>`_
 |
 
+Citation: `Saxon, James, Julia Koschinsky, Karina Acosta, Vidal Anguiano, Luc Anselin, and Sergio Rey. (2020). An Open Software Environment to Make Spatial Access Metrics More Accessible. University of Chicago: Center for Spatial Data Science. Preprint doi:10.13140/RG.2.2.12396.28807`_ <https://www.researchgate.net/publication/350338824_An_Open_Software_Environment_to_Make_Spatial_Access_Metrics_More_Accessible>
+
 .. toctree::
    :hidden:
    :maxdepth: 3
