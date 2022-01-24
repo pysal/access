@@ -299,7 +299,7 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
 
     #create preference weight 'G', which is the weight
     cost_df["W3"] = cost_df[cost_name].apply(weight_fn)
-    W3sum_frame = cost_df[["origin", "W3"]].groupby('origin').sum().rename(columns = {"W3" : "W3sum"}).reset_index()
+    W3sum_frame = cost_df[[cost_origin, "W3"]].groupby(cost_origin).sum().rename(columns = {"W3" : "W3sum"}).reset_index()
     cost_df = pd.merge(cost_df, W3sum_frame)
     cost_df["G"] = cost_df.W3 / cost_df.W3sum
 
