@@ -5,8 +5,8 @@ branches:
     - master
     - example_updates
 python:
-  - 3.5
   - 3.6
+  - 3.7
 
 # to add testing, replace PACKAGE_NAME with your package's name, and {AUTHOR_EMAILS} with a
 # YAML list of author emails, like:
