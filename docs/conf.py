@@ -45,6 +45,12 @@ extensions = [#'sphinx_gallery.gen_gallery',
               'numpydoc',
               'matplotlib.sphinxext.plot_directive']
 
+# Bib Variables
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
+
+bibtex_bibfiles = ["_static/references.bib"]
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -261,4 +267,11 @@ def setup(app):
     app.add_stylesheet("pysal-styles.css")
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/3.6/': None}
+intersphinx_mapping = {'https://docs.python.org/3.6/': None,
+                        "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+                        "libpysal": ("https://pysal.org/libpysal/", None),
+                        "matplotlib": ("https://matplotlib.org/", None),
+                        "numpy": ("https://numpy.org/doc/stable/", None),
+                        "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+                        "python": ("https://docs.python.org/3.9/", None),
+                        "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),}
