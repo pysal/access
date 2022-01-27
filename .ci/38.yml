@@ -2,7 +2,7 @@ name: access_38
 channels:
     - conda-forge
 dependencies:
-    - python ==3.8
+    - python =3.8
     - scipy >=0.11
     - numpy >=1.3
     - pandas >=0.23.4
