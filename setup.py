@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os.path
 from distutils.command.build_py import build_py
 
 # Get __version__ from access/__init__.py without importing the package
@@ -39,8 +38,6 @@ def setup_package():
           url='https://access.readthedocs.io/en/latest/', #github repo
           maintainer='James Saxon',
           maintainer_email='jsaxon@uchicago.edu',
-          test_suite = 'nose.collector',
-          tests_require=['nose'],
           keywords='spatial statistics access',
           classifiers=[
             'Development Status :: 5 - Production/Stable',
@@ -51,8 +48,10 @@ def setup_package():
             'Topic :: Scientific/Engineering :: GIS',
             'License :: OSI Approved :: BSD License',
             'Programming Language :: Python',
-            'Programming Language :: Python :: 3.5',
-            'Programming Language :: Python :: 3.6'
+            'Programming Language :: Python :: 3.7'
+            'Programming Language :: Python :: 3.8'
+            'Programming Language :: Python :: 3.9'
+            'Programming Language :: Python :: 3.10'
             ],
           license='3-Clause BSD',
           packages=find_packages(),
