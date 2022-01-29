@@ -22,10 +22,10 @@
          environment-file: [.ci/37.yml, .ci/38.yml, .ci/39.yml, .ci/310.yml]
          experimental: [false]
          include:
-           - environment-file: ci/310.yml
+           - environment-file: .ci/310.yml
              experimental: false
              os: macos-latest
-           - environment-file: ci/310.yml
+           - environment-file: .ci/310.yml
              os: windows-latest
              experimental: false
          
