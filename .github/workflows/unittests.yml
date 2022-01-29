@@ -11,7 +11,7 @@
    unittests:
      name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
      env:
-       INSTALL: pip install -e .
+       INSTALL: pip install -e . 
        RUN_TEST: pytest -v -n auto access --cov access --cov-report xml --color yes --cov-append --cov-report term-missing
      runs-on: ${{ matrix.os }}
      continue-on-error: ${{ matrix.experimental }}
