@@ -10,6 +10,9 @@
  jobs:
    unittests:
      name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
+     env:
+       INSTALL: pip install -e . --no-deps --force-reinstall
+       RUN_TEST: pytest -v -n auto access --cov access --cov-report xml --color yes --cov-append --cov-report term-missing
      runs-on: ${{ matrix.os }}
      continue-on-error: ${{ matrix.experimental }}
      timeout-minutes: 90
@@ -35,22 +38,22 @@
         
        - name: reinstall access - bash
          shell: bash -l {0}
-         run: pip install -e . --no-deps --force-reinstall
+         run: ${{ env.INSTALL }}
          if: matrix.os != 'windows-latest'
       
        - name: reinstall access - powershell
          shell: powershell
-         run: pip install -e . --no-deps --force-reinstall
+         run: ${{ env.INSTALL }}
          if: matrix.os == 'windows-latest'
        
        - name: run pytest - bash
          shell: bash -l {0}
-         run: pytest -v access --cov=access --cov-report=xml
+         run: ${{ env.RUN_TEST }}
          if: matrix.os != 'windows-latest'
        
        - name: run pytest - powershell
          shell: powershell
-         run: pytest -v access --cov=access --cov-report=xml
+         run: ${{ env.RUN_TEST }}
          if: matrix.os == 'windows-latest'
        
        - name: codecov
