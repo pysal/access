@@ -15,4 +15,5 @@ dependencies:
     - pytest
     - pytest-mpl
     - pytest-cov
+    - pytest-xdist
     - twine
