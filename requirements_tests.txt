@@ -1,7 +1,8 @@
-nose
-nose-progressive
-nose-exclude
 coverage
 coveralls
 matplotlib
+pytest
+pytest-cov
+pytest-mpl
+pytest-xdist
 scipy>=0.11
