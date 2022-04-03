@@ -303,17 +303,17 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
                                           weight_fn = weight_fn, three_stage_weight = True)
 
     #create a temporary dataframe, temp, that holds the supply and aggregate demand at each location
-    temp = supply_df.join(total_demand_series, how = 'right', rsuffix = 'r')
+    temp = supply_df.join(total_demand_series, how = 'right', rsuffix = '_W')
 
     #there may be NA values due to a shorter supply dataframe than the demand dataframe.
     #in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.
     temp[supply_name].fillna(0, inplace = True)
 
     #calculate the fractional ratio of supply to aggregate demand at each location, or Rl
-    temp['Rl'] = temp[supply_name] / temp[demand_name]
+    temp['Rl'] = temp[supply_name] / temp[demand_name + "_W"]
 
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
-    supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
+    supply_to_total_demand_frame = pd.DataFrame(data = {'Rl' : temp['Rl']})
     supply_to_total_demand_frame.index.name = 'geoid'
 
     #sum, into a series, the supply to total demand ratios for each location
