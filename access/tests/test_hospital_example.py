@@ -34,7 +34,7 @@ def simple_2sfca(OD, supply, demand, locs, max_travel = 61, three_stage = False)
         W = 1 / OD
 
         WS = W.sum(axis = 0)       # Sum over destinations / within columns.
-        G = W.divide(WS, axis = 1) # Sum 
+        G = W.divide(WS, axis = 1) # Divide columns by their sums.
 
         GOD = OD / G
 
