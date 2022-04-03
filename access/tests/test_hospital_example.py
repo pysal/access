@@ -163,10 +163,13 @@ class TestHospitalExample(unittest.TestCase):
 
         # Instantiate the objects and run access.
         self.access_scenarios = {}
+        self.access_values    = {}
         self.reference_model  = {}
+
         for n, costs in enumerate(self.costs):
             self.access_scenarios[n] = Access(**params, cost_df = costs)
             self.access_scenarios[n].two_stage_fca(name = f"s{n}", weight_fn = weights.gravity(1, -1), max_cost = 61)
+            self.access_values[n] = self.access_scenarios[n].access_df[f"s{n}_doc"].to_dict()
             
             OD = costs.pivot_table(index = "origin", columns = "dest", values = "cost").T
             self.reference_model[n] = simple_2sfca(OD, docs, pops, locs)
@@ -221,48 +224,36 @@ class TestHospitalExample(unittest.TestCase):
 
     def test_scenario_0_v_1(self):
 
-        v0 = self.access_scenarios[0].access_df[f"s0_doc"].to_dict()
-        v1 = self.access_scenarios[1].access_df[f"s1_doc"].to_dict()
-
         # access at 1 should increase. Supply at 3 is more pertinent / lower cost since people can get there faster.
-        self.assertTrue(v1[1] > v0[1])
+        self.assertTrue(self.access_values[1][1] > self.access_values[0][1])
 
         # access at 2 should increase. Same reasoning as above.
-        self.assertTrue(v1[2] > v0[2])
+        self.assertTrue(self.access_values[1][2] > self.access_values[0][2])
 
         # access at 3 should decrease. More patients from 1 and 2 means greater demands on 3's doctors.
-        self.assertTrue(v1[3] < v0[3])
+        self.assertTrue(self.access_values[1][3] < self.access_values[0][3])
     
-
     def test_scenario_0_v_2(self):
-
-        v0 = self.access_scenarios[0].access_df[f"s0_doc"].to_dict()
-        v2 = self.access_scenarios[2].access_df[f"s2_doc"].to_dict()
 
         # access at 1 should decrease. There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(v2[1] < v0[1])
+        self.assertTrue(self.access_values[2][1] < self.access_values[0][1])
 
         # access at 2 should decrease. There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(v2[2] < v0[2])
+        self.assertTrue(self.access_values[2][2] < self.access_values[0][2])
 
         # access at 3 should increase. There is more supply available from 1,2 since people can get there faster
-        self.assertTrue(v2[3] > v0[3])
+        self.assertTrue(self.access_values[2][3] > self.access_values[0][3])
 
 
-    def test_scenario_0_v_2(self):
-
-        v0 = self.access_scenarios[0].access_df[f"s0_doc"].to_dict()
-        v3 = self.access_scenarios[3].access_df[f"s3_doc"].to_dict()
+    def test_scenario_0_v_3(self):
 
         # access at 1 should increase. It is easier to use the place with more docs.
-        self.assertTrue(v3[1] > v0[1])
+        self.assertTrue(self.access_values[3][1] > self.access_values[0][1])
 
         # access at 2 should increase. Same reasoning as for 1.
-        self.assertTrue(v3[2] > v0[2])
+        self.assertTrue(self.access_values[3][2] > self.access_values[0][2])
 
         # access at 3 should decrease. Same but in reverse -- suburbanites are using "urban" supply.
-        self.assertTrue(v3[3] < v0[3])
+        self.assertTrue(self.access_values[3][3] < self.access_values[0][3])
     
     
-            
-
