@@ -11,7 +11,7 @@ from access import Access, weights
 import util as tu
 
 
-def simple_2sfca(OD, supply, demand, locs, max_travel = 61):
+def simple_2sfca(OD, supply, demand, locs, max_travel = 61, three_stage = False):
     """
     Base python implementation / sanity check of 2SFCA results.
 
@@ -28,16 +28,27 @@ def simple_2sfca(OD, supply, demand, locs, max_travel = 61):
         
     """
 
-    D = {hosp : sum(demand[res] / OD[res][hosp]
+    GOD = OD
+    if three_stage: 
+
+        W = 1 / OD
+
+        WS = W.sum(axis = 0)       # Sum over destinations / within columns.
+        G = W.divide(WS, axis = 1) # Sum 
+
+        GOD = OD / G
+
+
+    D = {hosp : sum(demand[res] / GOD[res][hosp]
                     for res in locs
                     if OD[res][hosp] < max_travel)
          for hosp in locs}
 
     R = {l : supply[l] / D[l] for l in locs}
 
-    A = {res : sum(R[hosp] / OD[res][hosp]
+    A = {res : sum(R[hosp] / GOD[res][hosp]
                    for hosp in locs
-                    if OD[res][hosp] < max_travel)
+                   if OD[res][hosp] < max_travel)
          for res in locs}
 
     return A
@@ -162,98 +173,110 @@ class TestHospitalExample(unittest.TestCase):
         
 
         # Instantiate the objects and run access.
-        self.access_scenarios = {}
-        self.access_values    = {}
-        self.reference_model  = {}
+        self.val_2sfca        = {}
+        self.val_3sfca        = {}
+        self.reference_2sfca  = {}
+        self.reference_3sfca  = {}
 
         for n, costs in enumerate(self.costs):
-            self.access_scenarios[n] = Access(**params, cost_df = costs)
-            self.access_scenarios[n].two_stage_fca(name = f"s{n}", weight_fn = weights.gravity(1, -1), max_cost = 61)
-            self.access_values[n] = self.access_scenarios[n].access_df[f"s{n}_doc"].to_dict()
+
+            a = Access(**params, cost_df = costs)
+            a.two_stage_fca  (name = f"2sfca_s{n}", weight_fn = weights.gravity(1, -1), max_cost = 61)
+            a.three_stage_fca(name = f"3sfca_s{n}", weight_fn = weights.gravity(1, -1), max_cost = 61)
+
+            self.val_2sfca[n] = a.access_df[f"2sfca_s{n}_doc"].to_dict()
+            self.val_3sfca[n] = a.access_df[f"3sfca_s{n}_doc"].to_dict()
             
             OD = costs.pivot_table(index = "origin", columns = "dest", values = "cost").T
-            self.reference_model[n] = simple_2sfca(OD, docs, pops, locs)
-    	
+
+            self.reference_2sfca[n] = simple_2sfca(OD, docs, pops, locs)
+            self.reference_3sfca[n] = simple_2sfca(OD, docs, pops, locs, three_stage = True)
 
 
     def test_simple_2sfca_scenario_0(self):
 
-        s = 0
-
-        access_dict = self.access_scenarios[s].access_df[f"s{s}_doc"].to_dict()
-        simple_dict = self.reference_model[s]
-
-        self.assertAlmostEqual(access_dict[1], simple_dict[1])
-        self.assertAlmostEqual(access_dict[2], simple_dict[2])
-        self.assertAlmostEqual(access_dict[3], simple_dict[3])
+        self.assertAlmostEqual(self.val_2sfca[0][1], self.reference_2sfca[0][1])
+        self.assertAlmostEqual(self.val_2sfca[0][2], self.reference_2sfca[0][2])
+        self.assertAlmostEqual(self.val_2sfca[0][3], self.reference_2sfca[0][3])
 
     def test_simple_2sfca_scenario_1(self):
 
-        s = 1
-
-        access_dict = self.access_scenarios[s].access_df[f"s{s}_doc"].to_dict()
-        simple_dict = self.reference_model[s]
-
-        self.assertAlmostEqual(access_dict[1], simple_dict[1])
-        self.assertAlmostEqual(access_dict[2], simple_dict[2])
-        self.assertAlmostEqual(access_dict[3], simple_dict[3])
-            
+        self.assertAlmostEqual(self.val_2sfca[1][1], self.reference_2sfca[1][1])
+        self.assertAlmostEqual(self.val_2sfca[1][2], self.reference_2sfca[1][2])
+        self.assertAlmostEqual(self.val_2sfca[1][3], self.reference_2sfca[1][3])
 
     def test_simple_2sfca_scenario_2(self):
 
-        s = 2
-
-        access_dict = self.access_scenarios[s].access_df[f"s{s}_doc"].to_dict()
-        simple_dict = self.reference_model[s]
-
-        self.assertAlmostEqual(access_dict[1], simple_dict[1])
-        self.assertAlmostEqual(access_dict[2], simple_dict[2])
-        self.assertAlmostEqual(access_dict[3], simple_dict[3])
-            
+        self.assertAlmostEqual(self.val_2sfca[2][1], self.reference_2sfca[2][1])
+        self.assertAlmostEqual(self.val_2sfca[2][2], self.reference_2sfca[2][2])
+        self.assertAlmostEqual(self.val_2sfca[2][3], self.reference_2sfca[2][3])
 
     def test_simple_2sfca_scenario_3(self):
 
-        s = 3
-
-        access_dict = self.access_scenarios[s].access_df[f"s{s}_doc"].to_dict()
-        simple_dict = self.reference_model[s]
-
-        self.assertAlmostEqual(access_dict[1], simple_dict[1])
-        self.assertAlmostEqual(access_dict[2], simple_dict[2])
-        self.assertAlmostEqual(access_dict[3], simple_dict[3])
+        self.assertAlmostEqual(self.val_2sfca[3][1], self.reference_2sfca[3][1])
+        self.assertAlmostEqual(self.val_2sfca[3][2], self.reference_2sfca[3][2])
+        self.assertAlmostEqual(self.val_2sfca[3][3], self.reference_2sfca[3][3])
 
     def test_scenario_0_v_1(self):
 
         # access at 1 should increase. Supply at 3 is more pertinent / lower cost since people can get there faster.
-        self.assertTrue(self.access_values[1][1] > self.access_values[0][1])
+        self.assertTrue(self.val_2sfca[1][1] > self.val_2sfca[0][1])
 
         # access at 2 should increase. Same reasoning as above.
-        self.assertTrue(self.access_values[1][2] > self.access_values[0][2])
+        self.assertTrue(self.val_2sfca[1][2] > self.val_2sfca[0][2])
 
         # access at 3 should decrease. More patients from 1 and 2 means greater demands on 3's doctors.
-        self.assertTrue(self.access_values[1][3] < self.access_values[0][3])
+        self.assertTrue(self.val_2sfca[1][3] < self.val_2sfca[0][3])
     
     def test_scenario_0_v_2(self):
 
         # access at 1 should decrease. There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(self.access_values[2][1] < self.access_values[0][1])
+        self.assertTrue(self.val_2sfca[2][1] < self.val_2sfca[0][1])
 
         # access at 2 should decrease. There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(self.access_values[2][2] < self.access_values[0][2])
+        self.assertTrue(self.val_2sfca[2][2] < self.val_2sfca[0][2])
 
         # access at 3 should increase. There is more supply available from 1,2 since people can get there faster
-        self.assertTrue(self.access_values[2][3] > self.access_values[0][3])
+        self.assertTrue(self.val_2sfca[2][3] > self.val_2sfca[0][3])
 
 
     def test_scenario_0_v_3(self):
 
         # access at 1 should increase. It is easier to use the place with more docs.
-        self.assertTrue(self.access_values[3][1] > self.access_values[0][1])
+        self.assertTrue(self.val_2sfca[3][1] > self.val_2sfca[0][1])
 
         # access at 2 should increase. Same reasoning as for 1.
-        self.assertTrue(self.access_values[3][2] > self.access_values[0][2])
+        self.assertTrue(self.val_2sfca[3][2] > self.val_2sfca[0][2])
 
         # access at 3 should decrease. Same but in reverse -- suburbanites are using "urban" supply.
-        self.assertTrue(self.access_values[3][3] < self.access_values[0][3])
+        self.assertTrue(self.val_2sfca[3][3] < self.val_2sfca[0][3])
+
+    def test_simple_3sfca_scenario_0(self):
+
+        self.assertAlmostEqual(self.val_3sfca[0][1], self.reference_3sfca[0][1])
+        self.assertAlmostEqual(self.val_3sfca[0][2], self.reference_3sfca[0][2])
+        self.assertAlmostEqual(self.val_3sfca[0][3], self.reference_3sfca[0][3])
+
+    def test_simple_3sfca_scenario_1(self):
+
+        self.assertAlmostEqual(self.val_3sfca[1][1], self.reference_3sfca[1][1])
+        self.assertAlmostEqual(self.val_3sfca[1][2], self.reference_3sfca[1][2])
+        self.assertAlmostEqual(self.val_3sfca[1][3], self.reference_3sfca[1][3])
+
+    def test_simple_3sfca_scenario_2(self):
+
+        self.assertAlmostEqual(self.val_3sfca[2][1], self.reference_3sfca[2][1])
+        self.assertAlmostEqual(self.val_3sfca[2][2], self.reference_3sfca[2][2])
+        self.assertAlmostEqual(self.val_3sfca[2][3], self.reference_3sfca[2][3])
+
+    def test_simple_3sfca_scenario_3(self):
+
+        self.assertAlmostEqual(self.val_3sfca[3][1], self.reference_3sfca[3][1])
+        self.assertAlmostEqual(self.val_3sfca[3][2], self.reference_3sfca[3][2])
+        self.assertAlmostEqual(self.val_3sfca[3][3], self.reference_3sfca[3][3])
+
+
+
+
     
     

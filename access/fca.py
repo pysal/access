@@ -318,9 +318,9 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
 
     #sum, into a series, the supply to total demand ratios for each location
     three_stage_fca_series = weighted_catchment(supply_to_total_demand_frame, cost_df.sort_index(), max_cost,
-                                          cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
-                                          loc_index = 'geoid', loc_value = "Rl",
-                                          weight_fn = weight_fn, three_stage_weight = True)
+                                                cost_source = cost_dest, cost_dest = cost_origin, cost_cost = cost_name,
+                                                loc_index = 'geoid', loc_value = "Rl",
+                                                weight_fn = weight_fn, three_stage_weight = True)
 
     #remove the preference weight G from the original costs dataframe
     cost_df.drop(columns = ["G", "W3", "W3sum"], inplace = True)
