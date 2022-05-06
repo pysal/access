@@ -45,7 +45,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.fca_ratio(max_cost = small_catchment)
         actual = self.model.access_df.iloc[0]['fca_value']
 
-        self.assertEqual(actual, 1)
+        self.assertTrue((1 == self.model.access_df['fca_value']).all())
 
 
     def test_floating_catchment_area_ratio_large_catchment_normalized(self):
@@ -84,7 +84,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.two_stage_fca()
         actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_two_stage_floating_catchment_area_small_catchment(self):
@@ -124,7 +124,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.two_stage_fca(supply_values = 'value')
         actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_two_stage_floating_catchment_area_run_again_and_test_overwrite(self):
@@ -132,7 +132,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.two_stage_fca()
         actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_two_stage_floating_catchment_area_large_catchment_normalize(self):
@@ -140,7 +140,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
 
         actual = self.model.access_df.iloc[0]['2sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_three_stage_floating_catchment_area_large_catchment(self):
@@ -148,7 +148,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.three_stage_fca(weight_fn = wfn)
         actual = self.model.access_df.iloc[0]['3sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_three_stage_floating_catchment_area_large_catchment_run_again_and_test_overwrite(self):
@@ -157,7 +157,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.three_stage_fca(weight_fn = wfn)
         actual = self.model.access_df.iloc[0]['3sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_three_stage_floating_catchment_area_large_catchment_normalize(self):
@@ -165,7 +165,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.three_stage_fca(weight_fn = wfn, normalize = True)
         actual = self.model.access_df.iloc[0]['3sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_three_stage_floating_catchment_area_small_catchment(self):
@@ -190,7 +190,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
         result = self.model.enhanced_two_stage_fca()
         actual = self.model.access_df.iloc[0]['e2sfca_value']
 
-        self.assertEqual(actual, 25)
+        self.assertEqual(actual, 5)
 
 
     def test_enhanced_two_stage_floating_catchment_area_small_catchment(self):

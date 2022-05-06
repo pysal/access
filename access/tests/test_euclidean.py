@@ -81,7 +81,7 @@ class TestEuclidean(unittest.TestCase):
 
         actual = hasattr(self.model, '_default_cost')
 
-        self.assertEquals(actual, True)
+        self.assertEqual(actual, True)
 
 
 class TestEuclideanNeighbors(unittest.TestCase):
@@ -144,4 +144,4 @@ class TestEuclideanNeighbors(unittest.TestCase):
 
         actual = hasattr(self.model, '_neighbor_default_cost')
 
-        self.assertEquals(actual, True)
+        self.assertEqual(actual, True)
