@@ -24,7 +24,7 @@ jobs:
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
-        password: ${{ secrets.pypi_password }}
+        password: ${{ secrets.PYPI_PASSWORD }}
     - name: Run Changelog
       run: |
         jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 --ExecutePreprocessor.kernel_name=python3 tools/gitcount.ipynb
