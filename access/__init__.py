@@ -1,4 +1,4 @@
-__version__ = "1.1.3"
+__version__ = "1.1.6"
 """
 :mod:`access` --- Accessibility Metrics
 =================================================
