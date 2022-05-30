@@ -8,6 +8,7 @@ notebooks/.ipynb_checkpoints/
 *.bak
 .eggs/
 *.egg-info/
+notebooks/results.csv
 
 # Packages
 *.egg
