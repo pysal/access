@@ -221,7 +221,10 @@ def two_stage_fca(demand_df, supply_df, cost_df, max_cost = None,
     temp[supply_name].fillna(0, inplace = True)
 
     #calculate the fractional ratio of supply to aggregate demand at each location, or Rl
-    temp['Rl'] = temp[supply_name] / temp[demand_name]
+    if demand_name + '_W' in temp.columns:
+        temp['Rl'] = temp[supply_name] / temp[demand_name + '_W']
+    else:
+        temp['Rl'] = temp[supply_name] / temp[demand_name]
 
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl':temp['Rl']})
@@ -310,7 +313,10 @@ def three_stage_fca(demand_df, supply_df, cost_df, max_cost,
     temp[supply_name].fillna(0, inplace = True)
 
     #calculate the fractional ratio of supply to aggregate demand at each location, or Rl
-    temp['Rl'] = temp[supply_name] / temp[demand_name]
+    if demand_name + '_W' in temp.columns:
+        temp['Rl'] = temp[supply_name] / temp[demand_name + '_W']
+    else:
+        temp['Rl'] = temp[supply_name] / temp[demand_name]
 
     #separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data = {'Rl' : temp['Rl']})
