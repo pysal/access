@@ -16,6 +16,6 @@ Data Preparation
 
 Implementing access
 -------------------
-- `How to Use access to Compute Access Scores to Resources Given XY Coordinates (Notebook)  <https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/How%20to%20Use%20access%20%20to%20Compute%20Access%20to%20Locations%20Given%20X%20Y%20Coordinates.ipynb>`_
+- `How to Use access to Compute Access Scores to Resources Given XY Coordinates (Notebook)  <https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20to%20Locations%20Given%20X%20Y%20Coordinates.ipynb>`_
 - `How to Use access to Compute Access Scores to Resources Given XY Coordinates Snapped to Census Tract Centroids (Notebook)  <https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb>`_
 - `Building Gravity Models, Producing Composite Access Scores, and Producing Euclidean Distance Cost Matricies (Notebook)  <https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb>`_
