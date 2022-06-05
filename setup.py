@@ -1,10 +1,7 @@
 from setuptools import setup, find_packages
 from distutils.command.build_py import build_py
+import versioneer
 
-# Get __version__ from access/__init__.py without importing the package
-# __version__ has to be defined in the first line
-with open("access/__init__.py", "r") as f:
-    exec(f.readline())
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -34,7 +31,8 @@ def setup_package():
 
     setup(
         name="access",  # name of package
-        version=__version__,
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass({"build_py": build_py}),
         description="Calculate spatial accessibility metrics.",  # short <80chr description
         long_description=long_description,
         long_description_content_type="text/markdown",
