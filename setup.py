@@ -59,7 +59,6 @@ def setup_package():
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
-        cmdclass={"build.py": build_py},
     )
 
 
