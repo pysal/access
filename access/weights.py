@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def step_fn(step_dict):
     """
     Create a step function from a dictionary.
@@ -33,21 +34,22 @@ def step_fn(step_dict):
     """
 
     if type(step_dict) != dict:
-        raise TypeError('step_dict must be of type dict.')
+        raise TypeError("step_dict must be of type dict.")
 
     for v in step_dict.values():
         if v < 0:
-            raise ValueError('All weights must be positive.')
+            raise ValueError("All weights must be positive.")
 
     def helper(key_to_test):
 
-        for k,v in sorted(step_dict.items()):
+        for k, v in sorted(step_dict.items()):
             if key_to_test <= k:
                 return v
 
         return 0
 
     return helper
+
 
 def gaussian(sigma):
     """
@@ -93,10 +95,10 @@ def gaussian(sigma):
     if sigma == 0:
         raise ValueError("Sigma must be non-zero.")
 
-    return lambda x: np.exp(-x*x / (2 * sigma**2)) # / np.sqrt(2*np.pi*sigma**2)
+    return lambda x: np.exp(-x * x / (2 * sigma**2))  # / np.sqrt(2*np.pi*sigma**2)
 
 
-def gravity(scale, alpha, min_dist = 0):
+def gravity(scale, alpha, min_dist=0):
     """
     Create a gravity function from a scale :math:`s` and :math:`\\alpha` parameters
     as well as an optional minimum distance :math:`x_\\text{min}`.
