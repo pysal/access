@@ -2,5 +2,5 @@
 
 This package provides classical and novel measures of spatial accessibility to services.
 
-For full documentation, see [access.readthedocs.io](https://access.readthedocs.io/en/latest/).
+For full documentation, see [here](https://pysal.org/access/).
 
