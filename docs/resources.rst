@@ -594,10 +594,3 @@ If you need to compute customized cost matrices, there are several options. This
 |
 
 
-Get Results with the Live App
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-|
-
-If you prefer a point-and-click interface for analyzing spatial access in the contiguous US states, you can generate results for free with the PySAL spatial access package through the `Live App <https://access.readthedocs.io/en/latest/app.html>`_ we are hosting on AWS. Since it draws on our pre-computed travel times, the access metrics are generated relatively fast.
-
-|

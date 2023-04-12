@@ -164,7 +164,6 @@ html_theme_options = {
         ("API", "api"),
         ("Tutorials", "tutorials"),
         ("Travel Times", "resources"),
-        ("Live App", "app"),
         ("References", "references"),
     ],
 }
