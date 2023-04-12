@@ -100,7 +100,6 @@ Citation: `Saxon, James, Julia Koschinsky, Karina Acosta, Vidal Anguiano, Luc An
    Tutorials <tutorials>
    Internal Access Functions <afunctions>
    Travel Times <resources>
-   Live App <app>
    References <references>
 
 
