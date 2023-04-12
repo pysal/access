@@ -67,7 +67,7 @@ class TestFloatingCatchmentArea(unittest.TestCase):
             columns=["x", "y", "value", "geometry"],
             index=[28, 29],
         )
-        self.model.demand_df = self.model.demand_df.append(new_dem_row)
+        self.model.demand_df = pd.concat([self.model.demand_df, new_dem_row])
         self.model.demand_df.index.name = "id"
         result = self.model.fca_ratio(noise=True)
 

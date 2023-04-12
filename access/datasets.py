@@ -24,7 +24,7 @@ class Datasets(object):
             "cook_county_tracts": "cook_county_tracts.geojson",
         }
 
-        url = f"https://uchicago-csds-access.s3.amazonaws.com/ex_datasets/{_datasets[key]}"
+        url = f"https://d2r7gabxtstf5s.cloudfront.net/ex_datasets/{_datasets[key]}"
 
         if ".geojson" in url:
             import geopandas as gpd
