@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>access.weights &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../resources.html">Travel Times</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for access.weights</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="step_fn"><a class="viewcode-back" href="../../generated/access.weights.step_fn.html#access.weights.step_fn">[docs]</a><span class="k">def</span> <span class="nf">step_fn</span><span class="p">(</span><span class="n">step_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a step function from a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    step_dict           : dict</span>
+<span class="sd">                          Dictionary of cut-offs and weight values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    weight_function     : function</span>
+<span class="sd">                          Function returning weight, for input distance or time, *x*.</span>
+<span class="sd">                          Values beyond the largest threshold will return 0.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Import the weights:</span>
+
+<span class="sd">    &gt;&gt;&gt; from access import weights</span>
+
+<span class="sd">    Create a step function with thresholds at 20, 40, and 60.</span>
+<span class="sd">    Travel costs are in minutes here, but the code cannot tell if you mix units!</span>
+
+<span class="sd">    &gt;&gt;&gt; fn = weights.step_fn({20 : 1, 40 : 0.68, 60 : 0.22})</span>
+
+<span class="sd">    &gt;&gt;&gt; {v : fn(v) for v in range(0, 71, 10)}</span>
+<span class="sd">    {0: 1, 10: 1, 20: 1, 30: 0.68, 40: 0.68, 50: 0.22, 60: 0.22, 70: 0}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;step_dict must be of type dict.&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">step_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All weights must be positive.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="n">key_to_test</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">step_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key_to_test</span> <span class="o">&lt;=</span> <span class="n">k</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">helper</span></div>
+
+
+<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../generated/access.weights.gaussian.html#access.weights.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a gaussian weight function, for a specified width, :math:`\sigma`.</span>
+<span class="sd">    The mean / location parameter is assumed to be 0.</span>
+<span class="sd">    Note that the standard normalization of the Gaussian, :math:`1 / \sqrt{2\pi\sigma^2}`,</span>
+<span class="sd">    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\sigma`.</span>
+<span class="sd">    Of course, this is irrelevant if the ultimate access values are ultimately normalized.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sigma               : float</span>
+<span class="sd">                          This the classical width parameter of the Gaussian / Normal distriution.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    weight_function     : function</span>
+<span class="sd">                          Function returning weight, for input distance or time, *x*.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Import the weights.</span>
+
+<span class="sd">    &gt;&gt;&gt; from access import weights</span>
+
+<span class="sd">    Create a step function with thresholds at 20, 40, and 60.</span>
+<span class="sd">    Travel costs are in minutes here, but the code cannot tell if you mix units!</span>
+
+<span class="sd">    &gt;&gt;&gt; fn = weights.gaussian(sigma = 20)</span>
+
+<span class="sd">    &gt;&gt;&gt; {v : fn(v) for v in range(0, 61, 20)}</span>
+<span class="sd">    {0: 1.0, 20: 0.6065306597126334, 40: 0.1353352832366127, 60: 0.011108996538242306}</span>
+
+<span class="sd">    Compare this to a simpler formulation:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; {x : np.exp(-x**2/2) for x in range(4)}</span>
+<span class="sd">    {0: 1.0, 1: 0.6065306597126334, 2: 0.1353352832366127, 3: 0.011108996538242306}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sigma must be non-zero.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># / np.sqrt(2*np.pi*sigma**2)</span></div>
+
+
+<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../generated/access.weights.gravity.html#access.weights.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a gravity function from a scale :math:`s` and :math:`\\alpha` parameters</span>
+<span class="sd">    as well as an optional minimum distance :math:`x_\\text{min}`.</span>
+<span class="sd">    The function is of the form :math:`f(x) = (\\text{max}(x, x_\\text{min})/s)^\\alpha`.</span>
+<span class="sd">    Note that there is no overall normalization.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scale               : float</span>
+<span class="sd">                          Scaling value, normalizing the function input.</span>
+<span class="sd">    alpha               : float</span>
+<span class="sd">                          Power to which the normalized inputs are raised.</span>
+<span class="sd">                          Note that it is not implicitly negative (i.e., :math:`x^\\alpha` instead of :math:`1/x^\\alpha`.</span>
+<span class="sd">    min_dist            : float</span>
+<span class="sd">                          A &#39;standard&#39; issue with gravity model is the infinite potential at 0 distance or time.</span>
+<span class="sd">                          This can be rectified crudely by specifying a minimum distance,</span>
+<span class="sd">                          and setting any input exceeding that minimum to the minimum itself.</span>
+<span class="sd">                          The default threshold is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    weight_function     : function</span>
+<span class="sd">                          Function returning weight, for input distance or time, *x*.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Import the weights:</span>
+
+<span class="sd">    &gt;&gt;&gt; from access import weights</span>
+
+<span class="sd">    Create a step function with thresholds at 20, 40, and 60.</span>
+<span class="sd">    Travel costs are in minutes here, but the code cannot tell if you mix units!</span>
+
+<span class="sd">    &gt;&gt;&gt; fn = weights.gravity(scale = 20, alpha = -2, min_dist = 1)</span>
+
+<span class="sd">    &gt;&gt;&gt; {t : round(fn(t), 2) for t in [0, 1, 2, 20, 40, 60]}</span>
+<span class="sd">    {0: 400.0, 1: 400.0, 2: 100.0, 20: 1.0, 40: 0.25, 60: 0.11}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_dist</span><span class="p">)</span> <span class="o">/</span> <span class="n">scale</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

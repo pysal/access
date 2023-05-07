@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>access.Access.score &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="access.Access.three_stage_fca" href="access.Access.three_stage_fca.html" />
+    <link rel="prev" title="access.Access.raam" href="access.Access.raam.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../resources.html">Travel Times</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="access-access-score">
+<h1>access.Access.score<a class="headerlink" href="#access-access-score" title="Permalink to this heading">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="access.Access.score">
+<span class="sig-prename descclassname"><span class="pre">Access.</span></span><span class="sig-name descname"><span class="pre">score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'score'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/access/access.html#Access.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#access.Access.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted aggregate of multiple already-calculated, normalized access components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Column name for access values</p>
+</dd>
+<dt><strong>col_dict</strong><span class="classifier">dict</span></dt><dd><p>Column names (keys) and weights.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>access</strong><span class="classifier">pandas Series</span></dt><dd><p>Single, aggregate score for origin locations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Import the base <cite>Access</cite> class and <cite>Datasets</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">access</span> <span class="kn">import</span> <span class="n">Access</span><span class="p">,</span> <span class="n">Datasets</span>
+</pre></div>
+</div>
+<p>Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
+and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_doc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_pop&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span> <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_times&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">         geoid  doc  dentist</span>
+<span class="go">0  17031010100    1        1</span>
+<span class="go">1  17031010201    0        1</span>
+<span class="go">2  17031010202    4        1</span>
+<span class="go">3  17031010300    4        1</span>
+<span class="go">4  17031010400    0        2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">         geoid   pop</span>
+<span class="go">0  17031010100  4854</span>
+<span class="go">1  17031010201  6450</span>
+<span class="go">2  17031010202  2818</span>
+<span class="go">3  17031010300  6236</span>
+<span class="go">4  17031010400  5042</span>
+</pre></div>
+</div>
+<p>The <cite>chi_travel_costs</cite> dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">        origin         dest   cost</span>
+<span class="go">0  17093890101  17031010100  91.20</span>
+<span class="go">1  17093890101  17031010201  92.82</span>
+<span class="go">2  17093890101  17031010202  92.95</span>
+<span class="go">3  17093890101  17031010300  89.40</span>
+<span class="go">4  17093890101  17031010400  84.97</span>
+</pre></div>
+</div>
+<p>Now, create an instance of the <cite>Access</cite> class and specify the demand, supply, and cost datasets.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span> <span class="o">=</span> <span class="n">Access</span><span class="p">(</span><span class="n">demand_df</span> <span class="o">=</span> <span class="n">chi_population</span><span class="p">,</span> <span class="n">demand_index</span> <span class="o">=</span> <span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+<span class="go">                                  demand_value = &quot;pop&quot;,</span>
+<span class="go">                                  supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="go">                                  supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="go">                                  cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="go">                                  cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+</pre></div>
+</div>
+<p>With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 30 minutes by setting the tau value to 30 (60 minutes is the default).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span><span class="o">.</span><span class="n">raam</span><span class="p">(</span><span class="n">tau</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+<span class="go">             raam_doc  raam_dentist</span>
+<span class="go">geoid</span>
+<span class="go">17031010100  1.027597      1.137901</span>
+<span class="go">17031010201  0.940239      1.332557</span>
+<span class="go">17031010202  1.031144      1.413279</span>
+<span class="go">...........  ........      ........</span>
+<span class="go">17197884101  2.365171      1.758800</span>
+<span class="go">17197884103  2.244007      1.709857</span>
+<span class="go">17197980100  2.225820      1.778264</span>
+</pre></div>
+</div>
+<p>Aggregate RAAM for doctors and dentists, weighting doctors more heavily.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;raam_combo&quot;</span><span class="p">,</span> <span class="n">col_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;raam_doc&quot;</span> <span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">&quot;raam_dentist&quot;</span> <span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
+<span class="go">geoid</span>
+<span class="go">17031010100    0.786697</span>
+<span class="go">17031010201    0.765081</span>
+<span class="go">17031010202    0.831578</span>
+<span class="go">...........    ........</span>
+<span class="go">17197884101    1.677075</span>
+<span class="go">17197884103    1.597554</span>
+<span class="go">17197980100    1.597386</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/access.Access.score.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

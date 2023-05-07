@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>access.Access.create_euclidean_distance &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="access.Access.create_euclidean_distance_neighbors" href="access.Access.create_euclidean_distance_neighbors.html" />
+    <link rel="prev" title="access.Access.append_user_cost_neighbors" href="access.Access.append_user_cost_neighbors.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../resources.html">Travel Times</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="access-access-create-euclidean-distance">
+<h1>access.Access.create_euclidean_distance<a class="headerlink" href="#access-access-create-euclidean-distance" title="Permalink to this heading">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="access.Access.create_euclidean_distance">
+<span class="sig-prename descclassname"><span class="pre">Access.</span></span><span class="sig-name descname"><span class="pre">create_euclidean_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euclidean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroid_o</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroid_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/access/access.html#Access.create_euclidean_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#access.Access.create_euclidean_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Euclidean distance from demand to supply locations.
+This is simply the geopandas <cite>distance</cite> function.
+The user is responsible for putting the geometries into an appropriate reference system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Column name for euclidean distances</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">int</span></dt><dd><p>Buffer threshold for non-point geometries, AKA max_distance</p>
+</dd>
+<dt><strong>centroid_o</strong><span class="classifier">bool</span></dt><dd><p>If True, convert geometries of demand_df (origins) to centroids; otherwise, no change</p>
+</dd>
+<dt><strong>centroid_d</strong><span class="classifier">bool</span></dt><dd><p>If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>NOTE: Creating euclidean distance measures requires having a geometry column in a <a class="reference external" href="http://geopandas.org/reference/geopandas.GeoDataFrame.html">geopandas.GeoDataFrame</a>.</p>
+<p>Import the base <cite>Access</cite> class and <cite>Datasets</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">access</span> <span class="kn">import</span> <span class="n">Access</span><span class="p">,</span> <span class="n">Datasets</span>
+</pre></div>
+</div>
+<p>Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)
+and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_doc_geom&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_pop_geom&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span> <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_times&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">             doc  dentist                       geometry</span>
+<span class="go">geoid</span>
+<span class="go">17031010100    1        1  POINT (354916.992 594670.505)</span>
+<span class="go">17031010201    0        1  POINT (354105.876 594088.600)</span>
+<span class="go">17031010202    4        1  POINT (354650.684 594093.822)</span>
+<span class="go">17031010300    4        1  POINT (355209.361 594086.149)</span>
+<span class="go">17031010400    0        2  POINT (355809.748 592808.043)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">              pop                       geometry</span>
+<span class="go">geoid</span>
+<span class="go">17031010100  4854  POINT (354916.992 594670.505)</span>
+<span class="go">17031010201  6450  POINT (354105.876 594088.600)</span>
+<span class="go">17031010202  2818  POINT (354650.684 594093.822)</span>
+<span class="go">17031010300  6236  POINT (355209.361 594086.149)</span>
+<span class="go">17031010400  5042  POINT (355809.748 592808.043)</span>
+</pre></div>
+</div>
+<p>The <cite>chi_travel_costs</cite> dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">        origin         dest   cost</span>
+<span class="go">0  17093890101  17031010100  91.20</span>
+<span class="go">1  17093890101  17031010201  92.82</span>
+<span class="go">2  17093890101  17031010202  92.95</span>
+<span class="go">3  17093890101  17031010300  89.40</span>
+<span class="go">4  17093890101  17031010400  84.97</span>
+</pre></div>
+</div>
+<p>Now, create an instance of the <cite>Access</cite> class and specify the demand, supply, and cost datasets.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span> <span class="o">=</span> <span class="n">Access</span><span class="p">(</span><span class="n">demand_df</span> <span class="o">=</span> <span class="n">chi_population</span><span class="p">,</span> <span class="n">demand_index</span> <span class="o">=</span> <span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+<span class="go">                                  demand_value = &quot;pop&quot;,</span>
+<span class="go">                                  supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="go">                                  supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="go">                                  cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="go">                                  cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+</pre></div>
+</div>
+<p>To calculate euclidean distances between Census Tracts within 250km of eachother, you can set the <cite>threshold</cite> to 250000 (meters). Setting <cite>centroid_o</cite> and <cite>centroid_d</cite> to <cite>True</cite> calculates the centroid of the geom in your dataset.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span><span class="o">.</span><span class="n">create_euclidean_distance</span><span class="p">(</span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">250000</span><span class="p">,</span> <span class="n">centroid_o</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">centroid_d</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The newly calculated euclidean costs are added to the <cite>cost_df</cite> attribute of the <cite>Access</cite> class.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care_geom</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">        origin         dest   cost     euclidean</span>
+<span class="go">0  17093890101  17031010100  91.20  63630.788476</span>
+<span class="go">1  17093890101  17031010201  92.82  62632.675522</span>
+<span class="go">2  17093890101  17031010202  92.95  63073.735631</span>
+<span class="go">3  17093890101  17031010300  89.40  63520.029749</span>
+<span class="go">4  17093890101  17031010400  84.97  63268.514352</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/access.Access.create_euclidean_distance.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

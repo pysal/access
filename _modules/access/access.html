@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>access.access &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../resources.html">Travel Times</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for access.access</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fca</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">raam</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">weights</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">helpers</span>
+<span class="kn">from</span> <span class="nn">.datasets</span> <span class="kn">import</span> <span class="n">Datasets</span>
+
+<span class="n">access_log_stream</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">access_log_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(levelname)-8s</span><span class="s2"> :: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">access_log_stream</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">access_log_format</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Access"><a class="viewcode-back" href="../../generated/access.Access.html#access.Access">[docs]</a><span class="k">class</span> <span class="nc">Access</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Spatial Access Class</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    demand_df            : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_ or `geopandas.GeoDataFrame &lt;http://geopandas.org/reference/geopandas.GeoDataFrame.html&gt;`_</span>
+<span class="sd">                           The origins dataframe, containing a location index and, optionally, a level of demand and geometry.</span>
+<span class="sd">    demand_index         : {bool, str}</span>
+<span class="sd">                           boolean of True indicates that the locations are already on the df index;</span>
+<span class="sd">                           otherwise the argument is a string containing the name of the column of `demand_df` that holds the origin ID.</span>
+<span class="sd">    demand_value         : str</span>
+<span class="sd">                           is the name of the column of `demand` that holds the aggregate demand at a location.</span>
+<span class="sd">    supply_df            : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_ or `geopandas.GeoDataFrame &lt;http://geopandas.org/reference/geopandas.GeoDataFrame.html&gt;`_</span>
+<span class="sd">                           The origins dataframe, containing a location index and, optionally, level of supply and geometry.</span>
+<span class="sd">    supply_index         : {bool, str}</span>
+<span class="sd">                           boolean of True indicates that the locations are already on the df index;</span>
+<span class="sd">                           otherwise the argument is a string containing the name of the column of `supply_df` that holds the origin ID.</span>
+<span class="sd">    supply_value         : {str, list}</span>
+<span class="sd">                           is the name of the column of `supply` that holds the aggregate supply at a location, or a list of such columns.</span>
+<span class="sd">    cost_df              : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                           This dataframe contains a link from demand to supply locations, and a cost between them.</span>
+<span class="sd">    cost_origin          : str</span>
+<span class="sd">                           The column name of the index locations -- this is what will be grouped by.</span>
+<span class="sd">    cost_dest            : str</span>
+<span class="sd">                           The column name of the neighborhing demand locations -- this is what goes in the groups.</span>
+<span class="sd">    cost_name            : {str, list}</span>
+<span class="sd">                           The column(s) name of the travel cost(s).</span>
+<span class="sd">    neighbor_cost_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                           This dataframe contains a link from demand to neighbor locations, and a cost between them (running consumer to supplier).</span>
+<span class="sd">    neighbor_cost_origin : str</span>
+<span class="sd">                           The column name of the origin locations -- this is what will be grouped by.</span>
+<span class="sd">    neighbor_cost_dest   : str</span>
+<span class="sd">                           The column name of the destination locations -- this is what goes in the groups.</span>
+<span class="sd">    neighbor_cost_name   : {str, list}</span>
+<span class="sd">                           The column name(s) of the travel cost(s).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    Access               : pandas.DataFrame</span>
+<span class="sd">                           All of the calculated access measures.</span>
+<span class="sd">    access_metadata      : pandas.DataFrame</span>
+<span class="sd">                           Lists currently-available measures of access.</span>
+<span class="sd">    cost_metadata        : pandas.DataFrame</span>
+<span class="sd">                           Describes each of the currently-available supply to demand costs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Access.__init__"><a class="viewcode-back" href="../../generated/access.Access.html#access.Access.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">demand_df</span><span class="p">,</span>
+        <span class="n">demand_value</span><span class="p">,</span>
+        <span class="n">supply_df</span><span class="p">,</span>
+        <span class="n">supply_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">demand_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">supply_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">cost_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cost_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cost_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">neighbor_cost_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">neighbor_cost_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">neighbor_cost_dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">neighbor_cost_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the class.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;access&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Access</span><span class="o">.</span><span class="n">logger_initialized</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">access_log_stream</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">Access</span><span class="o">.</span><span class="n">logger_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">### First all the dummy checks...</span>
+
+        <span class="k">if</span> <span class="n">demand_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">demand_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;demand_index must either be True -- or it must be a column of demand_df&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">demand_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;demand_value must either be True -- or it must be a column of demand_df&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">supply_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">supply_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;supply_index must either be True -- or it must be a column of supply_df&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">supply_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be a column of supply_df&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">sv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">supply_value</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be columns of supply_df&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">cost_origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_origin must be a column of cost_df&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">cost_dest</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_dest must be a column of cost_df&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">cost_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be a column of cost_df&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cost_name</span><span class="p">]):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be columns of cost_df&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">neighbor_cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">neighbor_cost_origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;neighbor_cost_origin must be a column of neighbor_cost_df&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">neighbor_cost_dest</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;neighbor_cost_dest must be a column of neighbor_cost_df&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span>
+                <span class="ow">and</span> <span class="n">neighbor_cost_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neighbor_cost_name must be a column of cost_df&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">neighbor_cost_name</span><span class="p">]</span>
+                <span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neighbor_cost_names must be columns of cost_df&quot;</span><span class="p">)</span>
+
+        <span class="c1">### Now load the demand DFs.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span> <span class="o">=</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span> <span class="o">=</span> <span class="n">demand_value</span>
+        <span class="k">if</span> <span class="n">demand_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">demand_index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">### And now the supply DFs.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">supply_value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Warning: A supply value was not provided, so a default</span>
+<span class="sd">                             supply value of 1 was created in the column named &quot;value&quot;.</span>
+<span class="sd">                             Note that without a supply value, you cannot use any of the</span>
+<span class="sd">                             floating catchment area methods.&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">supply_value</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">[</span><span class="n">supply_value</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">supply_value</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_types</span> <span class="o">=</span> <span class="n">supply_value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be string or list of strings.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">supply_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">supply_index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="n">cost_df</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span> <span class="o">=</span> <span class="n">cost_origin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span> <span class="o">=</span> <span class="n">cost_dest</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">cost_name</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span> <span class="o">=</span> <span class="n">cost_name</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be string or list of strings.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span> <span class="o">=</span> <span class="s2">&quot;origin&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span> <span class="o">=</span> <span class="s2">&quot;dest&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">neighbor_cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="n">neighbor_cost_df</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span> <span class="o">=</span> <span class="n">neighbor_cost_origin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span> <span class="o">=</span> <span class="n">neighbor_cost_dest</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_name</span> <span class="o">=</span> <span class="n">neighbor_cost_name</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">neighbor_cost_name</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span> <span class="o">=</span> <span class="n">neighbor_cost_name</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;neighbor_cost_name must be string or list of strings.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span> <span class="o">=</span> <span class="s2">&quot;origin&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span> <span class="o">=</span> <span class="s2">&quot;dest&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]]</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">access</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="s2">&quot;descriptor&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;descriptor&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Access.weighted_catchment"><a class="viewcode-back" href="../../generated/access.Access.weighted_catchment.html#access.Access.weighted_catchment">[docs]</a>    <span class="k">def</span> <span class="nf">weighted_catchment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;catchment&quot;</span><span class="p">,</span>
+        <span class="n">supply_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the catchment area (buffer) aggregate access score.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        supply_cost         : str</span>
+<span class="sd">                              Name of supply cost value column in supply_df</span>
+<span class="sd">        supply_values       : {str, list}</span>
+<span class="sd">                              Name(s) of supply values in supply_df</span>
+<span class="sd">        weight_fn           : function</span>
+<span class="sd">                              function to apply to the cost to reach the supply.</span>
+<span class="sd">                              In this way, you could run, e.g., a gravity function.</span>
+<span class="sd">                              (Be careful of course of values as distances go to 0!)</span>
+<span class="sd">        max_cost            : float</span>
+<span class="sd">                              Cutoff of cost values</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Create an Access object, as detailed in __init__.py</span>
+
+<span class="sd">        &gt;&gt;&gt; illinois_primary_care = Access(&lt;...&gt;)</span>
+
+<span class="sd">        Call the floating catchment area with max_cost only</span>
+
+<span class="sd">        &gt;&gt;&gt; gravity = weights.gravity(scale = 60, alpha = -1)</span>
+<span class="sd">        &gt;&gt;&gt; illinois_primary_care.weighted_catchment(weight_fn = gravity)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">supply_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
+
+            <span class="c1"># Bryan consistently flipped origin and destination in this one -- very confusing.</span>
+            <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">weighted_catchment</span><span class="p">(</span>
+                <span class="n">loc_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
+                <span class="n">loc_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">loc_value</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                <span class="n">cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="p">,</span>
+                <span class="n">cost_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">,</span>
+                <span class="n">cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span>
+                <span class="n">cost_cost</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span><span class="p">,</span>
+                <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+                <span class="n">max_cost</span><span class="o">=</span><span class="n">max_cost</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># store the raw, un-normalized access values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.fca_ratio"><a class="viewcode-back" href="../../generated/access.Access.fca_ratio.html#access.Access.fca_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">fca_ratio</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fca&quot;</span><span class="p">,</span>
+        <span class="n">demand_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">noise</span><span class="o">=</span><span class="s2">&quot;quiet&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the floating catchment area (buffer) ratio access score.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        demand_cost         : str</span>
+<span class="sd">                              Name of demand cost value column in demand_df</span>
+<span class="sd">        supply_cost         : str</span>
+<span class="sd">                              Name of supply cost value column in supply_df</span>
+<span class="sd">        supply_values       : {str, list}</span>
+<span class="sd">                              Name(s) of supply values in supply_df</span>
+<span class="sd">        max_cost            : float</span>
+<span class="sd">                              Cutoff of cost values</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+<span class="sd">        noise              : str</span>
+<span class="sd">                             Default &#39;quiet&#39;, otherwise gives messages that indicate potential issues.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;,</span>
+<span class="sd">                                          neighbor_cost_df = chi_travel_costs, neighbor_cost_origin = &quot;origin&quot;,</span>
+<span class="sd">                                          neighbor_cost_dest = &#39;dest&#39;, neighbor_cost_name = &#39;cost&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.fca_ratio(name=&#39;fca&#39;,max_cost=30)</span>
+<span class="sd">                      fca_doc  fca_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  0.001630     0.000807</span>
+<span class="sd">        17031010201  0.001524     0.000904</span>
+<span class="sd">        17031010202  0.001521     0.000908</span>
+<span class="sd">        ...........  ........     ........</span>
+<span class="sd">        17197884101  0.000437     0.000442</span>
+<span class="sd">        17197884103  0.000510     0.000498</span>
+<span class="sd">        17197980100  0.000488     0.000432</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
+        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+
+        <span class="n">supply_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">demand_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_demand_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demand_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
+
+            <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">fca_ratio</span><span class="p">(</span>
+                <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
+                <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">demand_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">,</span>
+                <span class="n">supply_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
+                <span class="n">supply_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">supply_name</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                <span class="n">demand_cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span><span class="p">,</span>
+                <span class="n">supply_cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="p">,</span>
+                <span class="n">demand_cost_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span><span class="p">,</span>
+                <span class="n">demand_cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span><span class="p">,</span>
+                <span class="n">demand_cost_name</span><span class="o">=</span><span class="n">demand_cost</span><span class="p">,</span>
+                <span class="n">supply_cost_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span>
+                <span class="n">supply_cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">,</span>
+                <span class="n">supply_cost_name</span><span class="o">=</span><span class="n">supply_cost</span><span class="p">,</span>
+                <span class="n">max_cost</span><span class="o">=</span><span class="n">max_cost</span><span class="p">,</span>
+                <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span>
+                <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># store the raw, un-normalized access values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.raam"><a class="viewcode-back" href="../../generated/access.Access.raam.html#access.Access.raam">[docs]</a>    <span class="k">def</span> <span class="nf">raam</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;raam&quot;</span><span class="p">,</span>
+        <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">tau</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+        <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cycles</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+        <span class="n">initial_step</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">half_life</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">min_step</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the rational agent access model. :cite:`2019_saxon_snow_raam`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        cost                : str</span>
+<span class="sd">                              Name of cost variable, for reaching supply sites.</span>
+<span class="sd">        supply_values       : {str, list}</span>
+<span class="sd">                              Name(s) of supply values in supply_df</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+<span class="sd">        tau                 : float</span>
+<span class="sd">                              tau parameter (travel time scale)</span>
+<span class="sd">        rho                 : float</span>
+<span class="sd">                              rho parameter (congestion cost scale)</span>
+<span class="sd">        max_cycles          : int</span>
+<span class="sd">                              How many cycles to run the RAAM optimization for.</span>
+<span class="sd">        initial_step        : {int, float}</span>
+<span class="sd">                              If an float &lt; 1, it is the proportion of a demand site that can shift, in the first cycle.</span>
+<span class="sd">                              If it is an integer, it is simply a limit on the total number.</span>
+<span class="sd">        half_life           : int</span>
+<span class="sd">                              How many cycles does it take to halve the move rate?</span>
+<span class="sd">        min_step            : {int, float}</span>
+<span class="sd">                              This is the minimum value, to which the moving fraction converges.</span>
+<span class="sd">        verbose             : bool</span>
+<span class="sd">                              Print some information as the optimization proceeds.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)</span>
+<span class="sd">        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 30 minutes by setting the tau value to 30 (60 minutes is the default).</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.raam(tau = 30)</span>
+<span class="sd">                     raam_doc  raam_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  1.027597      1.137901</span>
+<span class="sd">        17031010201  0.940239      1.332557</span>
+<span class="sd">        17031010202  1.031144      1.413279</span>
+<span class="sd">        ...........  ........      ........</span>
+<span class="sd">        17197884101  2.365171      1.758800</span>
+<span class="sd">        17197884103  2.244007      1.709857</span>
+<span class="sd">        17197980100  2.225820      1.778264</span>
+
+<span class="sd">        You can access the results stored in the `Access.access_df` attribute.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.access_df</span>
+<span class="sd">                      pop  raam_doc  raam_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854  1.027597      1.137901</span>
+<span class="sd">        17031010201  6450  0.940239      1.332557</span>
+<span class="sd">        17031010202  2818  1.031144      1.413279</span>
+<span class="sd">        ...........   ....  ........      ........</span>
+<span class="sd">        17197884101  4166  2.365171      1.758800</span>
+<span class="sd">        17197884103  2776  2.244007      1.709857</span>
+<span class="sd">        17197980100  3264  2.225820      1.778264</span>
+
+
+<span class="sd">        By providing a string to the `name` argument, you can call the `Access.raam` method again using a different parameter of tau and save the outputs without overwriting previous ones.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.raam(name = &quot;raam2&quot;, tau = 2)</span>
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.access_df</span>
+<span class="sd">                      pop  raam_doc  raam_dentist  raam45_doc  raam45_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854  1.027597      1.137901    0.967900        1.075116</span>
+<span class="sd">        17031010201  6450  0.940239      1.332557    0.908518        1.133207</span>
+<span class="sd">        17031010202  2818  1.031144      1.413279    0.962915        1.206775</span>
+<span class="sd">        ...........   ....  ........      ........   ........       ........</span>
+<span class="sd">        17197884101  4166  2.365171      1.758800    1.921161        1.495642</span>
+<span class="sd">        17197884103  2776  2.244007      1.709857    1.900596        1.517022</span>
+<span class="sd">        17197980100  3264  2.225820      1.778264    1.868281        1.582177</span>
+
+<span class="sd">        If euclidean costs are available (see :meth:`Access.access.create_euclidean_distance`),</span>
+<span class="sd">        you can use euclidean distance instead of time to calculate RAAM access measures. Insted of being measured in minutes, tau would now be measured in meters.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.raam(name = &quot;raam_euclidean&quot;, tau = 100, cost = &quot;euclidean&quot;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
+        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
+
+            <span class="n">raam_costs</span> <span class="o">=</span> <span class="n">raam</span><span class="o">.</span><span class="n">raam</span><span class="p">(</span>
+                <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
+                <span class="n">supply_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
+                <span class="n">cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="p">,</span>
+                <span class="n">demand_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">,</span>
+                <span class="n">supply_name</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                <span class="n">cost_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span>
+                <span class="n">cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">,</span>
+                <span class="n">cost_name</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
+                <span class="n">max_cycles</span><span class="o">=</span><span class="n">max_cycles</span><span class="p">,</span>
+                <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">initial_step</span><span class="o">=</span><span class="n">initial_step</span><span class="p">,</span>
+                <span class="n">min_step</span><span class="o">=</span><span class="n">min_step</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="k">if</span> <span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># store the raw, un-normalized access values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raam_costs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.two_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.two_stage_fca.html#access.Access.two_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">two_stage_fca</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;2sfca&quot;</span><span class="p">,</span>
+        <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the two-stage floating catchment area access score.</span>
+<span class="sd">        Note that while the &#39;traditional&#39; 2SFCA method does not weight inputs,</span>
+<span class="sd">        most modern implementations do, and `weight_fn` is allowed as an argument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        cost                : str</span>
+<span class="sd">                              Name of cost value column in cost_df (supply-side)</span>
+<span class="sd">        supply_values       : {str, list}</span>
+<span class="sd">                              supply type or types.</span>
+<span class="sd">        max_cost            : float</span>
+<span class="sd">                              Cutoff of cost values</span>
+<span class="sd">        weight_fn           : function</span>
+<span class="sd">                              Weight to be applied to access values</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;,</span>
+<span class="sd">                                          neighbor_cost_df = chi_travel_costs, neighbor_cost_origin = &quot;origin&quot;,</span>
+<span class="sd">                                          neighbor_cost_dest = &#39;dest&#39;, neighbor_cost_name = &#39;cost&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.two_stage_fca(name = &#39;2sfca&#39;, max_cost = 60)</span>
+<span class="sd">                      pop  2sfca_doc  2sfca_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854   0.000697       0.000402</span>
+<span class="sd">        17031010201  6450   0.000754       0.000455</span>
+<span class="sd">        17031010202  2818   0.000717       0.000424</span>
+<span class="sd">        ...........  ....   ........       ........</span>
+<span class="sd">        17197884101  4166   0.000562       0.000370</span>
+<span class="sd">        17197884103  2776   0.000384       0.000291</span>
+<span class="sd">        17197980100  3264   0.000457       0.000325</span>
+
+<span class="sd">        To create new values for two-stage catchment areas using a different `max_cost`, you can use a new `name` and a different `max_cost` parameter.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.two_stage_fca(name = &#39;2sfca30&#39;, max_cost = 30)</span>
+<span class="sd">                     2sfca30_doc  2sfca30_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100     0.000966         0.000480</span>
+<span class="sd">        17031010201     0.000996         0.000552</span>
+<span class="sd">        17031010202     0.000973         0.000542</span>
+<span class="sd">        ...........     ........         ........</span>
+<span class="sd">        17197884101     0.000225         0.000258</span>
+<span class="sd">        17197884103     0.000375         0.000382</span>
+<span class="sd">        17197980100     0.000352         0.000318</span>
+
+<span class="sd">        Both newly created two stage fca measures are stored in the `access_df` attribute of the `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.access_df.head()</span>
+<span class="sd">                      pop  2sfca_doc  2sfca_dentist  2sfca30_doc  2sfca30_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854   0.000697       0.000402     0.000963         0.000479</span>
+<span class="sd">        17031010201  6450   0.000754       0.000455     0.000991         0.000551</span>
+<span class="sd">        17031010202  2818   0.000717       0.000424     0.000973         0.000541</span>
+<span class="sd">        17197884103  2776   0.000384       0.000291     0.000371         0.000377</span>
+<span class="sd">        17197980100  3264   0.000457       0.000325     0.000348         0.000314</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
+        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+
+        <span class="k">if</span> <span class="n">cost</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using default cost, </span><span class="si">{}</span><span class="s2">, for </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">cost</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">:</span>
+
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not an available cost.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_values</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">supply_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">supply_values</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">supply_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">supply_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_types</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
+
+            <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">two_stage_fca</span><span class="p">(</span>
+                <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
+                <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">demand_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">,</span>
+                <span class="n">supply_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
+                <span class="n">supply_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">supply_name</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                <span class="n">cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="p">,</span>
+                <span class="n">cost_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span>
+                <span class="n">cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">,</span>
+                <span class="n">cost_name</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
+                <span class="n">max_cost</span><span class="o">=</span><span class="n">max_cost</span><span class="p">,</span>
+                <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+                <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.enhanced_two_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.enhanced_two_stage_fca.html#access.Access.enhanced_two_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">enhanced_two_stage_fca</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e2sfca&quot;</span><span class="p">,</span>
+        <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the enhanced two-stage floating catchment area access score.</span>
+<span class="sd">        Note that the only &#39;practical&#39; difference between this function and the</span>
+<span class="sd">        :meth:`Access.access.two_stage_fca` is that the weight function from the original paper,</span>
+<span class="sd">        `weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})` is applied if none is provided.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        cost                : str</span>
+<span class="sd">                              Name of cost value column in cost_df (supply-side)</span>
+<span class="sd">        max_cost            : float</span>
+<span class="sd">                              Cutoff of cost values</span>
+<span class="sd">        supply_values       : {str, list}</span>
+<span class="sd">                              supply type or types.</span>
+<span class="sd">        weight_fn           : function</span>
+<span class="sd">                              Weight to be applied to access values</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        We can create multiple stepwise functions for weights.</span>
+
+<span class="sd">        &gt;&gt;&gt; fn30 = weights.step_fn({10 : 1, 20 : 0.68, 30 : 0.22})</span>
+<span class="sd">        &gt;&gt;&gt; fn60 = weights.step_fn({20 : 1, 40 : 0.68, 60 : 0.22})</span>
+
+<span class="sd">        Using those two difference stepwise functions, we can create two separate enhanced two stage fca measures.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.enhanced_two_stage_fca(name = &#39;2sfca30&#39;, weight_fn = fn30)</span>
+<span class="sd">                     2sfca30_doc  2sfca30_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100     0.000970         0.000461</span>
+<span class="sd">        17031010201     0.001080         0.000557</span>
+<span class="sd">        17031010202     0.001027         0.000531</span>
+<span class="sd">        ...........     ........         ........</span>
+<span class="sd">        17197884101     0.000159         0.000241</span>
+<span class="sd">        17197884103     0.000285         0.000342</span>
+<span class="sd">        17197980100     0.000266         0.000310</span>
+
+<span class="sd">        Note the use of the `name` argument in order to specify a different column name prefix for the access measure.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.enhanced_two_stage_fca(name = &#39;2sfca60&#39;, weight_fn = fn60)</span>
+<span class="sd">                     2sfca60_doc  2sfca60_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100     0.000687         0.000394</span>
+<span class="sd">        17031010201     0.000750         0.000447</span>
+<span class="sd">        17031010202     0.000720         0.000416</span>
+<span class="sd">        ...........     ........         ........</span>
+<span class="sd">        17197884101     0.000392         0.000301</span>
+<span class="sd">        17197884103     0.000289         0.000243</span>
+<span class="sd">        17197980100     0.000333         0.000268</span>
+
+<span class="sd">        Both newly created enhanced two stage fca measures are stored in the `access_df` attribute of the `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.access_df.head()</span>
+<span class="sd">                      pop  2sfca30_doc  2sfca30_dentist  2sfca60_doc  2sfca60_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854     0.000970         0.000461     0.000687         0.000394</span>
+<span class="sd">        17031010201  6450     0.001080         0.000557     0.000750         0.000447</span>
+<span class="sd">        17031010202  2818     0.001027         0.000531     0.000720         0.000416</span>
+<span class="sd">        17031010300  6236     0.001030         0.000496     0.000710         0.000402</span>
+<span class="sd">        17031010400  5042     0.000900         0.000514     0.000786         0.000430</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
+        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+
+        <span class="k">if</span> <span class="n">weight_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weight_fn</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">step_fn</span><span class="p">({</span><span class="mi">10</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mf">0.68</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">two_stage_fca</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">max_cost</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">,</span> <span class="n">weight_fn</span><span class="p">,</span> <span class="n">normalize</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.three_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.three_stage_fca.html#access.Access.three_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">three_stage_fca</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;3sfca&quot;</span><span class="p">,</span>
+        <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">supply_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the three-stage floating catchment area access score.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        cost                : str</span>
+<span class="sd">                              Name of cost value column in cost_df (supply-side)</span>
+<span class="sd">        max_cost            : float</span>
+<span class="sd">                              Cutoff of cost values</span>
+<span class="sd">        weight_fn           : function</span>
+<span class="sd">                              Weight to be applied to access values</span>
+<span class="sd">        normalize           : bool</span>
+<span class="sd">                              If True, return normalized access values; otherwise, return raw access values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Accessibility score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.three_stage_fca(name=&#39;3sfca&#39;)</span>
+<span class="sd">                     3sfca_doc  3sfca_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100   0.001424       0.000690</span>
+<span class="sd">        17031010201   0.001462       0.000785</span>
+<span class="sd">        17031010202   0.001411       0.000767</span>
+<span class="sd">        ...........   ........       ........</span>
+<span class="sd">        17197884101   0.000285       0.000380</span>
+<span class="sd">        17197884103   0.000404       0.000464</span>
+<span class="sd">        17197980100   0.000365       0.000407</span>
+
+<span class="sd">        The newly calculated 3sfca access measure is added to the `access_df` attribute of the `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.access_df.head()</span>
+<span class="sd">                             3sfca_doc  3sfca_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100   0.001447       0.000698</span>
+<span class="sd">        17031010201   0.001487       0.000795</span>
+<span class="sd">        17031010202   0.001420       0.000777</span>
+<span class="sd">        17031010300   0.001479       0.000742</span>
+<span class="sd">        17031010400   0.001274       0.000726</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
+        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+
+        <span class="k">if</span> <span class="n">weight_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weight_fn</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">step_fn</span><span class="p">({</span><span class="mi">10</span><span class="p">:</span> <span class="mf">0.962</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mf">0.704</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mf">0.377</span><span class="p">,</span> <span class="mi">60</span><span class="p">:</span> <span class="mf">0.042</span><span class="p">})</span>
+
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
+
+            <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">three_stage_fca</span><span class="p">(</span>
+                <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
+                <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">demand_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">,</span>
+                <span class="n">supply_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
+                <span class="n">supply_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">supply_name</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                <span class="n">cost_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="p">,</span>
+                <span class="n">cost_origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span>
+                <span class="n">cost_dest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">,</span>
+                <span class="n">cost_name</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
+                <span class="n">max_cost</span><span class="o">=</span><span class="n">max_cost</span><span class="p">,</span>
+                <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+                <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># store the raw, un-normalized access values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">norm_access_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]):</span>
+            <span class="n">mean_access</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">/=</span> <span class="n">mean_access</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">])]</span>
+
+<div class="viewcode-block" id="Access.score"><a class="viewcode-back" href="../../generated/access.Access.score.html#access.Access.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Weighted aggregate of multiple already-calculated, normalized access components.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for access values</span>
+<span class="sd">        col_dict            : dict</span>
+<span class="sd">                              Column names (keys) and weights.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        access              : pandas Series</span>
+<span class="sd">                              Single, aggregate score for origin locations.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)</span>
+<span class="sd">        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        With the demand, supply, and cost data provided, we can now produce the RAAM access measures defining a floating catchment area of 30 minutes by setting the tau value to 30 (60 minutes is the default).</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.raam(tau = 30)</span>
+<span class="sd">                     raam_doc  raam_dentist</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  1.027597      1.137901</span>
+<span class="sd">        17031010201  0.940239      1.332557</span>
+<span class="sd">        17031010202  1.031144      1.413279</span>
+<span class="sd">        ...........  ........      ........</span>
+<span class="sd">        17197884101  2.365171      1.758800</span>
+<span class="sd">        17197884103  2.244007      1.709857</span>
+<span class="sd">        17197980100  2.225820      1.778264</span>
+
+<span class="sd">        Aggregate RAAM for doctors and dentists, weighting doctors more heavily.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.score(name = &quot;raam_combo&quot;, col_dict = {&quot;raam_doc&quot; : 0.8, &quot;raam_dentist&quot; : 0.2})</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100    0.786697</span>
+<span class="sd">        17031010201    0.765081</span>
+<span class="sd">        17031010202    0.831578</span>
+<span class="sd">        ...........    ........</span>
+<span class="sd">        17197884101    1.677075</span>
+<span class="sd">        17197884103    1.597554</span>
+<span class="sd">        17197980100    1.597386</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a calculated access value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">col_dict</span><span class="p">)</span>
+
+        <span class="n">weighted_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_access_df</span><span class="p">[</span><span class="n">weights</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weighted_score</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">weighted_score</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span>
+
+    <span class="nd">@default_cost</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the default cost measure.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">new_cost</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span> <span class="o">=</span> <span class="n">new_cost</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to set cost not available in cost df&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span>
+
+    <span class="nd">@neighbor_default_cost</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the default cost measure.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">new_cost</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span> <span class="o">=</span> <span class="n">new_cost</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to set cost not available in cost df&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Access.append_user_cost"><a class="viewcode-back" href="../../generated/access.Access.append_user_cost.html#access.Access.append_user_cost">[docs]</a>    <span class="k">def</span> <span class="nf">append_user_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a user cost, from demand to supply locations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_cost_df         : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                              Holds the new cost....</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Name of the new cost variable in new_cost_df</span>
+<span class="sd">        origin              : str</span>
+<span class="sd">                              Name of the new origin variable in new_cost_df</span>
+<span class="sd">        destination         : str</span>
+<span class="sd">                              Name of the new destination variable in new_cost_df</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        To add a new cost from demand to supply locations, first load the new cost data.</span>
+
+<span class="sd">        &gt;&gt;&gt; euclidean_cost = Datasets.load_data(&#39;chi_euclidean&#39;)</span>
+<span class="sd">            euclidean_cost.head()</span>
+<span class="sd">                origin         dest     euclidean</span>
+<span class="sd">        0  17093890101  17031010100  63630.788476</span>
+<span class="sd">        1  17093890101  17031010201  62632.675522</span>
+<span class="sd">        2  17093890101  17031010202  63073.735631</span>
+<span class="sd">        3  17093890101  17031010300  63520.029749</span>
+<span class="sd">        4  17093890101  17031010400  63268.514352</span>
+
+<span class="sd">        Add new cost data to existing `Access` instance.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.append_user_cost(new_cost_df = euclidean_cost,</span>
+<span class="sd">                                           name = &quot;euclidean&quot;,</span>
+<span class="sd">                                           origin = &quot;origin&quot;,</span>
+<span class="sd">                                           destination = &quot;dest&quot;)</span>
+
+<span class="sd">        The newly added cost data can be seen in the `cost_df` attribute.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.cost_df.head()</span>
+<span class="sd">                origin         dest   cost     euclidean</span>
+<span class="sd">        0  17093890101  17031010100  91.20  63630.788476</span>
+<span class="sd">        1  17093890101  17031010201  92.82  62632.675522</span>
+<span class="sd">        2  17093890101  17031010202  92.95  63073.735631</span>
+<span class="sd">        3  17093890101  17031010300  89.40  63520.029749</span>
+<span class="sd">        4  17093890101  17031010400  84.97  63268.514352</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Add it to the list of costs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">new_cost_df</span><span class="p">[[</span><span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">]],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">],</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.append_user_cost_neighbors"><a class="viewcode-back" href="../../generated/access.Access.append_user_cost_neighbors.html#access.Access.append_user_cost_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">append_user_cost_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a user cost, from supply locations to other supply locations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_cost_df         : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                              Holds the new cost....</span>
+<span class="sd">        cost                : str</span>
+<span class="sd">                              Name of the new cost variable in new_cost_df</span>
+<span class="sd">        origin              : str</span>
+<span class="sd">                              Name of the new origin variable in new_cost_df</span>
+<span class="sd">        destination         : str</span>
+<span class="sd">                              Name of the new destination variable in new_cost_df</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                 geoid  doc  dentist</span>
+<span class="sd">        0  17031010100    1        1</span>
+<span class="sd">        1  17031010201    0        1</span>
+<span class="sd">        2  17031010202    4        1</span>
+<span class="sd">        3  17031010300    4        1</span>
+<span class="sd">        4  17031010400    0        2</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                 geoid   pop</span>
+<span class="sd">        0  17031010100  4854</span>
+<span class="sd">        1  17031010201  6450</span>
+<span class="sd">        2  17031010202  2818</span>
+<span class="sd">        3  17031010300  6236</span>
+<span class="sd">        4  17031010400  5042</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Using the example data, create an `Access` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        To add a new cost from demand to supply locations, first load the new cost data.</span>
+
+<span class="sd">        &gt;&gt;&gt; euclidean_cost_neighbors = Datasets.load_data(&#39;chi_euclidean_neighbors&#39;)</span>
+<span class="sd">            euclidean_cost_neighbors.head()</span>
+<span class="sd">                origin         dest  euclidean_neighbors</span>
+<span class="sd">        0  17031010100  17031010100             0.000000</span>
+<span class="sd">        1  17031010100  17031010201           998.259243</span>
+<span class="sd">        2  17031010100  17031010202           635.203387</span>
+<span class="sd">        3  17031010100  17031010300           653.415713</span>
+<span class="sd">        4  17031010100  17031010400          2065.375554</span>
+
+<span class="sd">        Add new cost data to existing `Access` instance.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.append_user_cost_neighbors(new_cost_df = euclidean_cost_neighbors,</span>
+<span class="sd">                                                     name = &quot;euclidean_neighbors&quot;,</span>
+<span class="sd">                                                     origin = &quot;origin&quot;,</span>
+<span class="sd">                                                     destination = &quot;dest&quot;)</span>
+
+<span class="sd">        The newly added cost data can be seen in the `neighbor_cost_df` attribute.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.neighbor_cost_df.head()</span>
+<span class="sd">                origin         dest   cost   euclidean_neighbors</span>
+<span class="sd">        0  17093890101  17031010100  91.20          63630.788476</span>
+<span class="sd">        1  17093890101  17031010201  92.82          62632.675522</span>
+<span class="sd">        2  17093890101  17031010202  92.95          63073.735631</span>
+<span class="sd">        3  17093890101  17031010300  89.40          63520.029749</span>
+<span class="sd">        4  17093890101  17031010400  84.97          63268.514352</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Add it to the list of costs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">new_cost_df</span><span class="p">[[</span><span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">]],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span><span class="p">],</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Access.create_euclidean_distance"><a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance.html#access.Access.create_euclidean_distance">[docs]</a>    <span class="k">def</span> <span class="nf">create_euclidean_distance</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid_o</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">centroid_d</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Euclidean distance from demand to supply locations.</span>
+<span class="sd">        This is simply the geopandas `distance` function.</span>
+<span class="sd">        The user is responsible for putting the geometries into an appropriate reference system.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for euclidean distances</span>
+<span class="sd">        threshold           : int</span>
+<span class="sd">                              Buffer threshold for non-point geometries, AKA max_distance</span>
+<span class="sd">        centroid_o          : bool</span>
+<span class="sd">                              If True, convert geometries of demand_df (origins) to centroids; otherwise, no change</span>
+<span class="sd">        centroid_d          : bool</span>
+<span class="sd">                              If True, convert geometries of supply_df (destinations) to centroids; otherwise, no change</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame &lt;http://geopandas.org/reference/geopandas.GeoDataFrame.html&gt;`_.</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)</span>
+<span class="sd">        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc_geom&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop_geom&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                     doc  dentist                       geometry</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100    1        1  POINT (354916.992 594670.505)</span>
+<span class="sd">        17031010201    0        1  POINT (354105.876 594088.600)</span>
+<span class="sd">        17031010202    4        1  POINT (354650.684 594093.822)</span>
+<span class="sd">        17031010300    4        1  POINT (355209.361 594086.149)</span>
+<span class="sd">        17031010400    0        2  POINT (355809.748 592808.043)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                      pop                       geometry</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854  POINT (354916.992 594670.505)</span>
+<span class="sd">        17031010201  6450  POINT (354105.876 594088.600)</span>
+<span class="sd">        17031010202  2818  POINT (354650.684 594093.822)</span>
+<span class="sd">        17031010300  6236  POINT (355209.361 594086.149)</span>
+<span class="sd">        17031010400  5042  POINT (355809.748 592808.043)</span>
+
+<span class="sd">        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        To calculate euclidean distances between Census Tracts within 250km of eachother, you can set the `threshold` to 250000 (meters). Setting `centroid_o` and `centroid_d` to `True` calculates the centroid of the geom in your dataset.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.create_euclidean_distance(threshold = 250000, centroid_o = True, centroid_d = True)</span>
+
+<span class="sd">        The newly calculated euclidean costs are added to the `cost_df` attribute of the `Access` class.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care_geom.cost_df.head()</span>
+<span class="sd">                origin         dest   cost     euclidean</span>
+<span class="sd">        0  17093890101  17031010100  91.20  63630.788476</span>
+<span class="sd">        1  17093890101  17031010201  92.82  62632.675522</span>
+<span class="sd">        2  17093890101  17031010202  92.95  63073.735631</span>
+<span class="sd">        3  17093890101  17031010300  89.40  63520.029749</span>
+<span class="sd">        4  17093890101  17031010400  84.97  63268.514352</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+
+        <span class="c1"># TO-DO: check for unprojected geometries</span>
+
+        <span class="c1"># Continue if the dataframes are geodataframes, else throw an error</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot calculate euclidean distance without a geometry of demand side&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot calculate euclidean distance without a geometry of supply side&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Reset the index so that the geoids are accessible</span>
+        <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;origin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;dest&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="c1"># Convert to centroids if so-specified</span>
+        <span class="k">if</span> <span class="n">centroid_o</span><span class="p">:</span>
+            <span class="n">df1</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">centroid_d</span><span class="p">:</span>
+            <span class="n">df2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the distances.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="c1"># If both geometries are point types, merge on a temporary dummy column</span>
+            <span class="n">df1</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">df2</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">df1and2</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">df2</span><span class="p">[[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;geomb&quot;</span><span class="p">})</span>
+            <span class="p">)</span>
+            <span class="n">df1and2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1and2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">df1and2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="s2">&quot;geomb&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Execute an sjoin for non-point geometries, based upon a buffer zone</span>
+            <span class="n">df1and2</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span>
+                <span class="n">df1</span><span class="p">,</span>
+                <span class="n">df2</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;geomb&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span>
+                    <span class="n">df2</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1and2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">df1and2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="s2">&quot;geomb&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Add it to the cost df.</span>
+        <span class="n">df1and2</span> <span class="o">=</span> <span class="n">df1and2</span><span class="p">[</span><span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">df1and2</span><span class="p">[[</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">]],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span><span class="p">],</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add it to the list of costs.</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Set the default cost if it does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_default_cost&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span> <span class="o">=</span> <span class="n">name</span></div>
+
+<div class="viewcode-block" id="Access.create_euclidean_distance_neighbors"><a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance_neighbors.html#access.Access.create_euclidean_distance_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">create_euclidean_distance_neighbors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Euclidean distance among demand locations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name                : str</span>
+<span class="sd">                              Column name for euclidean distances neighbors</span>
+<span class="sd">        threshold           : int</span>
+<span class="sd">                              Buffer threshold for non-point geometries, AKA max_distance</span>
+<span class="sd">        centroid            : bool</span>
+<span class="sd">                              If True, convert geometries to centroids; otherwise, no change</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        NOTE: Creating euclidean distance measures requires having a geometry column in a `geopandas.GeoDataFrame &lt;http://geopandas.org/reference/geopandas.GeoDataFrame.html&gt;`_.</span>
+
+<span class="sd">        Import the base `Access` class and `Datasets`.</span>
+
+<span class="sd">        &gt;&gt;&gt; from access import Access, Datasets</span>
+
+<span class="sd">        Load each of the example datasets which correspond to the demand (population), supply (doctors and dentists)</span>
+<span class="sd">        and cost (travel time), respectively. The sample data represents the Chicago metro area with a 50km buffer around the city boundaries.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents   = Datasets.load_data(&#39;chi_doc_geom&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_population   = Datasets.load_data(&#39;chi_pop_geom&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs = Datasets.load_data(&#39;chi_times&#39;)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents.head()</span>
+<span class="sd">                     doc  dentist                       geometry</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100    1        1  POINT (354916.992 594670.505)</span>
+<span class="sd">        17031010201    0        1  POINT (354105.876 594088.600)</span>
+<span class="sd">        17031010202    4        1  POINT (354650.684 594093.822)</span>
+<span class="sd">        17031010300    4        1  POINT (355209.361 594086.149)</span>
+<span class="sd">        17031010400    0        2  POINT (355809.748 592808.043)</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population.head()</span>
+<span class="sd">                      pop                       geometry</span>
+<span class="sd">        geoid</span>
+<span class="sd">        17031010100  4854  POINT (354916.992 594670.505)</span>
+<span class="sd">        17031010201  6450  POINT (354105.876 594088.600)</span>
+<span class="sd">        17031010202  2818  POINT (354650.684 594093.822)</span>
+<span class="sd">        17031010300  6236  POINT (355209.361 594086.149)</span>
+<span class="sd">        17031010400  5042  POINT (355809.748 592808.043)</span>
+
+<span class="sd">        The `chi_travel_costs` dataset is the cost matrix, showing the travel time between each of the Census Tracts in the Chicago metro area.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_travel_costs.head()</span>
+<span class="sd">                origin         dest   cost</span>
+<span class="sd">        0  17093890101  17031010100  91.20</span>
+<span class="sd">        1  17093890101  17031010201  92.82</span>
+<span class="sd">        2  17093890101  17031010202  92.95</span>
+<span class="sd">        3  17093890101  17031010300  89.40</span>
+<span class="sd">        4  17093890101  17031010400  84.97</span>
+
+<span class="sd">        Make sure you assign your desired geometry projection, which you can change as follows.</span>
+
+<span class="sd">        &gt;&gt;&gt; chi_population = chi_population.to_crs(epsg = 2790)</span>
+<span class="sd">        &gt;&gt;&gt; chi_docs_dents = chi_docs_dents.to_crs(epsg = 2790)</span>
+
+<span class="sd">        Now, create an instance of the `Access` class and specify the demand, supply, and cost datasets.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care = Access(demand_df = chi_population, demand_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          demand_value = &quot;pop&quot;,</span>
+<span class="sd">                                          supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="sd">                                          cost_dest = &quot;dest&quot;, cost_name = &quot;cost&quot;)</span>
+
+<span class="sd">        To calculate euclidean distances between Census Tracts within 250km of eachother, you can set the `threshold` to 250000 (meters). Setting `centroid_o` and `centroid_d` to `True` calculates the centroid of the geom in your dataset.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care.create_euclidean_distance_neighbors(name= &#39;euclidean_neighbors&#39;, threshold = 250000, centroid_o = True, centroid_d = True)</span>
+
+<span class="sd">        The newly calculated euclidean distance is stored in the `neighbor_cost_df` attribute.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago_primary_care_geom.neighbor_cost_df.head()</span>
+<span class="sd">                origin         dest  euclidean_neighbors</span>
+<span class="sd">        0  17031010100  17031010100             0.000000</span>
+<span class="sd">        1  17031010100  17031010201           998.259243</span>
+<span class="sd">        2  17031010100  17031010202           635.203387</span>
+<span class="sd">        3  17031010100  17031010300           653.415713</span>
+<span class="sd">        4  17031010100  17031010400          2065.375554</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+
+        <span class="c1"># TO-DO: check for unprojected geometries</span>
+
+        <span class="c1"># Continue if the dataframes are geodataframes, else throw an error</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot calculate euclidean distance without a geometry of supply side&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Reset the index so that the geoids are accessible</span>
+        <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;origin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;dest&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="c1"># Convert to centroids if so-specified</span>
+        <span class="k">if</span> <span class="n">centroid</span><span class="p">:</span>
+            <span class="n">df1</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">df2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the distances.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="c1"># If both geometries are point types, merge on a temporary dummy column</span>
+            <span class="n">df1</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">df2</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">df1and2</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">df2</span><span class="p">[[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;geomb&quot;</span><span class="p">})</span>
+            <span class="p">)</span>
+            <span class="n">df1and2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1and2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">df1and2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="s2">&quot;geomb&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Execute an sjoin for non-point geometries, based upon a buffer zone</span>
+            <span class="n">df1and2</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span>
+                <span class="n">df1</span><span class="p">,</span>
+                <span class="n">df2</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;geomb&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span>
+                    <span class="n">df2</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1and2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">df1and2</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="s2">&quot;geomb&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Add it to the cost df.</span>
+        <span class="n">df1and2</span> <span class="o">=</span> <span class="n">df1and2</span><span class="p">[</span><span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">df1and2</span><span class="p">[[</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">]],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span><span class="p">],</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="s2">&quot;dest&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Add it to the list of costs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Set the default cost if it does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_neighbor_default_cost&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span> <span class="o">=</span> <span class="n">name</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

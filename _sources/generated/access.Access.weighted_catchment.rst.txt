@@ -1,0 +1,6 @@
+﻿access.Access.weighted\_catchment
+=================================
+
+.. currentmodule:: access
+
+.. automethod:: Access.weighted_catchment

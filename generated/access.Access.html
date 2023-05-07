@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>access.Access &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="access.Access.append_user_cost" href="access.Access.append_user_cost.html" />
+    <link rel="prev" title="API reference" href="../api.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../resources.html">Travel Times</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="access-access">
+<h1>access.Access<a class="headerlink" href="#access-access" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="access.Access">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">access.</span></span><span class="sig-name descname"><span class="pre">Access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">demand_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/access/access.html#Access"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#access.Access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatial Access Class</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>demand_df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html">pandas.DataFrame</a> or <a class="reference external" href="http://geopandas.org/reference/geopandas.GeoDataFrame.html">geopandas.GeoDataFrame</a></span></dt><dd><p>The origins dataframe, containing a location index and, optionally, a level of demand and geometry.</p>
+</dd>
+<dt><strong>demand_index</strong><span class="classifier">{bool, str}</span></dt><dd><p>boolean of True indicates that the locations are already on the df index;
+otherwise the argument is a string containing the name of the column of <cite>demand_df</cite> that holds the origin ID.</p>
+</dd>
+<dt><strong>demand_value</strong><span class="classifier">str</span></dt><dd><p>is the name of the column of <cite>demand</cite> that holds the aggregate demand at a location.</p>
+</dd>
+<dt><strong>supply_df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html">pandas.DataFrame</a> or <a class="reference external" href="http://geopandas.org/reference/geopandas.GeoDataFrame.html">geopandas.GeoDataFrame</a></span></dt><dd><p>The origins dataframe, containing a location index and, optionally, level of supply and geometry.</p>
+</dd>
+<dt><strong>supply_index</strong><span class="classifier">{bool, str}</span></dt><dd><p>boolean of True indicates that the locations are already on the df index;
+otherwise the argument is a string containing the name of the column of <cite>supply_df</cite> that holds the origin ID.</p>
+</dd>
+<dt><strong>supply_value</strong><span class="classifier">{str, list}</span></dt><dd><p>is the name of the column of <cite>supply</cite> that holds the aggregate supply at a location, or a list of such columns.</p>
+</dd>
+<dt><strong>cost_df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html">pandas.DataFrame</a></span></dt><dd><p>This dataframe contains a link from demand to supply locations, and a cost between them.</p>
+</dd>
+<dt><strong>cost_origin</strong><span class="classifier">str</span></dt><dd><p>The column name of the index locations – this is what will be grouped by.</p>
+</dd>
+<dt><strong>cost_dest</strong><span class="classifier">str</span></dt><dd><p>The column name of the neighborhing demand locations – this is what goes in the groups.</p>
+</dd>
+<dt><strong>cost_name</strong><span class="classifier">{str, list}</span></dt><dd><p>The column(s) name of the travel cost(s).</p>
+</dd>
+<dt><strong>neighbor_cost_df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html">pandas.DataFrame</a></span></dt><dd><p>This dataframe contains a link from demand to neighbor locations, and a cost between them (running consumer to supplier).</p>
+</dd>
+<dt><strong>neighbor_cost_origin</strong><span class="classifier">str</span></dt><dd><p>The column name of the origin locations – this is what will be grouped by.</p>
+</dd>
+<dt><strong>neighbor_cost_dest</strong><span class="classifier">str</span></dt><dd><p>The column name of the destination locations – this is what goes in the groups.</p>
+</dd>
+<dt><strong>neighbor_cost_name</strong><span class="classifier">{str, list}</span></dt><dd><p>The column name(s) of the travel cost(s).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Access</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>All of the calculated access measures.</p>
+</dd>
+<dt><strong>access_metadata</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Lists currently-available measures of access.</p>
+</dd>
+<dt><strong>cost_metadata</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Describes each of the currently-available supply to demand costs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.append_user_cost.html#access.Access.append_user_cost" title="access.Access.append_user_cost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_user_cost</span></code></a>(new_cost_df, origin, ...)</p></td>
+<td><p>Create a user cost, from demand to supply locations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.append_user_cost_neighbors.html#access.Access.append_user_cost_neighbors" title="access.Access.append_user_cost_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_user_cost_neighbors</span></code></a>(new_cost_df, ...)</p></td>
+<td><p>Create a user cost, from supply locations to other supply locations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.create_euclidean_distance.html#access.Access.create_euclidean_distance" title="access.Access.create_euclidean_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_euclidean_distance</span></code></a>([name, threshold, ...])</p></td>
+<td><p>Calculate the Euclidean distance from demand to supply locations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.create_euclidean_distance_neighbors.html#access.Access.create_euclidean_distance_neighbors" title="access.Access.create_euclidean_distance_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_euclidean_distance_neighbors</span></code></a>([name, ...])</p></td>
+<td><p>Calculate the Euclidean distance among demand locations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.enhanced_two_stage_fca.html#access.Access.enhanced_two_stage_fca" title="access.Access.enhanced_two_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enhanced_two_stage_fca</span></code></a>([name, cost, ...])</p></td>
+<td><p>Calculate the enhanced two-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.fca_ratio.html#access.Access.fca_ratio" title="access.Access.fca_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fca_ratio</span></code></a>([name, demand_cost, supply_cost, ...])</p></td>
+<td><p>Calculate the floating catchment area (buffer) ratio access score.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.raam.html#access.Access.raam" title="access.Access.raam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raam</span></code></a>([name, cost, supply_values, normalize, ...])</p></td>
+<td><p>Calculate the rational agent access model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.score.html#access.Access.score" title="access.Access.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(col_dict[, name])</p></td>
+<td><p>Weighted aggregate of multiple already-calculated, normalized access components.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.three_stage_fca.html#access.Access.three_stage_fca" title="access.Access.three_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">three_stage_fca</span></code></a>([name, cost, supply_values, ...])</p></td>
+<td><p>Calculate the three-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.two_stage_fca.html#access.Access.two_stage_fca" title="access.Access.two_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">two_stage_fca</span></code></a>([name, cost, max_cost, ...])</p></td>
+<td><p>Calculate the two-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.weighted_catchment.html#access.Access.weighted_catchment" title="access.Access.weighted_catchment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_catchment</span></code></a>([name, supply_cost, ...])</p></td>
+<td><p>Calculate the catchment area (buffer) aggregate access score.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="access.Access.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">demand_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supply_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_dest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_cost_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/access/access.html#Access.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#access.Access.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class.</p>
+<p class="rubric">Examples</p>
+<p>Import the base <cite>Access</cite> class and <cite>Datasets</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">access</span> <span class="kn">import</span> <span class="n">Access</span><span class="p">,</span> <span class="n">Datasets</span>
+</pre></div>
+</div>
+<p>Load each of the example datasets:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_doc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span>   <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_pop&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span> <span class="o">=</span> <span class="n">Datasets</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;chi_times&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_docs_dents</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">         geoid  doc  dentist</span>
+<span class="go">0  17031010100    1        1</span>
+<span class="go">1  17031010201    0        1</span>
+<span class="go">2  17031010202    4        1</span>
+<span class="go">3  17031010300    4        1</span>
+<span class="go">4  17031010400    0        2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_population</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">         geoid   pop</span>
+<span class="go">0  17031010100  4854</span>
+<span class="go">1  17031010201  6450</span>
+<span class="go">2  17031010202  2818</span>
+<span class="go">3  17031010300  6236</span>
+<span class="go">4  17031010400  5042</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chi_travel_costs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">        origin         dest   cost</span>
+<span class="go">0  17093890101  17031010100  91.20</span>
+<span class="go">1  17093890101  17031010201  92.82</span>
+<span class="go">2  17093890101  17031010202  92.95</span>
+<span class="go">3  17093890101  17031010300  89.40</span>
+<span class="go">4  17093890101  17031010400  84.97</span>
+</pre></div>
+</div>
+<p>Using the example data, create an <cite>Access</cite> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chicago_primary_care</span> <span class="o">=</span> <span class="n">Access</span><span class="p">(</span><span class="n">demand_df</span> <span class="o">=</span> <span class="n">chi_population</span><span class="p">,</span> <span class="n">demand_index</span> <span class="o">=</span> <span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+<span class="go">                                  demand_value = &quot;pop&quot;,</span>
+<span class="go">                                  supply_df = chi_docs_dents, supply_index = &quot;geoid&quot;,</span>
+<span class="go">                                  supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
+<span class="go">                                  cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
+<span class="go">                                  cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#access.Access.__init__" title="access.Access.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(demand_df, demand_value, supply_df)</p></td>
+<td><p>Initialize the class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.append_user_cost.html#access.Access.append_user_cost" title="access.Access.append_user_cost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_user_cost</span></code></a>(new_cost_df, origin, ...)</p></td>
+<td><p>Create a user cost, from demand to supply locations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.append_user_cost_neighbors.html#access.Access.append_user_cost_neighbors" title="access.Access.append_user_cost_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_user_cost_neighbors</span></code></a>(new_cost_df, ...)</p></td>
+<td><p>Create a user cost, from supply locations to other supply locations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.create_euclidean_distance.html#access.Access.create_euclidean_distance" title="access.Access.create_euclidean_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_euclidean_distance</span></code></a>([name, threshold, ...])</p></td>
+<td><p>Calculate the Euclidean distance from demand to supply locations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.create_euclidean_distance_neighbors.html#access.Access.create_euclidean_distance_neighbors" title="access.Access.create_euclidean_distance_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_euclidean_distance_neighbors</span></code></a>([name, ...])</p></td>
+<td><p>Calculate the Euclidean distance among demand locations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.enhanced_two_stage_fca.html#access.Access.enhanced_two_stage_fca" title="access.Access.enhanced_two_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enhanced_two_stage_fca</span></code></a>([name, cost, ...])</p></td>
+<td><p>Calculate the enhanced two-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.fca_ratio.html#access.Access.fca_ratio" title="access.Access.fca_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fca_ratio</span></code></a>([name, demand_cost, supply_cost, ...])</p></td>
+<td><p>Calculate the floating catchment area (buffer) ratio access score.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.raam.html#access.Access.raam" title="access.Access.raam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raam</span></code></a>([name, cost, supply_values, normalize, ...])</p></td>
+<td><p>Calculate the rational agent access model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.score.html#access.Access.score" title="access.Access.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(col_dict[, name])</p></td>
+<td><p>Weighted aggregate of multiple already-calculated, normalized access components.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.three_stage_fca.html#access.Access.three_stage_fca" title="access.Access.three_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">three_stage_fca</span></code></a>([name, cost, supply_values, ...])</p></td>
+<td><p>Calculate the three-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="access.Access.two_stage_fca.html#access.Access.two_stage_fca" title="access.Access.two_stage_fca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">two_stage_fca</span></code></a>([name, cost, max_cost, ...])</p></td>
+<td><p>Calculate the two-stage floating catchment area access score.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="access.Access.weighted_catchment.html#access.Access.weighted_catchment" title="access.Access.weighted_catchment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_catchment</span></code></a>([name, supply_cost, ...])</p></td>
+<td><p>Calculate the catchment area (buffer) aggregate access score.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_cost</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger_initialized</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbor_default_cost</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm_access_df</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/access.Access.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

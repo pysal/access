@@ -1,0 +1,6 @@
+﻿access.weights.step\_fn
+=======================
+
+.. currentmodule:: access.weights
+
+.. autofunction:: step_fn

@@ -1,0 +1,6 @@
+﻿access.Access.append\_user\_cost
+================================
+
+.. currentmodule:: access
+
+.. automethod:: Access.append_user_cost

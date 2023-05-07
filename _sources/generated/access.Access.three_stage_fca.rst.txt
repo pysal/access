@@ -1,0 +1,6 @@
+﻿access.Access.three\_stage\_fca
+===============================
+
+.. currentmodule:: access
+
+.. automethod:: Access.three_stage_fca

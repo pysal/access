@@ -1,110 +1,172 @@
-
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Welcome to No Errors Test Project’s documentation! &#8212; No Errors Test Project  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Spatial Access for PySAL &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
 
   </head><body>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
 
-          <div class="body" role="main">
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             
-  <div class="section" id="welcome-to-no-errors-test-project-s-documentation">
-<h1>Welcome to No Errors Test Project’s documentation!<a class="headerlink" href="#welcome-to-no-errors-test-project-s-documentation" title="Permalink to this headline">¶</a></h1>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+                <li><a href="resources.html">Travel Times</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="spatial-access-for-pysal">
+<h1>Spatial Access for PySAL<a class="headerlink" href="#spatial-access-for-pysal" title="Permalink to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Whether you work with data in health, retail, employment or other domains, spatial accessibility measures help identify potential spatial mismatches between the supply and demand of services. They indicate how close demand locations are to supply locations.</p>
+<a class="reference external image-reference" href="https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb#Ready-to-roll..."><img alt="_images/compare_access.png" src="_images/compare_access.png" style="width: 250px;" /></a>
+<a class="reference external image-reference" href="https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/Generating%20and%20Plotting%20a%20Variety%20of%20Access%20Scores.ipynb#Add-an-Additional-Distance-Measure---Euclidean-Distance"><img alt="_images/euclidean_distance.png" src="_images/euclidean_distance.png" style="width: 250px;" /></a>
+<a class="reference external image-reference" href="https://nbviewer.jupyter.org/github/pysal/access/blob/master/notebooks/How%20to%20Use%20access%20to%20Compute%20Access%20Scores%20to%20Resources%20Given%20XY%20Coordinates%20Joined%20to%20Census%20Tracts.ipynb#Gravity-Model"><img alt="_images/gravity_model.png" src="_images/gravity_model.png" style="width: 250px;" /></a>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this heading">¶</a></h2>
+<p>We built this package for several reasons:</p>
+<ul class="simple">
+<li><p>to make the new spatial access metric (RAAM) available,</p></li>
+<li><p>to allow for easy comparison between RAAM and classic spatial access models,</p></li>
+<li><p>to support spatial access research at scale by making pre-computed travel time matrices available and sharing code for computing new matrices at scale, and</p></li>
+<li><p>to allow users who prefer a point-and-click interface to obtain spatial access results for their data using our web app (for US).</p></li>
+</ul>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
+<p>This PySAL package implements our new measure that simultaneously accounts for travel time and congestion at the destination:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.raam.raam.html#access.raam.raam">Rational Agent Access Model (RAAM)</a> (Saxon and Snow 2019, <span id="id1">[<a class="reference internal" href="references.html#id3" title="James Saxon and Daniel Snow. A rational agent model for the spatial accessibility of primary health care. Annals of the American Association of Geographers, 0(0):1-18, 2019. doi:10.1080/24694452.2019.1629870.">Saxon and Snow, 2019</a>]</span>).</p></li>
+</ul>
+<p>Here is an example of the results of the RAAM model from this article: It shows how spatially accessible each Census tract is to primary care, compared to the national average. Darker blue areas have better spatial access (below-average travel costs) while darker red areas have worse spatial access (above average travel costs).</p>
+<a class="reference internal image-reference" href="_images/full_us.jpg"><img alt="_images/full_us.jpg" src="_images/full_us.jpg" style="width: 100%;" /></a>
+<p>In addition, the package calculates five classic spatial access models within the same access class as RAAM for easy comparison between models. The methods implement the original published versions but also allow for additional customization (e.g. re. weights).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.fca.fca_ratio.html#access.fca.fca_ratio">Floating Catchment Areas</a> (FCA): For each provider, this is the ratio of providers to clients within a given travel time to the provider (Huff 1963, <span id="id2">[<a class="reference internal" href="references.html#id4" title="David L. Huff. A probabilistic analysis of shopping center trade areas. Land Economics, 39(1):81–90, 1963. doi:10.2307/3144521.">Huff, 1963</a>]</span>, Joseph and Bantock 1982, <span id="id3">[<a class="reference internal" href="references.html#id7" title="Alun E. Joseph and Peter R. Bantock. Measuring potential physical accessibility to general practitioners in rural areas: a method and case study. Social Science &amp; Medicine, 16(1):85 - 90, 1982. doi:10.1016/0277-9536(82)90428-2.">Joseph and Bantock, 1982</a>]</span> and Luo 2004, <span id="id4">[<a class="reference internal" href="references.html#id12" title="Wei Luo. Using a gis-based floating catchment method to assess areas with shortage of physicians. Health &amp; Place, 10(1):1 - 11, 2004. doi:10.1016/S1353-8292(02)00067-9.">Luo, 2004</a>]</span>).</p></li>
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.fca.two_stage_fca.html#access.fca.two_stage_fca">Two-Step FCAs</a> (2SFCA): Calculated in two steps for a given travel time to the provider: 1) for each provider, the provider-to-client ratio is generated, 2) for each point of origin, these ratios are then summed (Luo and Wang, 2002, <span id="id5">[<a class="reference internal" href="references.html#id10" title="Wei Luo and Fahui Wang. Measures of spatial accessibility to health care in a gis environment: synthesis and a case study in the chicago region. Environment and Planning B: Planning and Design, 30(6):865-884, 2003. doi:10.1068/b29120.">Luo and Wang, 2003</a>]</span> and Wang and Luo 2005, <span id="id6">[<a class="reference internal" href="references.html#id13" title="Fahui Wang and Wei Luo. Assessing spatial and nonspatial factors for healthcare access: towards an integrated approach to defining health professional shortage areas. Health &amp; Place, 11(2):131 - 146, 2005. Special section: Geographies of Intellectual Disability. doi:10.1016/j.healthplace.2004.02.003.">Wang and Luo, 2005</a>]</span>).</p></li>
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.fca.two_stage_fca.html#access.fca.two_stage_fca">Enhanced 2SFCA</a> (E2SFCA): 2SFCA but with less weight to providers that are still within the travel threshold but at larger distances from the point of origin (Luo and Qi 2009, <span id="id7">[<a class="reference internal" href="references.html#id17" title="Wei Luo and Yi Qi. An enhanced two-step floating catchment area (e2sfca) method for measuring spatial accessibility to primary care physicians. Health &amp; Place, 15(4):1100 - 1107, 2009. doi:10.1016/j.healthplace.2009.06.002.">Luo and Qi, 2009</a>]</span>).</p></li>
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.fca.three_stage_fca.html#access.fca.three_stage_fca">Three-Step FCA</a> (3SFCA): adds distance-based allocation function to E2SFCA (Wan, Zou, and Sternberg, 2012, <span id="id8">[<a class="reference internal" href="references.html#id20" title="Neng Wan, Bin Zou, and Troy Sternberg. A three-step floating catchment area method for analyzing spatial access to health services. International Journal of Geographical Information Science, 26(6):1073-1089, 2012. doi:10.1080/13658816.2011.624987.">Wan <em>et al.</em>, 2012</a>]</span>).</p></li>
+<li><p><a class="reference external" href="https://access.readthedocs.io/en/latest/generated/access.fca.weighted_catchment.html#access.fca.weighted_catchment">Access Score</a>: This is a weighted sum of access components like distance to provider and relative importance of provider type (Isard 1960, <span id="id9">[<a class="reference internal" href="references.html#id2" title="Walter Isard. Methods of Regional Analysis: Introduction to Regional Science. MIT Press, Cambridge, MA, 1960.">Isard, 1960</a>]</span>).</p></li>
+</ul>
+<p>These classic models were also recently implemented in the Python package <a class="reference external" href="https://github.com/tetraptych/aceso">aceso</a>.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this heading">¶</a></h2>
+<p>Figure 1 shows the workflow that our PySAL package uses to calculate these models, including data inputs, creation of cost (travel time) matrix, and data output:</p>
+<a class="reference internal image-reference" href="_images/fig1.png"><img alt="_images/fig1.png" src="_images/fig1.png" style="width: 100%;" /></a>
+<p>As shown, all measures depend on travel times or distances between origins and destinations. This is the most computationally expensive part of calculating spatial access measures. The <a class="reference external" href="https://access.readthedocs.io/en/latest/resources.html">Cost Matrix</a> section outlines how these travel times can be computed or how you can access our pre-computed matrices for the US.</p>
+<p>Figure 2 shows the workflow from data input to data output. The most time-consuming and computationally intensive aspect of the workflow is the calculation of travel times (cost matrix).</p>
+<a class="reference internal image-reference" href="_images/thumbnail_workflow.png"><img alt="_images/thumbnail_workflow.png" src="_images/thumbnail_workflow.png" style="width: 100%;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Spatial access package: <a class="reference external" href="https://saxon.harris.uchicago.edu/">James Saxon, PhD</a></p></li>
+<li><p>Research Assistants: <a class="reference external" href="https://spatial.uchicago.edu/directories/full/2019-to-20">Yair Atlas</a> (<a class="reference external" href="https://cdac.uchicago.edu/engage/internships/">CDAC Internship</a>), <a class="reference external" href="https://spatial.uchicago.edu/directories/full/2019-to-20">Bryan Wang</a> and <a class="reference external" href="https://www.linkedin.com/in/vidalanguiano/">Vidal Anguiano Jr., MSCAPP</a></p></li>
+<li><p>Pre-Computed Cost Matrices: <a class="reference external" href="https://www.linkedin.com/in/dfsnow/">Dan Snow, MPP</a></p></li>
+<li><p>Concept and Documentation: <a class="reference external" href="https://www.linkedin.com/in/julia-koschinsky-657599b1/">Julia Koschinsky, PhD</a>, <a class="reference external" href="https://aap.cornell.edu/academics/crp/graduate/planning/phd/student-profiles#science">Karina Acosta Ordonez</a>, and <a class="reference external" href="https://128.135.123.230/">James Saxon, PhD</a></p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Citation: <a class="reference external" href="https://www.researchgate.net/publication/350338824_An_Open_Software_Environment_to_Make_Spatial_Access_Metrics_More_Accessible">Saxon, James, Julia Koschinsky, Karina Acosta, Vidal Anguiano, Luc Anselin, and Sergio Rey. (2020). An Open Software Environment to Make Spatial Access Metrics More Accessible. University of Chicago: Center for Spatial Data Science. Preprint doi:10.13140/RG.2.2.12396.28807</a></p>
 <div class="toctree-wrapper compound">
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-</div>
+</section>
+</section>
 
 
-          </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">No Errors Test Project</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2019, sphinx-action Test Suite.
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
       
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/index.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>

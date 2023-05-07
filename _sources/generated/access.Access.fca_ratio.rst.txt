@@ -1,0 +1,6 @@
+﻿access.Access.fca\_ratio
+========================
+
+.. currentmodule:: access
+
+.. automethod:: Access.fca_ratio

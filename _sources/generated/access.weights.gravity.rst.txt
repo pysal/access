@@ -1,0 +1,6 @@
+﻿access.weights.gravity
+======================
+
+.. currentmodule:: access.weights
+
+.. autofunction:: gravity

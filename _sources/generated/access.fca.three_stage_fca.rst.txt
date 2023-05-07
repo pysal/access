@@ -1,0 +1,6 @@
+﻿access.fca.three\_stage\_fca
+============================
+
+.. currentmodule:: access.fca
+
+.. autofunction:: three_stage_fca

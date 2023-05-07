@@ -1,0 +1,6 @@
+﻿access.fca.two\_stage\_fca
+==========================
+
+.. currentmodule:: access.fca
+
+.. autofunction:: two_stage_fca

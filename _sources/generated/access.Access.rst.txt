@@ -1,0 +1,42 @@
+﻿access.Access
+=============
+
+.. currentmodule:: access
+
+.. autoclass:: Access
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Access.__init__
+      ~Access.append_user_cost
+      ~Access.append_user_cost_neighbors
+      ~Access.create_euclidean_distance
+      ~Access.create_euclidean_distance_neighbors
+      ~Access.enhanced_two_stage_fca
+      ~Access.fca_ratio
+      ~Access.raam
+      ~Access.score
+      ~Access.three_stage_fca
+      ~Access.two_stage_fca
+      ~Access.weighted_catchment
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Access.default_cost
+      ~Access.logger_initialized
+      ~Access.neighbor_default_cost
+      ~Access.norm_access_df
+   
+   

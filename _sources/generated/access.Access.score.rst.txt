@@ -1,0 +1,6 @@
+﻿access.Access.score
+===================
+
+.. currentmodule:: access
+
+.. automethod:: Access.score

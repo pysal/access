@@ -1,0 +1,6 @@
+﻿access.fca.fca\_ratio
+=====================
+
+.. currentmodule:: access.fca
+
+.. autofunction:: fca_ratio

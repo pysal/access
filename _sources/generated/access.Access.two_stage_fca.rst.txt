@@ -1,0 +1,6 @@
+﻿access.Access.two\_stage\_fca
+=============================
+
+.. currentmodule:: access
+
+.. automethod:: Access.two_stage_fca

@@ -1,0 +1,6 @@
+﻿access.raam.raam
+================
+
+.. currentmodule:: access.raam
+
+.. autofunction:: raam

@@ -1,0 +1,6 @@
+﻿access.weights.gaussian
+=======================
+
+.. currentmodule:: access.weights
+
+.. autofunction:: gaussian

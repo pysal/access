@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>access.fca &#8212; access v0+untagged.1.g7149c70 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          access</a>
+        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../resources.html">Travel Times</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for access.fca</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.weights</span> <span class="kn">import</span> <span class="n">step_fn</span>
+
+
+<div class="viewcode-block" id="weighted_catchment"><a class="viewcode-back" href="../../generated/access.fca.weighted_catchment.html#access.fca.weighted_catchment">[docs]</a><span class="k">def</span> <span class="nf">weighted_catchment</span><span class="p">(</span>
+    <span class="n">loc_df</span><span class="p">,</span>
+    <span class="n">cost_df</span><span class="p">,</span>
+    <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">cost_source</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+    <span class="n">cost_dest</span><span class="o">=</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span>
+    <span class="n">cost_cost</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">,</span>
+    <span class="n">loc_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">loc_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">three_stage_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculation of the floating catchment (buffered) accessibility</span>
+<span class="sd">    sum, from DataFrames with computed distances.</span>
+<span class="sd">    This catchment may be either a simple buffer -- with cost below</span>
+<span class="sd">    a single threshold -- or an additional weight may be applied</span>
+<span class="sd">    as a function of the access cost.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    loc_df         : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                 should contain at _least_ a list of the locations (`df_dest`) at which facilities are located.</span>
+<span class="sd">    loc_index   : {bool, str}</span>
+<span class="sd">                 is the the name of the df column that holds the facility locations.</span>
+<span class="sd">                 If it is a bool, then the it the location is already on the index.</span>
+<span class="sd">    loc_value   : str</span>
+<span class="sd">                 If this value is `None`, a count will be used in place of a weight.</span>
+<span class="sd">                 Use this, for instance, to count restaurants, instead of total doctors in a practice.</span>
+<span class="sd">    cost_df    : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                 This dataframe contains the precomputed costs from an origin/index location to destinations.</span>
+<span class="sd">    cost_source : str</span>
+<span class="sd">                 The name of the column name of the index locations -- this is what will be grouped.</span>
+<span class="sd">    cost_dest  : str</span>
+<span class="sd">                 The name of the column name of the destination locations.</span>
+<span class="sd">                 This is what will be _in_ each group.</span>
+<span class="sd">    cost_cost  : str</span>
+<span class="sd">                 This is is the name of the cost column.</span>
+<span class="sd">    weight_fn  : function</span>
+<span class="sd">                 This function will weight the value of resources/facilities,</span>
+<span class="sd">                 as a function of the raw cost.</span>
+<span class="sd">    max_cost   : float</span>
+<span class="sd">                 This is the maximum cost to consider in the weighted sum;</span>
+<span class="sd">                 note that it applies _along with_ the weight function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    resources  : pandas.Series</span>
+<span class="sd">                 A -- potentially weighted -- sum of resources, facilities, or consumers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># merge the loc dataframe and cost dataframe together</span>
+    <span class="k">if</span> <span class="n">loc_index</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">cost_df</span><span class="p">,</span> <span class="n">loc_df</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="n">cost_source</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">cost_df</span><span class="p">,</span> <span class="n">loc_df</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="n">cost_source</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="n">loc_index</span><span class="p">)</span>
+
+    <span class="c1"># constrain by max cost</span>
+    <span class="k">if</span> <span class="n">max_cost</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="n">cost_cost</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_cost</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># apply a weight function if inputted -- either enhanced two stage or three stage</span>
+    <span class="k">if</span> <span class="n">weight_fn</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">three_stage_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_loc_value_column</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">loc_value</span><span class="p">]</span> <span class="o">*</span> <span class="n">temp</span><span class="o">.</span><span class="n">W3</span> <span class="o">*</span> <span class="n">temp</span><span class="o">.</span><span class="n">G</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">loc_value</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">loc_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_loc_value_column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">loc_value</span><span class="p">]</span> <span class="o">*=</span> <span class="n">temp</span><span class="p">[</span><span class="n">cost_cost</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weight_fn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">cost_dest</span><span class="p">])[</span><span class="n">loc_value</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="fca_ratio"><a class="viewcode-back" href="../../generated/access.fca.fca_ratio.html#access.fca.fca_ratio">[docs]</a><span class="k">def</span> <span class="nf">fca_ratio</span><span class="p">(</span>
+    <span class="n">demand_df</span><span class="p">,</span>
+    <span class="n">supply_df</span><span class="p">,</span>
+    <span class="n">demand_cost_df</span><span class="p">,</span>
+    <span class="n">supply_cost_df</span><span class="p">,</span>
+    <span class="n">max_cost</span><span class="p">,</span>
+    <span class="n">demand_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">demand_name</span><span class="o">=</span><span class="s2">&quot;demand&quot;</span><span class="p">,</span>
+    <span class="n">supply_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">supply_name</span><span class="o">=</span><span class="s2">&quot;supply&quot;</span><span class="p">,</span>
+    <span class="n">demand_cost_origin</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+    <span class="n">demand_cost_dest</span><span class="o">=</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span>
+    <span class="n">demand_cost_name</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">,</span>
+    <span class="n">supply_cost_origin</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+    <span class="n">supply_cost_dest</span><span class="o">=</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span>
+    <span class="n">supply_cost_name</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">,</span>
+    <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">noise</span><span class="o">=</span><span class="s2">&quot;quiet&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculation of the floating catchment accessibility</span>
+<span class="sd">    ratio, from DataFrames with precomputed distances.</span>
+<span class="sd">    This is accomplished through two calls of the :meth:`Access.access.weighted_catchment` method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    demand_df          : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                         The origins dataframe, containing a location index and a total demand.</span>
+<span class="sd">    supply_df          : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                         The origins dataframe, containing a location index and level of supply</span>
+<span class="sd">    demand_cost_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                         This dataframe contains a link between neighboring demand locations, and a cost between them.</span>
+<span class="sd">    supply_cost_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                         This dataframe contains a link between neighboring supply locations, and a cost between them.</span>
+<span class="sd">    max_cost           : float</span>
+<span class="sd">                         This is the maximum cost to consider in the weighted sum;</span>
+<span class="sd">                         note that it applies *along with* the weight function.</span>
+<span class="sd">    demand_index       : str</span>
+<span class="sd">                         is the name of the column that holds the IDs.</span>
+<span class="sd">    demand_name       : str</span>
+<span class="sd">                         is the name of the column of `demand` that holds the aggregate demand at a location.</span>
+<span class="sd">    supply_index       : str</span>
+<span class="sd">                         is the name of the column that holds the IDs.</span>
+<span class="sd">    supply_name       : str</span>
+<span class="sd">                         is the name of the column of `supply_df` that holds the aggregate supply at a location.</span>
+<span class="sd">    demand_cost_origin : str</span>
+<span class="sd">                         The column name of the index locations -- this is what will be grouped.</span>
+<span class="sd">    demand_cost_dest   : str</span>
+<span class="sd">                         The column name of the index locations -- this is what will be grouped.</span>
+<span class="sd">    demand_cost_name   : str</span>
+<span class="sd">                         The column name of the travel cost.</span>
+<span class="sd">    supply_cost_origin : str</span>
+<span class="sd">                         The column name of the index locations -- this is what will be grouped.</span>
+<span class="sd">    supply_cost_dest   : str</span>
+<span class="sd">                         The column name of the index locations -- this is what will be grouped.</span>
+<span class="sd">    supply_cost_name   : str</span>
+<span class="sd">                         The column name of the travel cost.</span>
+<span class="sd">    weight_fn          : function</span>
+<span class="sd">                         This function will weight the value of resources/facilities,</span>
+<span class="sd">                         as a function of the raw cost.</span>
+<span class="sd">    normalize          : bool</span>
+<span class="sd">                         True to normalize the FCA series, by default False.</span>
+<span class="sd">    noise              : str</span>
+<span class="sd">                         Default &#39;quiet&#39;, otherwise gives messages that indicate potential issues.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    access     : pandas.Series</span>
+<span class="sd">                 A -- potentially-weighted -- access ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># if there is a discrepancy between the demand and supply cost dataframe locations, print it</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">supply_cost_df</span><span class="p">[</span><span class="n">supply_cost_dest</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="o">!=</span> <span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;some tracts may be unaccounted for in supply_cost&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># get a series of the total demand within the buffer zone</span>
+    <span class="n">total_demand_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">demand_df</span><span class="p">,</span>
+        <span class="n">demand_cost_df</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">demand_cost_dest</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">demand_cost_origin</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">demand_cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="n">demand_index</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="n">demand_name</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># get a series of the total supply within the buffer zone</span>
+    <span class="n">total_supply_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">supply_df</span><span class="p">,</span>
+        <span class="n">supply_cost_df</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">supply_cost_dest</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">supply_cost_origin</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">supply_cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="n">supply_index</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="n">supply_name</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># join the aggregate demand and the aggregate supply into one dataframe</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">total_supply_series</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;supply&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">total_demand_series</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;demand&quot;</span><span class="p">),</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># calculate the floating catchement area, or supply divided by demand</span>
+    <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;FCA&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;supply&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span>
+    <span class="n">base_FCA_series</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;FCA&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">noise</span> <span class="o">!=</span> <span class="s2">&quot;quiet&quot;</span><span class="p">:</span>
+        <span class="c1"># depending on the version history of the census tract data you use, this will print out the tracts that have undefined FCA values</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">base_FCA_series</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">base_FCA_series</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">base_FCA_series</span></div>
+
+
+<div class="viewcode-block" id="two_stage_fca"><a class="viewcode-back" href="../../generated/access.fca.two_stage_fca.html#access.fca.two_stage_fca">[docs]</a><span class="k">def</span> <span class="nf">two_stage_fca</span><span class="p">(</span>
+    <span class="n">demand_df</span><span class="p">,</span>
+    <span class="n">supply_df</span><span class="p">,</span>
+    <span class="n">cost_df</span><span class="p">,</span>
+    <span class="n">max_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">demand_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">demand_name</span><span class="o">=</span><span class="s2">&quot;demand&quot;</span><span class="p">,</span>
+    <span class="n">supply_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">supply_name</span><span class="o">=</span><span class="s2">&quot;supply&quot;</span><span class="p">,</span>
+    <span class="n">cost_origin</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+    <span class="n">cost_dest</span><span class="o">=</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span>
+    <span class="n">cost_name</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">,</span>
+    <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculation of the two-stage floating catchment accessibility</span>
+<span class="sd">    ratio, from DataFrames with precomputed distances.</span>
+<span class="sd">    This is accomplished through a single call of the `access.weighted_catchment` method,</span>
+<span class="sd">    to retrieve the patients using each provider.</span>
+<span class="sd">    The ratio of providers per patient is then calculated at each care destination,</span>
+<span class="sd">    and that ratio is weighted and summed at each corresponding demand site.</span>
+<span class="sd">    This is based on the original paper by Luo and Wang :cite:`2002_luo_spatial_accessibility_chicago`,</span>
+<span class="sd">    as extended by Luo and Qi :cite:`2009_luo_qi_E2SFCA`</span>
+<span class="sd">    and McGrail and Humphreys :cite:`2009_mcgrail_improved_2SFCA`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    demand_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    The origins dataframe, containing a location index and a total demand.</span>
+<span class="sd">    demand_origin : str</span>
+<span class="sd">                    is the name of the column of `demand_df` that holds the origin ID.</span>
+<span class="sd">    demand_value  : str</span>
+<span class="sd">                    is the name of the column of `demand_df` that holds the aggregate demand at a location.</span>
+<span class="sd">    supply_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    The origins dataframe, containing a location index and level of supply</span>
+<span class="sd">    supply_origin : str</span>
+<span class="sd">                    is the name of the column of `supply_df` that holds the origin ID.</span>
+<span class="sd">    supply_value  : str</span>
+<span class="sd">                    is the name of the column of `supply_df` that holds the aggregate demand at a location.</span>
+<span class="sd">    cost_df       : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    This dataframe contains a link between neighboring demand locations, and a cost between them.</span>
+<span class="sd">    cost_origin   : str</span>
+<span class="sd">                    The column name of the locations of users or consumers.</span>
+<span class="sd">    cost_dest     : str</span>
+<span class="sd">                    The column name of the supply or resource locations.</span>
+<span class="sd">    cost_name     : str</span>
+<span class="sd">                    The column name of the travel cost between origins and destinations</span>
+<span class="sd">    weight_fn  : function</span>
+<span class="sd">                 This fucntion will weight the value of resources/facilities,</span>
+<span class="sd">                 as a function of the raw cost.</span>
+<span class="sd">    max_cost   : float</span>
+<span class="sd">                 This is the maximum cost to consider in the weighted sum;</span>
+<span class="sd">                   note that it applies _along with_ the weight function.</span>
+<span class="sd">    normalize  : bool</span>
+<span class="sd">                  True to normalize the FCA series, by default False.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    access     : pandas.Series</span>
+<span class="sd">                 A -- potentially-weighted -- two-stage access ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get a series of total demand then calculate the supply to total demand ratio for each location</span>
+    <span class="n">total_demand_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">demand_df</span><span class="p">,</span>
+        <span class="n">cost_df</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">cost_origin</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">cost_dest</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="n">demand_index</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="n">demand_name</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># create a temporary dataframe, temp, that holds the supply and aggregate demand at each location</span>
+    <span class="n">total_demand_series</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;_W&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">total_demand_series</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="c1"># there may be NA values due to a shorter supply dataframe than the demand dataframe.</span>
+    <span class="c1"># in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.</span>
+    <span class="n">temp</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># calculate the fractional ratio of supply to aggregate demand at each location, or Rl</span>
+    <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Rl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span> <span class="o">/</span> <span class="n">temp</span><span class="p">[</span><span class="n">demand_name</span> <span class="o">+</span> <span class="s2">&quot;_W&quot;</span><span class="p">]</span>
+
+    <span class="c1"># separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe</span>
+    <span class="n">supply_to_total_demand_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Rl&quot;</span><span class="p">:</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Rl&quot;</span><span class="p">]})</span>
+    <span class="n">supply_to_total_demand_frame</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;geoid&quot;</span>
+
+    <span class="c1"># sum, into a series, the supply to total demand ratios for each location</span>
+    <span class="n">two_stage_fca_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">supply_to_total_demand_frame</span><span class="p">,</span>
+        <span class="n">cost_df</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">cost_dest</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">cost_origin</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="s2">&quot;Rl&quot;</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">two_stage_fca_series</span></div>
+
+
+<div class="viewcode-block" id="three_stage_fca"><a class="viewcode-back" href="../../generated/access.fca.three_stage_fca.html#access.fca.three_stage_fca">[docs]</a><span class="k">def</span> <span class="nf">three_stage_fca</span><span class="p">(</span>
+    <span class="n">demand_df</span><span class="p">,</span>
+    <span class="n">supply_df</span><span class="p">,</span>
+    <span class="n">cost_df</span><span class="p">,</span>
+    <span class="n">max_cost</span><span class="p">,</span>
+    <span class="n">demand_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">demand_name</span><span class="o">=</span><span class="s2">&quot;demand&quot;</span><span class="p">,</span>
+    <span class="n">supply_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+    <span class="n">supply_name</span><span class="o">=</span><span class="s2">&quot;supply&quot;</span><span class="p">,</span>
+    <span class="n">cost_origin</span><span class="o">=</span><span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+    <span class="n">cost_dest</span><span class="o">=</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span>
+    <span class="n">cost_name</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">,</span>
+    <span class="n">weight_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculation of the three-stage floating catchment accessibility</span>
+<span class="sd">    ratio, from DataFrames with precomputed distances.</span>
+<span class="sd">    This is accomplished through a single call of the :meth:`access.access.weighted_catchment` method,</span>
+<span class="sd">    to retrieve the patients using each provider.</span>
+<span class="sd">    The ratio of providers per patient is then calculated at each care destination,</span>
+<span class="sd">    and that ratio is weighted and summed at each corresponding demand site.</span>
+<span class="sd">    The only difference weight respect to the 2SFCA method is that,</span>
+<span class="sd">    in addition to a distance-dependent weight (`weight_fn`),</span>
+<span class="sd">    a preference weight *G* is calculated.  That calculation</span>
+<span class="sd">    uses the value :math:`\\beta`.</span>
+<span class="sd">    See the original paper by Wan, Zou, and Sternberg. :cite:`2012_wan_3SFCA`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    demand_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    The origins dataframe, containing a location index and a total demand.</span>
+<span class="sd">    demand_origin : str</span>
+<span class="sd">                    is the name of the column of `demand` that holds the origin ID.</span>
+<span class="sd">    demand_value  : str</span>
+<span class="sd">                    is the name of the column of `demand` that holds the aggregate demand at a location.</span>
+<span class="sd">    supply_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    The origins dataframe, containing a location index and level of supply</span>
+<span class="sd">    supply_df     : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    The origins dataframe, containing a location index and level of supply</span>
+<span class="sd">    cost_df       : `pandas.DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">                    This dataframe contains a link between neighboring demand locations, and a cost between them.</span>
+<span class="sd">    cost_origin   : str</span>
+<span class="sd">                    The column name of the locations of users or consumers.</span>
+<span class="sd">    cost_dest     : str</span>
+<span class="sd">                    The column name of the supply or resource locations.</span>
+<span class="sd">    cost_name     : str</span>
+<span class="sd">                    The column name of the travel cost between origins and destinations</span>
+<span class="sd">    weight_fn  : function</span>
+<span class="sd">                 This fucntion will weight the value of resources/facilities,</span>
+<span class="sd">                 as a function of the raw cost.</span>
+<span class="sd">    max_cost   : float</span>
+<span class="sd">                 This is the maximum cost to consider in the weighted sum;</span>
+<span class="sd">                 note that it applies *along with* the weight function.</span>
+<span class="sd">    preference_weight_beta : float</span>
+<span class="sd">                             Parameter scaling with the gaussian weights,</span>
+<span class="sd">                             used to generate preference weights.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    access     : pandas.Series</span>
+<span class="sd">                 A -- potentially-weighted -- three-stage access ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># create preference weight &#39;G&#39;, which is the weight</span>
+    <span class="n">cost_df</span><span class="p">[</span><span class="s2">&quot;W3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost_df</span><span class="p">[</span><span class="n">cost_name</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weight_fn</span><span class="p">)</span>
+    <span class="n">W3sum_frame</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">cost_df</span><span class="p">[[</span><span class="n">cost_origin</span><span class="p">,</span> <span class="s2">&quot;W3&quot;</span><span class="p">]]</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cost_origin</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;W3&quot;</span><span class="p">:</span> <span class="s2">&quot;W3sum&quot;</span><span class="p">})</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">cost_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">cost_df</span><span class="p">,</span> <span class="n">W3sum_frame</span><span class="p">)</span>
+    <span class="n">cost_df</span><span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">W3</span> <span class="o">/</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">W3sum</span>
+
+    <span class="c1"># get a series of total demand then calculate the supply to total demand ratio for each location</span>
+    <span class="n">total_demand_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">demand_df</span><span class="p">,</span>
+        <span class="n">cost_df</span><span class="p">,</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">cost_origin</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">cost_dest</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="n">demand_index</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="n">demand_name</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+        <span class="n">three_stage_weight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># create a temporary dataframe, temp, that holds the supply and aggregate demand at each location</span>
+    <span class="n">total_demand_series</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;_W&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">total_demand_series</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="c1"># there may be NA values due to a shorter supply dataframe than the demand dataframe.</span>
+    <span class="c1"># in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.</span>
+    <span class="n">temp</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># calculate the fractional ratio of supply to aggregate demand at each location, or Rl</span>
+    <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Rl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span> <span class="o">/</span> <span class="n">temp</span><span class="p">[</span><span class="n">demand_name</span> <span class="o">+</span> <span class="s2">&quot;_W&quot;</span><span class="p">]</span>
+
+    <span class="c1"># separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe</span>
+    <span class="n">supply_to_total_demand_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Rl&quot;</span><span class="p">:</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;Rl&quot;</span><span class="p">]})</span>
+    <span class="n">supply_to_total_demand_frame</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;geoid&quot;</span>
+
+    <span class="c1"># sum, into a series, the supply to total demand ratios for each location</span>
+    <span class="n">three_stage_fca_series</span> <span class="o">=</span> <span class="n">weighted_catchment</span><span class="p">(</span>
+        <span class="n">supply_to_total_demand_frame</span><span class="p">,</span>
+        <span class="n">cost_df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(),</span>
+        <span class="n">max_cost</span><span class="p">,</span>
+        <span class="n">cost_source</span><span class="o">=</span><span class="n">cost_dest</span><span class="p">,</span>
+        <span class="n">cost_dest</span><span class="o">=</span><span class="n">cost_origin</span><span class="p">,</span>
+        <span class="n">cost_cost</span><span class="o">=</span><span class="n">cost_name</span><span class="p">,</span>
+        <span class="n">loc_index</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">,</span>
+        <span class="n">loc_value</span><span class="o">=</span><span class="s2">&quot;Rl&quot;</span><span class="p">,</span>
+        <span class="n">weight_fn</span><span class="o">=</span><span class="n">weight_fn</span><span class="p">,</span>
+        <span class="n">three_stage_weight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># remove the preference weight G from the original costs dataframe</span>
+    <span class="n">cost_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;W3&quot;</span><span class="p">,</span> <span class="s2">&quot;W3sum&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">three_stage_fca_series</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, pysal access developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
