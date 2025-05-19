@@ -11,7 +11,7 @@ The spatial access measures depend on travel times or distances between origins 
 Explore and Download Pre-Computed Travel Times
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 |
-Since computing travel times is computationally expensive and non-trivial at scale, we've pre-computed times between common Census geographies for several travel modes. These times cover the entire United States and the most recent Census years (2020+). They are available via [OpenTimes](https://opentimes.org/), a dedicated website created by research assistant Dan Snow (UChicago MPP'19). For more information on how these times are calculated, visit the [OpenTimes GitHub](https://github.com/dfsnow/opentimes).
+Since computing travel times is computationally expensive and non-trivial at scale, we've pre-computed times between common Census geographies for several travel modes. These times cover the entire United States and the most recent Census years (2020+). They are available via [OpenTimes](https://opentimes.org/), a dedicated website created by Dan Snow (UChicago MPP'19). For more information on how these times are calculated, visit the [OpenTimes GitHub](https://github.com/dfsnow/opentimes).
 
 Compute your Own Travel Times
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
