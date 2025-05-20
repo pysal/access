@@ -1,0 +1,77 @@
+---
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    - cron: "59 23 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual CI Run
+        default: test
+        required: false
+
+jobs:
+  tests:
+    name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        environment-file: [
+          37,
+          38,
+          39,
+          310,
+        ]
+        experimental: [false]
+        include:
+          - environment-file: 310
+            os: macos-latest
+          - environment-file: 310
+            os: windows-latest
+      fail-fast: false
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags.
+      
+      - name: setup micromamba
+        uses: mamba-org/setup-micromamba@v2
+        with:
+         environment-file: .ci/${{ matrix.environment-file }}.yml
+         micromamba-version: "latest"
+       
+      - name: install package
+        run: "pip install -e . --no-deps"
+
+      - name: run tests
+        run: |
+          pytest \
+          access/ \
+          -vvv \
+          -r a \
+          --numprocesses logical \
+          --color yes \
+          --cov access \
+          --cov-append \
+          --cov-report term-missing \
+          --cov-report xml .
+
+      - name: codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          name: access-codecov
