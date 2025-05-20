@@ -1,9 +1,17 @@
- name: Build Docs
- on:
-   push:
-     branches:
-     - master
-     - main
+---
+name: Build Docs
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Doc Build
+        default: run-doc-build
+        required: false
+
  jobs:
    docs:
      name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
