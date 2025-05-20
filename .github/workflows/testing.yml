@@ -21,6 +21,9 @@ jobs:
     name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash -l {0}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -32,15 +35,17 @@ jobs:
         ]
         experimental: [false]
         include:
-          - environment-file: .ci/310.yml
+          - environment-file: 310
             os: macos-latest
-          - environment-file: .ci/310.yml
+          - environment-file: 310
             os: windows-latest
       fail-fast: false
 
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags.
       
       - name: setup micromamba
         uses: mamba-org/setup-micromamba@v2
@@ -51,7 +56,7 @@ jobs:
       - name: install package
         run: "pip install -e . --no-deps"
 
-      - name: runtest
+      - name: run tests
         run: |
           pytest \
           access/ \
