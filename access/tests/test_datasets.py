@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 import geopandas as gpd
-from access.datasets import Datasets
+from access import Datasets
 
 
 class TestDatasets(unittest.TestCase):

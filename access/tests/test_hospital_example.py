@@ -1,6 +1,5 @@
-import sys
-
-sys.path.append("../..")
+from access import Access
+from access.access import weights
 
 import math
 import unittest

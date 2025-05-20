@@ -1,6 +1,5 @@
-import sys
-
-sys.path.append("../..")
+from access import Access
+from access.access import weights, helpers
 
 import math
 import unittest
@@ -8,7 +7,6 @@ import unittest
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from access import Access, weights, helpers
 import util as tu
 
 

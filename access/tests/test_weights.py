@@ -1,6 +1,4 @@
-import sys
-
-sys.path.append("../..")
+from access.access import weights
 
 import math
 import unittest
@@ -8,7 +6,6 @@ from random import randint
 
 import numpy as np
 import pandas as pd
-from access import weights
 import util as tu
 
 
