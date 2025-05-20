@@ -16,52 +16,52 @@ on:
         default: test
         required: false
 
- jobs:
-   unittests:
-     name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
-     runs-on: ${{ matrix.os }}
-     timeout-minutes: 90
-     strategy:
-       matrix:
-         os: [ubuntu-latest]
-         environment-file: [.ci/37.yml, .ci/38.yml, .ci/39.yml, .ci/310.yml]
-         experimental: [false]
-         include:
-           - environment-file: .ci/310.yml
-             os: macos-latest
-           - environment-file: .ci/310.yml
-             os: windows-latest
-       fail-fast: false
-         
-     steps:
-       - name: checkout repo
-         uses: actions/checkout@v2
+jobs:
+  tests:
+    name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        environment-file: [.ci/37.yml, .ci/38.yml, .ci/39.yml, .ci/310.yml]
+        experimental: [false]
+        include:
+          - environment-file: .ci/310.yml
+            os: macos-latest
+          - environment-file: .ci/310.yml
+            os: windows-latest
+      fail-fast: false
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      
+      - name: setup micromamba
+        uses: mamba-org/setup-micromamba@v2
+        with:
+         environment-file: ci/${{ matrix.environment-file }}.yml
+         micromamba-version: "latest"
        
-       - name: setup micromamba
-         uses: mamba-org/setup-micromamba@v2
-         with:
-          environment-file: ci/${{ matrix.environment-file }}.yml
-          micromamba-version: "latest"
-        
       - name: install package
         run: "pip install -e . --no-deps"
-       
-       - name: runtest
-         run: |
-           pytest \
-           access/ \
-           -vvv \
-           -r a \
-           --numprocesses logical \
-           --color yes \
-           --cov access \
-           --cov-append \
-           --cov-report term-missing \
-           --cov-report xml .
-       
-       - name: codecov
-         uses: codecov/codecov-action@v1
-         with:
-           token: ${{ secrets.CODECOV_TOKEN }}
-           file: ./coverage.xml
-           name: access-codecov
+
+      - name: runtest
+        run: |
+          pytest \
+          access/ \
+          -vvv \
+          -r a \
+          --numprocesses logical \
+          --color yes \
+          --cov access \
+          --cov-append \
+          --cov-report term-missing \
+          --cov-report xml .
+
+      - name: codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          name: access-codecov
