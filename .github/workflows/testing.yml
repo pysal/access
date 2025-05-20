@@ -24,7 +24,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        environment-file: [.ci/37.yml, .ci/38.yml, .ci/39.yml, .ci/310.yml]
+        environment-file: [
+          .ci/37.yml,
+          .ci/38.yml,
+          .ci/39.yml,
+          .ci/310.yml
+        ]
         experimental: [false]
         include:
           - environment-file: .ci/310.yml
@@ -40,7 +45,7 @@ jobs:
       - name: setup micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
-         environment-file: ci/${{ matrix.environment-file }}.yml
+         environment-file: .ci/${{ matrix.environment-file }}.yml
          micromamba-version: "latest"
        
       - name: install package
