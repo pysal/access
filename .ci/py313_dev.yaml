@@ -4,7 +4,6 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
-  - geos  # for shapely
   - git
   - pip
   # testing
@@ -20,5 +19,5 @@ dependencies:
     - pandas
     - pyogrio
     - scipy
+    - shapely
     - git+https://github.com/geopandas/geopandas.git
-    - git+https://github.com/shapely/shapely.git
