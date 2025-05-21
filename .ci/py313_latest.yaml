@@ -12,3 +12,12 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  # docs
+  - nbsphinx
+  - numpydoc
+  - quilt3
+  - sphinx
+  - sphinxcontrib-napoleon
+  - sphinx-gallery
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme

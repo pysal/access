@@ -21,7 +21,7 @@ on:
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [.ci/310.yml]
+         environment-file: [py313_latest]
          experimental: [false]
      steps:
        - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ on:
             miniconda-version: 'latest'
             auto-update-conda: true
             auto-activate-base: false
-            environment-file: ${{ matrix.environment-file }}
+            environment-file: .ci/ ${{ matrix.environment-file }} .yaml
             activate-environment: test
        - shell: bash -l {0}
          run: conda info --all

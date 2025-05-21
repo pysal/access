@@ -28,16 +28,20 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         environment-file: [
-          37,
-          38,
-          39,
-          310,
+          py37_latest,
+          py38_latest,
+          py39_latest,
+          py310_latest,
+          py311_latest,
+          py312_latest,
+          py313_latest,
+          py313_dev,
         ]
         experimental: [false]
         include:
-          - environment-file: 310
+          - environment-file: py313_latest
             os: macos-latest
-          - environment-file: 310
+          - environment-file: py313_latest
             os: windows-latest
       fail-fast: false
 
@@ -50,7 +54,7 @@ jobs:
       - name: setup micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
-         environment-file: .ci/${{ matrix.environment-file }}.yml
+         environment-file: .ci/${{ matrix.environment-file }}.yaml
          micromamba-version: "latest"
        
       - name: install package
