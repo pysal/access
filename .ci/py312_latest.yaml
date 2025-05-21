@@ -1,0 +1,14 @@
+---
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - geopandas
+  - numpy
+  - pandas
+  - scipy
+  # testing, etc
+  - pytest
+  - pytest-cov
+  - pytest-xdist
