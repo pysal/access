@@ -28,7 +28,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         environment-file: [
-          py37_latest,
           py38_latest,
           py39_latest,
           py310_latest,
