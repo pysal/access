@@ -3,9 +3,11 @@
 =================================================
 """
 
+import contextlib
+from importlib.metadata import PackageNotFoundError, version
+
 from .access import Access
 from .datasets import Datasets
 
-from . import _version
-
-__version__ = _version.get_versions()["version"]
+with contextlib.suppress(PackageNotFoundError):
+    __version__ = version("access")
