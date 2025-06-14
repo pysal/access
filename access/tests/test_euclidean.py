@@ -94,15 +94,19 @@ class TestEuclideanNeighbors(unittest.TestCase):
         demand_grid = gpd.GeoDataFrame(
             demand_data, geometry=gpd.points_from_xy(demand_data.x, demand_data.y)
         )
-        demand_grid["geometry"] = demand_grid.buffer(0.5)
+        demand_grid["geometry"] = demand_grid.buffer(0.25)
 
         supply_data = pd.DataFrame({"id": [1], "x": [0], "y": [1], "value": [1]})
         supply_grid = gpd.GeoDataFrame(
             supply_data, geometry=gpd.points_from_xy(supply_data.x, supply_data.y)
         )
 
-        cost_matrix = pd.DataFrame(
-            {"origin": [0, 0, 1, 1], "dest": [1, 0, 0, 1], "cost": [1, 0, 1, 0]}
+        point_cost_matrix = pd.DataFrame(
+            {
+                "origin": [0, 0, 1, 1],
+                "dest": [1, 0, 0, 1],
+                "ctr_expectation": [1, 0, 1, 0],
+            }
         )
 
         self.model = Access(
@@ -112,33 +116,58 @@ class TestEuclideanNeighbors(unittest.TestCase):
             supply_df=supply_grid,
             supply_index="id",
             supply_value="value",
-            cost_df=cost_matrix,
+            cost_df=point_cost_matrix,
             cost_origin="origin",
             cost_dest="dest",
-            cost_name="cost",
-            neighbor_cost_df=cost_matrix,
+            cost_name="ctr_expectation",
+            neighbor_cost_df=point_cost_matrix,
             neighbor_cost_origin="origin",
             neighbor_cost_dest="dest",
-            neighbor_cost_name="cost",
+            neighbor_cost_name="ctr_expectation",
+        )
+
+        # The geometries are buffered by 0.25, so the circles are 0.5 apart.
+        # Add these as a second set of costs
+        buff_cost_matrix = pd.DataFrame(
+            {
+                "origin": [0, 0, 1, 1],
+                "dest": [1, 0, 0, 1],
+                "buf_expectation": [0.5, 0, 0.5, 0],
+            }
+        )
+
+        self.model.append_user_cost_neighbors(
+            buff_cost_matrix, "origin", "dest", "buf_expectation"
         )
 
     def test_euclidean_neighbors_centroids(self):
         self.model.create_euclidean_distance_neighbors(
-            name="euclidian", threshold=2, centroid=True
+            name="euclidean", threshold=2, centroid=True
         )
-        actual1 = self.model.neighbor_cost_df["euclidian"][0]
-        actual2 = self.model.neighbor_cost_df["euclidian"][2]
-        self.assertAlmostEqual(actual1, 1)
-        self.assertAlmostEqual(actual2, 1)
+        self.assertAlmostEqual(
+            (
+                self.model.neighbor_cost_df.euclidean
+                - self.model.neighbor_cost_df.ctr_expectation
+            )
+            .abs()
+            .max(),
+            0,
+        )
 
     def test_euclidean_neighbors_poly(self):
         self.model.create_euclidean_distance_neighbors(
-            name="euclidian", threshold=2, centroid=False
+            name="euclidean", threshold=2, centroid=False
         )
-        actual1 = self.model.neighbor_cost_df["euclidian"][0]
-        actual2 = self.model.neighbor_cost_df["euclidian"][2]
-        self.assertAlmostEqual(actual1, 0)
-        self.assertAlmostEqual(actual2, 0)
+
+        self.assertAlmostEqual(
+            (
+                self.model.neighbor_cost_df.euclidean
+                - self.model.neighbor_cost_df.buf_expectation
+            )
+            .abs()
+            .max(),
+            0,
+        )
 
     def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_TypeError(
         self,
