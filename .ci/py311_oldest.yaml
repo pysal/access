@@ -3,11 +3,11 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
-  - geopandas
-  - numpy
-  - pandas
-  - scipy
+  - python=3.11
+  - geopandas=1.0.1
+  - numpy=2.0.0
+  - pandas=2.1.0
+  - scipy=1.14.1
   # testing, etc
   - pytest
   - pytest-cov
