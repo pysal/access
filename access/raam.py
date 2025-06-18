@@ -13,13 +13,11 @@ def iterate_raam(
     limit_initial=20,
     verbose=False,
 ):
-
     norig, ndest = travel.shape
     assignment = np.zeros((norig, ndest))
     assignment[range(norig), travel.argmin(axis=1)] = demand
 
     for i in range(max_cycles):
-
         demand_at_supply = assignment.sum(axis=0)
         congestion_cost = demand_at_supply / supply
         total_cost = congestion_cost + travel
@@ -58,7 +56,6 @@ def iterate_raam(
             delta = np.minimum(delta, step_size * demand).astype(int)
 
         else:
-
             step_size = int(np.round(initial_step * 0.5 ** (i / half_life)))
             if step_size < min_step:
                 step_size = min_step
@@ -69,7 +66,6 @@ def iterate_raam(
         ## This will only happen in the first 10-20 cycles.
         ## So only do these (somewhat costly checks) then.
         if i < limit_initial:
-
             delta_mat = np.zeros(travel.shape)
             delta_mat[range(norig), min_locations] += delta
 
@@ -90,9 +86,7 @@ def iterate_raam(
 
             if verbose:
                 print(
-                    "{:d} {:.2f} {:d} {:.3f}".format(
-                        i, raam_cost.mean(), delta.sum(), step_size
-                    ),
+                    f"{i:d} {raam_cost.mean():.2f} {delta.sum():d} {step_size:.3f}",
                     end=" || ",
                 )
 
@@ -164,7 +158,7 @@ def raam(
     access     : pandas.Series
 
                   A -- potentially-weighted -- Rational Agent Access Model cost.
-    """
+    """  # noqa: E501
 
     if demand_index is not True:
         demand_df = demand_df.set_index(demand_index)
@@ -180,7 +174,7 @@ def raam(
     cost_pivot = cost_df.pivot(index=cost_origin, columns=cost_dest, values=cost_name)
     try:
         travel_np = cost_pivot.loc[demand_locations, supply_locations].to_numpy().copy()
-    except:
+    except:  # noqa: E722 –– Do not use bare `except`
         travel_np = cost_pivot.loc[demand_locations, supply_locations].values.copy()
 
     travel_np = travel_np / tau
@@ -192,7 +186,7 @@ def raam(
 
     try:
         supply_np = supply_df.loc[supply_locations, supply_name].to_numpy().copy()
-    except:
+    except:  # noqa: E722 –– Do not use bare `except`
         supply_np = supply_df.loc[supply_locations, supply_name].values.copy()
 
     supply_np = supply_np * rho
@@ -200,7 +194,7 @@ def raam(
     # Change this -- should be
     try:
         demand_np = demand_df.loc[demand_locations, demand_name].to_numpy().copy()
-    except:
+    except:  # noqa: E722 –– Do not use bare `except`
         demand_np = demand_df.loc[demand_locations, demand_name].values.copy()
 
     raam_cost = iterate_raam(

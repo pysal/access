@@ -33,7 +33,7 @@ def step_fn(step_dict):
     {0: 1, 10: 1, 20: 1, 30: 0.68, 40: 0.68, 50: 0.22, 60: 0.22, 70: 0}
     """
 
-    if type(step_dict) != dict:
+    if not isinstance(step_dict, dict):
         raise TypeError("step_dict must be of type dict.")
 
     for v in step_dict.values():
@@ -41,7 +41,6 @@ def step_fn(step_dict):
             raise ValueError("All weights must be positive.")
 
     def helper(key_to_test):
-
         for k, v in sorted(step_dict.items()):
             if key_to_test <= k:
                 return v
@@ -53,10 +52,10 @@ def step_fn(step_dict):
 
 def gaussian(sigma):
     """
-    Create a gaussian weight function, for a specified width, :math:`\sigma`.
+    Create a gaussian weight function, for a specified width, :math:`\\sigma`.
     The mean / location parameter is assumed to be 0.
-    Note that the standard normalization of the Gaussian, :math:`1 / \sqrt{2\pi\sigma^2}`,
-    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\sigma`.
+    Note that the standard normalization of the Gaussian, :math:`1 / \\sqrt{2\\pi\\sigma^2}`,
+    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\\sigma`.
     Of course, this is irrelevant if the ultimate access values are ultimately normalized.
 
     Parameters
@@ -90,7 +89,7 @@ def gaussian(sigma):
     >>> import numpy as np
     >>> {x : np.exp(-x**2/2) for x in range(4)}
     {0: 1.0, 1: 0.6065306597126334, 2: 0.1353352832366127, 3: 0.011108996538242306}
-    """
+    """  # noqa: E501
 
     if sigma == 0:
         raise ValueError("Sigma must be non-zero.")
@@ -138,6 +137,6 @@ def gravity(scale, alpha, min_dist=0):
 
     >>> {t : round(fn(t), 2) for t in [0, 1, 2, 20, 40, 60]}
     {0: 400.0, 1: 400.0, 2: 100.0, 20: 1.0, 40: 0.25, 60: 0.11}
-    """
+    """  # noqa: E501
 
     return lambda x: np.power(max(x, min_dist) / scale, alpha)
