@@ -1,9 +1,7 @@
-import os
-
 import pandas as pd
 
 
-class Datasets(object):
+class Datasets:
     @staticmethod
     def load_data(key):
         """
@@ -45,5 +43,5 @@ chi_euclidean_neighbors: Euclidean distance cost matrix with distances from each
 cook_county_hospitals: Contains data for each hospital location in Cook County including X Y coordinates.\n
 cook_county_hospitals_geom: Contains data for each hospital location in Cook County including X Y coordinates, and geometric points for each hospital.\n
 cook_county_tracts: Geometric representation of each Census Tract in Cook County.
-        """
+        """  # noqa: E501
         print(desc)

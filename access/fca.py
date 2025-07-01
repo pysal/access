@@ -1,8 +1,6 @@
 import warnings
-import numpy as np
-import pandas as pd
 
-from .weights import step_fn
+import pandas as pd
 
 
 def weighted_catchment(
@@ -55,7 +53,8 @@ def weighted_catchment(
     -------
     resources  : pandas.Series
                  A -- potentially weighted -- sum of resources, facilities, or consumers.
-    """
+    """  # noqa: E501
+
     # merge the loc dataframe and cost dataframe together
     if loc_index is True:
         temp = pd.merge(cost_df, loc_df, left_on=cost_source, right_index=True)
@@ -86,7 +85,7 @@ def fca_ratio(
     max_cost,
     demand_index="geoid",
     demand_name="demand",
-    supply_index="geoid",
+    supply_index="geoid",  # noqa: ARG001
     supply_name="supply",
     demand_cost_origin="origin",
     demand_cost_dest="dest",
@@ -95,7 +94,7 @@ def fca_ratio(
     supply_cost_dest="dest",
     supply_cost_name="cost",
     weight_fn=None,
-    normalize=False,
+    normalize=False,  # noqa: ARG001
     noise="quiet",
 ):
     """Calculation of the floating catchment accessibility
@@ -148,9 +147,10 @@ def fca_ratio(
     -------
     access     : pandas.Series
                  A -- potentially-weighted -- access ratio.
-    """
+    """  # noqa: E501
 
-    # if there is a discrepancy between the demand and supply cost dataframe locations, print it
+    # if there is a discrepancy between the demand and
+    # supply cost dataframe locations, print it
     if (
         len(
             set(demand_df.index.tolist())
@@ -194,13 +194,14 @@ def fca_ratio(
 
     # calculate the floating catchement area, or supply divided by demand
     temp["FCA"] = temp["supply"] / temp["demand"]
-    base_FCA_series = temp["FCA"]
+    base_fca_series = temp["FCA"]
 
     if noise != "quiet":
-        # depending on the version history of the census tract data you use, this will print out the tracts that have undefined FCA values
-        print(base_FCA_series[pd.isna(base_FCA_series)])
+        # depending on the version history of the census tract data you use,
+        # this will print out the tracts that have undefined FCA values
+        print(base_fca_series[pd.isna(base_fca_series)])
 
-    return base_FCA_series
+    return base_fca_series
 
 
 def two_stage_fca(
@@ -210,13 +211,13 @@ def two_stage_fca(
     max_cost=None,
     demand_index="geoid",
     demand_name="demand",
-    supply_index="geoid",
+    supply_index="geoid",  # noqa: ARG001
     supply_name="supply",
     cost_origin="origin",
     cost_dest="dest",
     cost_name="cost",
     weight_fn=None,
-    normalize=False,
+    normalize=False,  # noqa: ARG001
 ):
     """
     Calculation of the two-stage floating catchment accessibility
@@ -264,8 +265,10 @@ def two_stage_fca(
     -------
     access     : pandas.Series
                  A -- potentially-weighted -- two-stage access ratio.
-    """
-    # get a series of total demand then calculate the supply to total demand ratio for each location
+    """  # noqa: E501
+
+    # get a series of total demand then calculate the
+    # supply to total demand ratio for each location
     total_demand_series = weighted_catchment(
         demand_df,
         cost_df,
@@ -278,18 +281,22 @@ def two_stage_fca(
         weight_fn=weight_fn,
     )
 
-    # create a temporary dataframe, temp, that holds the supply and aggregate demand at each location
+    # create a temporary dataframe, temp, that holds
+    # the supply and aggregate demand at each location
     total_demand_series.name += "_W"
     temp = supply_df.join(total_demand_series, how="right")
 
-    # there may be NA values due to a shorter supply dataframe than the demand dataframe.
-    # in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.
+    # there may be NA values due to a shorter supply dataframe than the demand
+    # dataframe. in this case, replace any potential NA values(which correspond
+    # to supply locations with no supply) with 0.
     temp[supply_name].fillna(0, inplace=True)
 
-    # calculate the fractional ratio of supply to aggregate demand at each location, or Rl
+    # calculate the fractional ratio of supply
+    # to aggregate demand at each location, or Rl
     temp["Rl"] = temp[supply_name] / temp[demand_name + "_W"]
 
-    # separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
+    # separate the fractional ratio of supply
+    # to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data={"Rl": temp["Rl"]})
     supply_to_total_demand_frame.index.name = "geoid"
 
@@ -316,13 +323,13 @@ def three_stage_fca(
     max_cost,
     demand_index="geoid",
     demand_name="demand",
-    supply_index="geoid",
+    supply_index="geoid",  # noqa: ARG001
     supply_name="supply",
     cost_origin="origin",
     cost_dest="dest",
     cost_name="cost",
     weight_fn=None,
-    normalize=False,
+    normalize=False,  # noqa: ARG001
 ):
     """Calculation of the three-stage floating catchment accessibility
     ratio, from DataFrames with precomputed distances.
@@ -371,21 +378,22 @@ def three_stage_fca(
     -------
     access     : pandas.Series
                  A -- potentially-weighted -- three-stage access ratio.
-    """
+    """  # noqa: E501
 
     # create preference weight 'G', which is the weight
     cost_df["W3"] = cost_df[cost_name].apply(weight_fn)
-    W3sum_frame = (
+    w3_sum_frame = (
         cost_df[[cost_origin, "W3"]]
         .groupby(cost_origin)
         .sum()
         .rename(columns={"W3": "W3sum"})
         .reset_index()
     )
-    cost_df = pd.merge(cost_df, W3sum_frame)
+    cost_df = pd.merge(cost_df, w3_sum_frame)
     cost_df["G"] = cost_df.W3 / cost_df.W3sum
 
-    # get a series of total demand then calculate the supply to total demand ratio for each location
+    # get a series of total demand then calculate
+    # the supply to total demand ratio for each location
     total_demand_series = weighted_catchment(
         demand_df,
         cost_df,
@@ -399,18 +407,22 @@ def three_stage_fca(
         three_stage_weight=True,
     )
 
-    # create a temporary dataframe, temp, that holds the supply and aggregate demand at each location
+    # create a temporary dataframe, temp, that holds the
+    # supply and aggregate demand at each location
     total_demand_series.name += "_W"
     temp = supply_df.join(total_demand_series, how="right")
 
-    # there may be NA values due to a shorter supply dataframe than the demand dataframe.
-    # in this case, replace any potential NA values(which correspond to supply locations with no supply) with 0.
+    # there may be NA values due to a shorter supply dataframe than the demand
+    # dataframe. in this case, replace any potential NA values(which correspond
+    # to supply locations with no supply) with 0.
     temp[supply_name].fillna(0, inplace=True)
 
-    # calculate the fractional ratio of supply to aggregate demand at each location, or Rl
+    # calculate the fractional ratio of supply
+    #  to aggregate demand at each location, or Rl
     temp["Rl"] = temp[supply_name] / temp[demand_name + "_W"]
 
-    # separate the fractional ratio of supply to aggregate demand at each location, or Rl, into a new dataframe
+    # separate the fractional ratio of supply
+    # to aggregate demand at each location, or Rl, into a new dataframe
     supply_to_total_demand_frame = pd.DataFrame(data={"Rl": temp["Rl"]})
     supply_to_total_demand_frame.index.name = "geoid"
 
