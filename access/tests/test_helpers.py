@@ -1,13 +1,9 @@
-from access import Access
-from access.access import weights, helpers
-
-import math
 import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
 import util as tu
+
+from access import Access
+from access.access import helpers
 
 
 class TestHelpers(unittest.TestCase):
@@ -41,7 +37,7 @@ class TestHelpers(unittest.TestCase):
 
         self.assertEqual(actual, "cost")
 
-    def test_sanitize_supply_cost_raise_ValueError_if_cost_not_found(self):
+    def test_sanitize_supply_cost_raise_value_error_if_cost_not_found(self):
         with self.assertRaises(ValueError):
             helpers.sanitize_supply_cost(self.model, "some_cost", "value")
 
@@ -52,7 +48,7 @@ class TestHelpers(unittest.TestCase):
 
         self.assertEqual(actual, "cost")
 
-    def test_sanitize_demand_cost_raise_ValueError_if_cost_not_found(self):
+    def test_sanitize_demand_cost_raise_value_error_if_cost_not_found(self):
         with self.assertRaises(ValueError):
             helpers.sanitize_demand_cost(self.model, "some_cost", "value")
 
@@ -61,6 +57,6 @@ class TestHelpers(unittest.TestCase):
 
         self.assertEqual(actual, ["some_value"])
 
-    def test_sanitize_supplies_raise_ValueError_if_input_other_than_str_or_list(self):
+    def test_sanitize_supplies_raise_value_error_if_input_other_than_str_or_list(self):
         with self.assertRaises(ValueError):
-            sesult = helpers.sanitize_supplies(self.model, 5)
+            helpers.sanitize_supplies(self.model, 5)
