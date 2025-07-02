@@ -1,13 +1,9 @@
-from access import Access
-from access.access import weights
-
-import math
 import unittest
 
-import numpy as np
-import pandas as pd
 import geopandas as gpd
-import util as tu
+import pandas as pd
+
+from access import Access
 
 
 class TestEuclidean(unittest.TestCase):
@@ -67,12 +63,12 @@ class TestEuclidean(unittest.TestCase):
 
         self.assertAlmostEqual(actual, 0)
 
-    def test_euclidean_without_geopandas_demand_dataframe_raises_TypeError(self):
+    def test_euclidean_without_geopandas_demand_dataframe_raises_type_error(self):
         with self.assertRaises(TypeError):
             self.model.demand_df = self.model.demand_df[["x", "y", "value"]]
             self.model.create_euclidean_distance()
 
-    def test_euclidean_without_geopandas_supply_dataframe_raises_TypeError(self):
+    def test_euclidean_without_geopandas_supply_dataframe_raises_type_error(self):
         with self.assertRaises(TypeError):
             self.model.supply_df = self.model.supply_df[["x", "y", "value"]]
             self.model.create_euclidean_distance()
@@ -169,7 +165,7 @@ class TestEuclideanNeighbors(unittest.TestCase):
             0,
         )
 
-    def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_TypeError(
+    def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_type_error(
         self,
     ):
         with self.assertRaises(TypeError):
