@@ -1,14 +1,8 @@
-from access import Access
-from access.access import weights
-
-import math
 import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-
 import util as tu
+
+from access import Access
 
 
 class TestAccess(unittest.TestCase):
@@ -276,7 +270,7 @@ class TestAccess(unittest.TestCase):
                 neighbor_cost_name=bad_cost_name,
             )
 
-    def test_access_initialize_without_valid_neighbor_cost_name_in_list_raises_value_error(
+    def test_access_initialize_without_valid_neighbor_cost_name_in_list_raises_value_error(  # noqa: E501
         self,
     ):
         with self.assertRaises(ValueError):
