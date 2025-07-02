@@ -1,6 +1,5 @@
-import unittest
-
 import pandas as pd
+import pytest
 
 from access import Access
 from access.access import weights
@@ -52,8 +51,8 @@ def simple_2sfca(od, supply, demand, locs, max_travel=61, three_stage=False):
     return a
 
 
-class TestHospitalExample(unittest.TestCase):
-    def setUp(self):
+class TestHospitalExample:
+    def setup_method(self):
         tracts = pd.DataFrame(
             [
                 {"geoid": 1, "pop": 100, "doc": 15},
@@ -197,77 +196,77 @@ class TestHospitalExample(unittest.TestCase):
             )
 
     def test_simple_2sfca_scenario_0(self):
-        self.assertAlmostEqual(self.val_2sfca[0][1], self.reference_2sfca[0][1])
-        self.assertAlmostEqual(self.val_2sfca[0][2], self.reference_2sfca[0][2])
-        self.assertAlmostEqual(self.val_2sfca[0][3], self.reference_2sfca[0][3])
+        assert pytest.approx(self.val_2sfca[0][1]) == self.reference_2sfca[0][1]
+        assert pytest.approx(self.val_2sfca[0][2]) == self.reference_2sfca[0][2]
+        assert pytest.approx(self.val_2sfca[0][3]) == self.reference_2sfca[0][3]
 
     def test_simple_2sfca_scenario_1(self):
-        self.assertAlmostEqual(self.val_2sfca[1][1], self.reference_2sfca[1][1])
-        self.assertAlmostEqual(self.val_2sfca[1][2], self.reference_2sfca[1][2])
-        self.assertAlmostEqual(self.val_2sfca[1][3], self.reference_2sfca[1][3])
+        assert pytest.approx(self.val_2sfca[1][1]) == self.reference_2sfca[1][1]
+        assert pytest.approx(self.val_2sfca[1][2]) == self.reference_2sfca[1][2]
+        assert pytest.approx(self.val_2sfca[1][3]) == self.reference_2sfca[1][3]
 
     def test_simple_2sfca_scenario_2(self):
-        self.assertAlmostEqual(self.val_2sfca[2][1], self.reference_2sfca[2][1])
-        self.assertAlmostEqual(self.val_2sfca[2][2], self.reference_2sfca[2][2])
-        self.assertAlmostEqual(self.val_2sfca[2][3], self.reference_2sfca[2][3])
+        assert pytest.approx(self.val_2sfca[2][1]) == self.reference_2sfca[2][1]
+        assert pytest.approx(self.val_2sfca[2][2]) == self.reference_2sfca[2][2]
+        assert pytest.approx(self.val_2sfca[2][3]) == self.reference_2sfca[2][3]
 
     def test_simple_2sfca_scenario_3(self):
-        self.assertAlmostEqual(self.val_2sfca[3][1], self.reference_2sfca[3][1])
-        self.assertAlmostEqual(self.val_2sfca[3][2], self.reference_2sfca[3][2])
-        self.assertAlmostEqual(self.val_2sfca[3][3], self.reference_2sfca[3][3])
+        assert pytest.approx(self.val_2sfca[3][1]) == self.reference_2sfca[3][1]
+        assert pytest.approx(self.val_2sfca[3][2]) == self.reference_2sfca[3][2]
+        assert pytest.approx(self.val_2sfca[3][3]) == self.reference_2sfca[3][3]
 
     def test_scenario_0_v_1(self):
         # access at 1 should increase.
         # Supply at 3 is more pertinent / lower cost since people can get there faster.
-        self.assertTrue(self.val_2sfca[1][1] > self.val_2sfca[0][1])
+        assert self.val_2sfca[1][1] > self.val_2sfca[0][1]
 
         # access at 2 should increase. Same reasoning as above.
-        self.assertTrue(self.val_2sfca[1][2] > self.val_2sfca[0][2])
+        assert self.val_2sfca[1][2] > self.val_2sfca[0][2]
 
         # access at 3 should decrease.
         # More patients from 1 and 2 means greater demands on 3's doctors.
-        self.assertTrue(self.val_2sfca[1][3] < self.val_2sfca[0][3])
+        assert self.val_2sfca[1][3] < self.val_2sfca[0][3]
 
     def test_scenario_0_v_2(self):
         # access at 1 should decrease.
         # There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(self.val_2sfca[2][1] < self.val_2sfca[0][1])
+        assert self.val_2sfca[2][1] < self.val_2sfca[0][1]
 
         # access at 2 should decrease.
         # There is more demand coming from 3 since people can come from there faster
-        self.assertTrue(self.val_2sfca[2][2] < self.val_2sfca[0][2])
+        assert self.val_2sfca[2][2] < self.val_2sfca[0][2]
 
         # access at 3 should increase.
         # There is more supply available from 1,2 since people can get there faster
-        self.assertTrue(self.val_2sfca[2][3] > self.val_2sfca[0][3])
+        assert self.val_2sfca[2][3] > self.val_2sfca[0][3]
 
     def test_scenario_0_v_3(self):
         # access at 1 should increase. It is easier to use the place with more docs.
-        self.assertTrue(self.val_2sfca[3][1] > self.val_2sfca[0][1])
+        assert self.val_2sfca[3][1] > self.val_2sfca[0][1]
 
         # access at 2 should increase. Same reasoning as for 1.
-        self.assertTrue(self.val_2sfca[3][2] > self.val_2sfca[0][2])
+        assert self.val_2sfca[3][2] > self.val_2sfca[0][2]
 
         # access at 3 should decrease. Same but in reverse
         # -- suburbanites are using "urban" supply.
-        self.assertTrue(self.val_2sfca[3][3] < self.val_2sfca[0][3])
+        assert self.val_2sfca[3][3] < self.val_2sfca[0][3]
 
     def test_simple_3sfca_scenario_0(self):
-        self.assertAlmostEqual(self.val_3sfca[0][1], self.reference_3sfca[0][1])
-        self.assertAlmostEqual(self.val_3sfca[0][2], self.reference_3sfca[0][2])
-        self.assertAlmostEqual(self.val_3sfca[0][3], self.reference_3sfca[0][3])
+        assert pytest.approx(self.val_3sfca[0][1]) == self.reference_3sfca[0][1]
+        assert pytest.approx(self.val_3sfca[0][2]) == self.reference_3sfca[0][2]
+        assert pytest.approx(self.val_3sfca[0][3]) == self.reference_3sfca[0][3]
 
     def test_simple_3sfca_scenario_1(self):
-        self.assertAlmostEqual(self.val_3sfca[1][1], self.reference_3sfca[1][1])
-        self.assertAlmostEqual(self.val_3sfca[1][2], self.reference_3sfca[1][2])
-        self.assertAlmostEqual(self.val_3sfca[1][3], self.reference_3sfca[1][3])
+        assert pytest.approx(self.val_3sfca[1][1]) == self.reference_3sfca[1][1]
+        assert pytest.approx(self.val_3sfca[1][2]) == self.reference_3sfca[1][2]
+        assert pytest.approx(self.val_3sfca[1][3]) == self.reference_3sfca[1][3]
 
     def test_simple_3sfca_scenario_2(self):
-        self.assertAlmostEqual(self.val_3sfca[2][1], self.reference_3sfca[2][1])
-        self.assertAlmostEqual(self.val_3sfca[2][2], self.reference_3sfca[2][2])
-        self.assertAlmostEqual(self.val_3sfca[2][3], self.reference_3sfca[2][3])
+        assert pytest.approx(self.val_3sfca[2][1]) == self.reference_3sfca[2][1]
+        assert pytest.approx(self.val_3sfca[2][2]) == self.reference_3sfca[2][2]
+        assert pytest.approx(self.val_3sfca[2][3]) == self.reference_3sfca[2][3]
 
     def test_simple_3sfca_scenario_3(self):
-        self.assertAlmostEqual(self.val_3sfca[3][1], self.reference_3sfca[3][1])
-        self.assertAlmostEqual(self.val_3sfca[3][2], self.reference_3sfca[3][2])
-        self.assertAlmostEqual(self.val_3sfca[3][3], self.reference_3sfca[3][3])
+        assert pytest.approx(self.val_3sfca[3][1]) == self.reference_3sfca[3][1]
+        assert pytest.approx(self.val_3sfca[3][2]) == self.reference_3sfca[3][2]
+        assert pytest.approx(self.val_3sfca[3][3]) == self.reference_3sfca[3][3]
