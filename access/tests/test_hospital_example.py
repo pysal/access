@@ -1,24 +1,20 @@
+import unittest
+
+import pandas as pd
+
 from access import Access
 from access.access import weights
 
-import math
-import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-from access import Access, weights
-import util as tu
-
-
-def simple_2sfca(OD, supply, demand, locs, max_travel=61, three_stage=False):
+def simple_2sfca(od, supply, demand, locs, max_travel=61, three_stage=False):
     """
     Base python implementation / sanity check of 2SFCA results.
 
     Assumes gravity weights with power of -1
 
     Params:
-        OD (pd.DataFrame): origin/destination matrix with origin columns and destinations on index.
+        od (pd.DataFrame): origin/destination matrix with
+            origin columns and destinations on index.
         supply (Dict[int,int]): amount of supply at each location
         demand (Dict[int,int]): amount of demand at each location
         locs (List[int]): list of locations.
@@ -28,38 +24,36 @@ def simple_2sfca(OD, supply, demand, locs, max_travel=61, three_stage=False):
 
     """
 
-    GOD = OD
+    god = od
     if three_stage:
+        w = 1 / od
 
-        W = 1 / OD
+        ws = w.sum(axis=0)  # Sum over destinations / within columns.
+        g = w.divide(ws, axis=1)  # Divide columns by their sums.
 
-        WS = W.sum(axis=0)  # Sum over destinations / within columns.
-        G = W.divide(WS, axis=1)  # Divide columns by their sums.
+        god = od / g
 
-        GOD = OD / G
-
-    D = {
+    d = {
         hosp: sum(
-            demand[res] / GOD[res][hosp] for res in locs if OD[res][hosp] < max_travel
+            demand[res] / god[res][hosp] for res in locs if od[res][hosp] < max_travel
         )
         for hosp in locs
     }
 
-    R = {l: supply[l] / D[l] for l in locs}
+    r = {loc: supply[loc] / d[loc] for loc in locs}
 
-    A = {
+    a = {
         res: sum(
-            R[hosp] / GOD[res][hosp] for hosp in locs if OD[res][hosp] < max_travel
+            r[hosp] / god[res][hosp] for hosp in locs if od[res][hosp] < max_travel
         )
         for res in locs
     }
 
-    return A
+    return a
 
 
 class TestHospitalExample(unittest.TestCase):
     def setUp(self):
-
         tracts = pd.DataFrame(
             [
                 {"geoid": 1, "pop": 100, "doc": 15},
@@ -160,17 +154,17 @@ class TestHospitalExample(unittest.TestCase):
 
         # input parameters fixed across scenarios
         # Neighbor cost not used; supressed to avoid confusion.
-        params = dict(
-            demand_df=tracts,
-            demand_index="geoid",
-            demand_value="pop",
-            supply_df=tracts,
-            supply_index="geoid",
-            supply_value="doc",
-            cost_origin="origin",
-            cost_dest="dest",
-            cost_name="cost",
-        )
+        params = {
+            "demand_df": tracts,
+            "demand_index": "geoid",
+            "demand_value": "pop",
+            "supply_df": tracts,
+            "supply_index": "geoid",
+            "supply_value": "doc",
+            "cost_origin": "origin",
+            "cost_dest": "dest",
+            "cost_name": "cost",
+        }
 
         # Dictionaries for simple version.
         locs = [1, 2, 3]
@@ -184,7 +178,6 @@ class TestHospitalExample(unittest.TestCase):
         self.reference_3sfca = {}
 
         for n, costs in enumerate(self.costs):
-
             a = Access(**params, cost_df=costs)
             a.two_stage_fca(
                 name=f"2sfca_s{n}", weight_fn=weights.gravity(1, -1), max_cost=61
@@ -196,90 +189,85 @@ class TestHospitalExample(unittest.TestCase):
             self.val_2sfca[n] = a.access_df[f"2sfca_s{n}_doc"].to_dict()
             self.val_3sfca[n] = a.access_df[f"3sfca_s{n}_doc"].to_dict()
 
-            OD = costs.pivot_table(index="origin", columns="dest", values="cost").T
+            od = costs.pivot_table(index="origin", columns="dest", values="cost").T
 
-            self.reference_2sfca[n] = simple_2sfca(OD, docs, pops, locs)
+            self.reference_2sfca[n] = simple_2sfca(od, docs, pops, locs)
             self.reference_3sfca[n] = simple_2sfca(
-                OD, docs, pops, locs, three_stage=True
+                od, docs, pops, locs, three_stage=True
             )
 
     def test_simple_2sfca_scenario_0(self):
-
         self.assertAlmostEqual(self.val_2sfca[0][1], self.reference_2sfca[0][1])
         self.assertAlmostEqual(self.val_2sfca[0][2], self.reference_2sfca[0][2])
         self.assertAlmostEqual(self.val_2sfca[0][3], self.reference_2sfca[0][3])
 
     def test_simple_2sfca_scenario_1(self):
-
         self.assertAlmostEqual(self.val_2sfca[1][1], self.reference_2sfca[1][1])
         self.assertAlmostEqual(self.val_2sfca[1][2], self.reference_2sfca[1][2])
         self.assertAlmostEqual(self.val_2sfca[1][3], self.reference_2sfca[1][3])
 
     def test_simple_2sfca_scenario_2(self):
-
         self.assertAlmostEqual(self.val_2sfca[2][1], self.reference_2sfca[2][1])
         self.assertAlmostEqual(self.val_2sfca[2][2], self.reference_2sfca[2][2])
         self.assertAlmostEqual(self.val_2sfca[2][3], self.reference_2sfca[2][3])
 
     def test_simple_2sfca_scenario_3(self):
-
         self.assertAlmostEqual(self.val_2sfca[3][1], self.reference_2sfca[3][1])
         self.assertAlmostEqual(self.val_2sfca[3][2], self.reference_2sfca[3][2])
         self.assertAlmostEqual(self.val_2sfca[3][3], self.reference_2sfca[3][3])
 
     def test_scenario_0_v_1(self):
-
-        # access at 1 should increase. Supply at 3 is more pertinent / lower cost since people can get there faster.
+        # access at 1 should increase.
+        # Supply at 3 is more pertinent / lower cost since people can get there faster.
         self.assertTrue(self.val_2sfca[1][1] > self.val_2sfca[0][1])
 
         # access at 2 should increase. Same reasoning as above.
         self.assertTrue(self.val_2sfca[1][2] > self.val_2sfca[0][2])
 
-        # access at 3 should decrease. More patients from 1 and 2 means greater demands on 3's doctors.
+        # access at 3 should decrease.
+        # More patients from 1 and 2 means greater demands on 3's doctors.
         self.assertTrue(self.val_2sfca[1][3] < self.val_2sfca[0][3])
 
     def test_scenario_0_v_2(self):
-
-        # access at 1 should decrease. There is more demand coming from 3 since people can come from there faster
+        # access at 1 should decrease.
+        # There is more demand coming from 3 since people can come from there faster
         self.assertTrue(self.val_2sfca[2][1] < self.val_2sfca[0][1])
 
-        # access at 2 should decrease. There is more demand coming from 3 since people can come from there faster
+        # access at 2 should decrease.
+        # There is more demand coming from 3 since people can come from there faster
         self.assertTrue(self.val_2sfca[2][2] < self.val_2sfca[0][2])
 
-        # access at 3 should increase. There is more supply available from 1,2 since people can get there faster
+        # access at 3 should increase.
+        # There is more supply available from 1,2 since people can get there faster
         self.assertTrue(self.val_2sfca[2][3] > self.val_2sfca[0][3])
 
     def test_scenario_0_v_3(self):
-
         # access at 1 should increase. It is easier to use the place with more docs.
         self.assertTrue(self.val_2sfca[3][1] > self.val_2sfca[0][1])
 
         # access at 2 should increase. Same reasoning as for 1.
         self.assertTrue(self.val_2sfca[3][2] > self.val_2sfca[0][2])
 
-        # access at 3 should decrease. Same but in reverse -- suburbanites are using "urban" supply.
+        # access at 3 should decrease. Same but in reverse
+        # -- suburbanites are using "urban" supply.
         self.assertTrue(self.val_2sfca[3][3] < self.val_2sfca[0][3])
 
     def test_simple_3sfca_scenario_0(self):
-
         self.assertAlmostEqual(self.val_3sfca[0][1], self.reference_3sfca[0][1])
         self.assertAlmostEqual(self.val_3sfca[0][2], self.reference_3sfca[0][2])
         self.assertAlmostEqual(self.val_3sfca[0][3], self.reference_3sfca[0][3])
 
     def test_simple_3sfca_scenario_1(self):
-
         self.assertAlmostEqual(self.val_3sfca[1][1], self.reference_3sfca[1][1])
         self.assertAlmostEqual(self.val_3sfca[1][2], self.reference_3sfca[1][2])
         self.assertAlmostEqual(self.val_3sfca[1][3], self.reference_3sfca[1][3])
 
     def test_simple_3sfca_scenario_2(self):
-
         self.assertAlmostEqual(self.val_3sfca[2][1], self.reference_3sfca[2][1])
         self.assertAlmostEqual(self.val_3sfca[2][2], self.reference_3sfca[2][2])
         self.assertAlmostEqual(self.val_3sfca[2][3], self.reference_3sfca[2][3])
 
     def test_simple_3sfca_scenario_3(self):
-
         self.assertAlmostEqual(self.val_3sfca[3][1], self.reference_3sfca[3][1])
         self.assertAlmostEqual(self.val_3sfca[3][2], self.reference_3sfca[3][2])
         self.assertAlmostEqual(self.val_3sfca[3][3], self.reference_3sfca[3][3])
