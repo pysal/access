@@ -1,17 +1,12 @@
-from access import Access
-from access.access import weights
-
-import math
-import unittest
-
-import numpy as np
-import pandas as pd
 import geopandas as gpd
-import util as tu
+import pandas as pd
+import pytest
+
+from access import Access
 
 
-class TestEuclidean(unittest.TestCase):
-    def setUp(self):
+class TestEuclidean:
+    def setup_method(self):
         demand_data = pd.DataFrame({"id": [0], "x": [0], "y": [0], "value": [1]})
         demand_grid = gpd.GeoDataFrame(
             demand_data, geometry=gpd.points_from_xy(demand_data.x, demand_data.y)
@@ -49,7 +44,7 @@ class TestEuclidean(unittest.TestCase):
         )
         actual = self.model.cost_df["euclidian"][0]
 
-        self.assertAlmostEqual(actual, 1)
+        assert pytest.approx(actual) == 1
 
     def test_euclidean_point_to_poly(self):
         self.model.create_euclidean_distance(
@@ -57,7 +52,7 @@ class TestEuclidean(unittest.TestCase):
         )
         actual = self.model.cost_df["euclidian"][0]
 
-        self.assertAlmostEqual(actual, 0.5)
+        assert pytest.approx(actual) == 0.5
 
     def test_euclidean_poly_to_poly(self):
         self.model.create_euclidean_distance(
@@ -65,15 +60,15 @@ class TestEuclidean(unittest.TestCase):
         )
         actual = self.model.cost_df["euclidian"][0]
 
-        self.assertAlmostEqual(actual, 0)
+        assert pytest.approx(actual) == 0
 
-    def test_euclidean_without_geopandas_demand_dataframe_raises_TypeError(self):
-        with self.assertRaises(TypeError):
+    def test_euclidean_without_geopandas_demand_dataframe_raises_type_error(self):
+        with pytest.raises(TypeError):
             self.model.demand_df = self.model.demand_df[["x", "y", "value"]]
             self.model.create_euclidean_distance()
 
-    def test_euclidean_without_geopandas_supply_dataframe_raises_TypeError(self):
-        with self.assertRaises(TypeError):
+    def test_euclidean_without_geopandas_supply_dataframe_raises_type_error(self):
+        with pytest.raises(TypeError):
             self.model.supply_df = self.model.supply_df[["x", "y", "value"]]
             self.model.create_euclidean_distance()
 
@@ -83,11 +78,11 @@ class TestEuclidean(unittest.TestCase):
 
         actual = hasattr(self.model, "_default_cost")
 
-        self.assertEqual(actual, True)
+        assert actual
 
 
-class TestEuclideanNeighbors(unittest.TestCase):
-    def setUp(self):
+class TestEuclideanNeighbors:
+    def setup_method(self):
         demand_data = pd.DataFrame(
             {"id": [0, 1], "x": [0, 0], "y": [0, 1], "value": [1, 1]}
         )
@@ -144,14 +139,16 @@ class TestEuclideanNeighbors(unittest.TestCase):
         self.model.create_euclidean_distance_neighbors(
             name="euclidean", threshold=2, centroid=True
         )
-        self.assertAlmostEqual(
-            (
-                self.model.neighbor_cost_df.euclidean
-                - self.model.neighbor_cost_df.ctr_expectation
+        assert (
+            pytest.approx(
+                (
+                    self.model.neighbor_cost_df.euclidean
+                    - self.model.neighbor_cost_df.ctr_expectation
+                )
+                .abs()
+                .max(),
             )
-            .abs()
-            .max(),
-            0,
+            == 0
         )
 
     def test_euclidean_neighbors_poly(self):
@@ -159,20 +156,22 @@ class TestEuclideanNeighbors(unittest.TestCase):
             name="euclidean", threshold=2, centroid=False
         )
 
-        self.assertAlmostEqual(
-            (
-                self.model.neighbor_cost_df.euclidean
-                - self.model.neighbor_cost_df.buf_expectation
+        assert (
+            pytest.approx(
+                (
+                    self.model.neighbor_cost_df.euclidean
+                    - self.model.neighbor_cost_df.buf_expectation
+                )
+                .abs()
+                .max()
             )
-            .abs()
-            .max(),
-            0,
+            == 0
         )
 
-    def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_TypeError(
+    def test_euclidean_neighbors_without_geopandas_demand_dataframe_raises_type_error(
         self,
     ):
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             self.model.demand_df = self.model.demand_df[["x", "y", "value"]]
             self.model.create_euclidean_distance_neighbors()
 
@@ -182,4 +181,4 @@ class TestEuclideanNeighbors(unittest.TestCase):
 
         actual = hasattr(self.model, "_neighbor_default_cost")
 
-        self.assertEqual(actual, True)
+        assert actual
