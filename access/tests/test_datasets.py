@@ -1,12 +1,10 @@
-import unittest
-
 import geopandas as gpd
 import pandas as pd
 
 from access import Datasets
 
 
-class TestDatasets(unittest.TestCase):
+class TestDatasets:
     def test_load_geopandas_dataset(self):
         result = Datasets.load_data("chi_doc_geom")
         assert isinstance(result, gpd.GeoDataFrame)
