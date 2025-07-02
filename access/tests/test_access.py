@@ -1,19 +1,18 @@
-import unittest
-
+import pytest
 import util as tu
 
 from access import Access
 
 
-class TestAccess(unittest.TestCase):
-    def setUp(self):
+class TestAccess:
+    def setup_method(self):
         n = 5
         self.supply_grid = tu.create_nxn_grid(n)
         self.demand_grid = self.supply_grid.sample(1)
         self.cost_matrix = tu.create_cost_matrix(self.supply_grid, "euclidean")
 
     def test_access_initialize_without_demand_index_col_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_index_name = "Not a col in demand df"
 
             Access(
@@ -26,7 +25,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_supply_index_col_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_index_name = "Not a col in supply df"
 
             Access(
@@ -39,7 +38,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_demand_value_col_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_value_name = "Not a col in demand df"
 
             Access(
@@ -52,7 +51,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_supply_value_col_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_value_name = "Not a col in supply df"
 
             Access(
@@ -67,7 +66,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_without_supply_value_col_in_list_raises_value_error(
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_value_name = ["Not a col in supply df"]
 
             Access(
@@ -93,10 +92,10 @@ class TestAccess(unittest.TestCase):
 
         actual = self.model.supply_types
 
-        self.assertEqual(actual, ["value"])
+        assert actual == ["value"]
 
     def test_access_initialize_with_supply_value_col_in_dict_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             value_in_dict = {"value": ""}
 
             self.model = Access(
@@ -109,7 +108,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_valid_cost_origin_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_origin = "Not a valid cost origin column"
 
             Access(
@@ -126,7 +125,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_valid_cost_dest_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_dest = "Not a valid cost dest column"
 
             Access(
@@ -143,7 +142,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_valid_cost_name_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_name = "Not a valid cost name column"
 
             Access(
@@ -160,7 +159,7 @@ class TestAccess(unittest.TestCase):
             )
 
     def test_access_initialize_without_valid_cost_name_in_list_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_name = ["Not a valid cost name column"]
 
             Access(
@@ -194,10 +193,10 @@ class TestAccess(unittest.TestCase):
 
         actual = self.model.cost_names
 
-        self.assertEqual(actual, ["cost"])
+        assert actual == ["cost"]
 
     def test_access_initialize_with_valid_cost_name_in_dict_raises_value_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             cost_name_dict = {"cost": ""}
 
             self.model = Access(
@@ -216,7 +215,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_without_valid_neighbor_cost_origin_raises_value_error(
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_origin = "Not a valid cost origin column"
 
             Access(
@@ -235,7 +234,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_without_valid_neighbor_cost_dest_raises_value_error(
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_dest = "Not a valid cost dest column"
 
             Access(
@@ -254,7 +253,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_without_valid_neighbor_cost_name_raises_value_error(
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_name = "Not a valid cost name column"
 
             Access(
@@ -273,7 +272,7 @@ class TestAccess(unittest.TestCase):
     def test_access_initialize_without_valid_neighbor_cost_name_in_list_raises_value_error(  # noqa: E501
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             bad_cost_name = ["Not a valid cost name column"]
 
             Access(
@@ -307,12 +306,12 @@ class TestAccess(unittest.TestCase):
 
         actual = self.model.neighbor_cost_names
 
-        self.assertEqual(actual, ["cost"])
+        assert actual == ["cost"]
 
     def test_access_initialize_with_valid_neighbor_cost_name_in_dict_raises_value_error(
         self,
     ):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             cost_name_dict = {"cost": ""}
 
             self.model = Access(
