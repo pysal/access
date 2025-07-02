@@ -1,12 +1,8 @@
-import pandas as pd
-import warnings
 import logging
 
-from . import fca
-from . import raam
-from . import weights
-from . import helpers
-from .datasets import Datasets
+import pandas as pd
+
+from . import fca, helpers, raam, weights
 
 access_log_stream = logging.StreamHandler()
 access_log_format = logging.Formatter("%(name)s %(levelname)-8s :: %(message)s")
@@ -59,7 +55,7 @@ class Access:
                            Lists currently-available measures of access.
     cost_metadata        : pandas.DataFrame
                            Describes each of the currently-available supply to demand costs.
-    """
+    """  # noqa: E501
 
     logger_initialized = False
 
@@ -80,7 +76,6 @@ class Access:
         neighbor_cost_dest=None,
         neighbor_cost_name=None,
     ):
-
         """
         Initialize the class.
 
@@ -129,7 +124,7 @@ class Access:
                                           supply_value = ["doc", "dentist"],
                                           cost_df = chi_travel_costs, cost_origin  = "origin",
                                           cost_dest = "destination", cost_name = "cost")
-        """
+        """  # noqa: E501
         self.log = logging.getLogger("access")
 
         if not Access.logger_initialized:
@@ -144,28 +139,31 @@ class Access:
 
         if demand_index is not True and demand_index not in demand_df.columns:
             raise ValueError(
-                "demand_index must either be True -- or it must be a column of demand_df"
+                "demand_index must either be True "
+                "-- or it must be a column of demand_df"
             )
 
         if demand_value not in demand_df.columns:
             raise ValueError(
-                "demand_value must either be True -- or it must be a column of demand_df"
+                "demand_value must either be True "
+                "-- or it must be a column of demand_df"
             )
 
         if supply_index is not True and supply_index not in supply_df.columns:
             raise ValueError(
-                "supply_index must either be True -- or it must be a column of supply_df"
+                "supply_index must either be True "
+                "-- or it must be a column of supply_df"
             )
 
         if type(supply_value) is str and supply_value not in supply_df.columns:
             raise ValueError("supply_value must be a column of supply_df")
 
-        if type(supply_value) is list:
-            if any([sv not in supply_df.columns for sv in supply_value]):
-                raise ValueError("supply_value must be columns of supply_df")
+        if type(supply_value) is list and any(
+            sv not in supply_df.columns for sv in supply_value
+        ):
+            raise ValueError("supply_value must be columns of supply_df")
 
         if cost_df is not None:
-
             if cost_origin not in cost_df.columns:
                 raise ValueError("cost_origin must be a column of cost_df")
 
@@ -175,12 +173,12 @@ class Access:
             if type(cost_name) is str and cost_name not in cost_df.columns:
                 raise ValueError("cost_name must be a column of cost_df")
 
-            if type(cost_name) is list:
-                if any([cn not in cost_df.columns for cn in cost_name]):
-                    raise ValueError("cost_name must be columns of cost_df")
+            if type(cost_name) is list and any(
+                cn not in cost_df.columns for cn in cost_name
+            ):
+                raise ValueError("cost_name must be columns of cost_df")
 
         if neighbor_cost_df is not None:
-
             if neighbor_cost_origin not in neighbor_cost_df.columns:
                 raise ValueError(
                     "neighbor_cost_origin must be a column of neighbor_cost_df"
@@ -197,11 +195,10 @@ class Access:
             ):
                 raise ValueError("neighbor_cost_name must be a column of cost_df")
 
-            if type(neighbor_cost_name) is list:
-                if any(
-                    [cn not in neighbor_cost_df.columns for cn in neighbor_cost_name]
-                ):
-                    raise ValueError("neighbor_cost_names must be columns of cost_df")
+            if type(neighbor_cost_name) is list and any(
+                cn not in neighbor_cost_df.columns for cn in neighbor_cost_name
+            ):
+                raise ValueError("neighbor_cost_names must be columns of cost_df")
 
         ### Now load the demand DFs.
 
@@ -214,7 +211,7 @@ class Access:
 
         self.supply_df = supply_df.copy()
 
-        if supply_value == False:
+        if not supply_value:
             self.log.info(
                 """Warning: A supply value was not provided, so a default
                              supply value of 1 was created in the column named "value".
@@ -236,7 +233,6 @@ class Access:
             self.supply_df.set_index(supply_index, inplace=True)
 
         if cost_df is not None:
-
             self.cost_df = cost_df
             self.cost_origin = cost_origin
             self.cost_dest = cost_dest
@@ -259,7 +255,6 @@ class Access:
             self.cost_names = []
 
         if neighbor_cost_df is not None:
-
             self.neighbor_cost_df = neighbor_cost_df
             self.neighbor_cost_origin = neighbor_cost_origin
             self.neighbor_cost_dest = neighbor_cost_dest
@@ -342,14 +337,14 @@ class Access:
         >>> gravity = weights.gravity(scale = 60, alpha = -1)
         >>> illinois_primary_care.weighted_catchment(weight_fn = gravity)
 
-        """
+        """  # noqa: E501
 
         supply_cost = helpers.sanitize_supply_cost(self, supply_cost, name)
         supply_values = helpers.sanitize_supplies(self, supply_values)
 
         for s in supply_values:
-
-            # Bryan consistently flipped origin and destination in this one -- very confusing.
+            # Bryan consistently flipped origin and destination in this one
+            # -- very confusing.
             series = fca.weighted_catchment(
                 loc_df=self.supply_df,
                 loc_index=True,
@@ -364,14 +359,13 @@ class Access:
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                self.log.info("Overwriting {}.".format(series.name))
+                self.log.info(f"Overwriting {series.name}.")
                 self.access_df.drop(series.name, axis=1, inplace=True)
 
             # store the raw, un-normalized access values
             self.access_df = self.access_df.join(series)
 
         if normalize:
-
             columns = [name + "_" + s for s in supply_values]
             return helpers.normalized_access(self, columns)
 
@@ -470,18 +464,17 @@ class Access:
         17197884101  0.000437     0.000442
         17197884103  0.000510     0.000498
         17197980100  0.000488     0.000432
-        """
+        """  # noqa: E501
 
-        assert (
-            self.supply_value_provided == True
-        ), "You must provide a supply value in order to use this functionality."
+        assert self.supply_value_provided, (
+            "You must provide a supply value in order to use this functionality."
+        )
 
         supply_cost = helpers.sanitize_supply_cost(self, supply_cost, name)
         demand_cost = helpers.sanitize_demand_cost(self, demand_cost, name)
         supply_values = helpers.sanitize_supplies(self, supply_values)
 
         for s in supply_values:
-
             series = fca.fca_ratio(
                 demand_df=self.demand_df,
                 demand_index=self.demand_df.index.name,
@@ -504,14 +497,13 @@ class Access:
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                self.log.info("Overwriting {}.".format(series.name))
+                self.log.info(f"Overwriting {series.name}.")
                 self.access_df.drop(series.name, axis=1, inplace=True)
 
             # store the raw, un-normalized access values
             self.access_df = self.access_df.join(series)
 
         if normalize:
-
             columns = [name + "_" + s for s in supply_values]
             return helpers.normalized_access(self, columns)
 
@@ -524,10 +516,10 @@ class Access:
         supply_values=None,
         normalize=False,
         tau=60,
-        rho=None,
+        rho=None,  # noqa: ARG002
         max_cycles=150,
         initial_step=0.2,
-        half_life=50,
+        half_life=50,  # noqa: ARG002
         min_step=0.005,
         verbose=False,
     ):
@@ -660,17 +652,16 @@ class Access:
 
         >>> chicago_primary_care.raam(name = "raam_euclidean", tau = 100, cost = "euclidean")
 
-        """
+        """  # noqa: E501
 
-        assert (
-            self.supply_value_provided == True
-        ), "You must provide a supply value in order to use this functionality."
+        assert self.supply_value_provided, (
+            "You must provide a supply value in order to use this functionality."
+        )
 
         cost = helpers.sanitize_supply_cost(self, cost, name)
         supply_values = helpers.sanitize_supplies(self, supply_values)
 
         for s in supply_values:
-
             raam_costs = raam.raam(
                 demand_df=self.demand_df,
                 supply_df=self.supply_df,
@@ -689,14 +680,13 @@ class Access:
 
             raam_costs.name = name + "_" + s
             if raam_costs.name in self.access_df.columns:
-                self.log.info("Overwriting {}.".format(raam_costs.name))
+                self.log.info(f"Overwriting {raam_costs.name}.")
                 self.access_df.drop(raam_costs.name, axis=1, inplace=True)
 
             # store the raw, un-normalized access values
             self.access_df = self.access_df.join(raam_costs)
 
         if normalize:
-
             columns = [name + "_" + s for s in supply_values]
             return helpers.normalized_access(self, columns)
 
@@ -818,21 +808,19 @@ class Access:
         17031010202  2818   0.000717       0.000424     0.000973         0.000541
         17197884103  2776   0.000384       0.000291     0.000371         0.000377
         17197980100  3264   0.000457       0.000325     0.000348         0.000314
-        """
+        """  # noqa: E501
 
-        assert (
-            self.supply_value_provided == True
-        ), "You must provide a supply value in order to use this functionality."
+        assert self.supply_value_provided, (
+            "You must provide a supply value in order to use this functionality."
+        )
 
         if cost is None:
-
             cost = self._default_cost
             if len(self.cost_names) > 1:
-                self.log.info("Using default cost, {}, for {}.".format(cost, name))
+                self.log.info(f"Using default cost, {cost}, for {name}.")
 
         if cost not in self.cost_names:
-
-            raise ValueError("{} not an available cost.".format(cost))
+            raise ValueError(f"{cost} not an available cost.")
 
         if type(supply_values) is str:
             supply_values = [supply_values]
@@ -840,7 +828,6 @@ class Access:
             supply_values = self.supply_types
 
         for s in supply_values:
-
             series = fca.two_stage_fca(
                 demand_df=self.demand_df,
                 demand_index=self.demand_df.index.name,
@@ -859,13 +846,12 @@ class Access:
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                self.log.info("Overwriting {}.".format(series.name))
+                self.log.info(f"Overwriting {series.name}.")
                 self.access_df.drop(series.name, axis=1, inplace=True)
 
             self.access_df = self.access_df.join(series)
 
         if normalize:
-
             columns = [name + "_" + s for s in supply_values]
             return helpers.normalized_access(self, columns)
 
@@ -994,11 +980,11 @@ class Access:
         17031010202  2818     0.001027         0.000531     0.000720         0.000416
         17031010300  6236     0.001030         0.000496     0.000710         0.000402
         17031010400  5042     0.000900         0.000514     0.000786         0.000430
-        """
+        """  # noqa: E501
 
-        assert (
-            self.supply_value_provided == True
-        ), "You must provide a supply value in order to use this functionality."
+        assert self.supply_value_provided, (
+            "You must provide a supply value in order to use this functionality."
+        )
 
         if weight_fn is None:
             weight_fn = weights.step_fn({10: 1, 20: 0.68, 30: 0.22})
@@ -1104,11 +1090,11 @@ class Access:
         17031010202   0.001420       0.000777
         17031010300   0.001479       0.000742
         17031010400   0.001274       0.000726
-        """
+        """  # noqa: E501
 
-        assert (
-            self.supply_value_provided == True
-        ), "You must provide a supply value in order to use this functionality."
+        assert self.supply_value_provided, (
+            "You must provide a supply value in order to use this functionality."
+        )
 
         if weight_fn is None:
             weight_fn = weights.step_fn({10: 0.962, 20: 0.704, 30: 0.377, 60: 0.042})
@@ -1117,7 +1103,6 @@ class Access:
         supply_values = helpers.sanitize_supplies(self, supply_values)
 
         for s in supply_values:
-
             series = fca.three_stage_fca(
                 demand_df=self.demand_df,
                 demand_index=self.demand_df.index.name,
@@ -1136,14 +1121,13 @@ class Access:
 
             series.name = name + "_" + s
             if series.name in self.access_df.columns:
-                self.log.info("Overwriting {}.".format(series.name))
+                self.log.info(f"Overwriting {series.name}.")
                 self.access_df.drop(series.name, axis=1, inplace=True)
 
             # store the raw, un-normalized access values
             self.access_df = self.access_df.join(series)
 
         if normalize:
-
             columns = [name + "_" + s for s in supply_values]
             return helpers.normalized_access(self, columns)
 
@@ -1247,11 +1231,11 @@ class Access:
         17197884101    1.677075
         17197884103    1.597554
         17197980100    1.597386
-        """
+        """  # noqa: E501
 
         for v in col_dict:
             if v not in self.access_df.columns:
-                raise ValueError("{} is not a calculated access value".format(v))
+                raise ValueError(f"{v} is not a calculated access value")
 
         weights = pd.Series(col_dict)
 
@@ -1259,7 +1243,7 @@ class Access:
 
         weighted_score.name = name
         if weighted_score.name in self.access_df.columns:
-            self.log.info("Overwriting {}.".format(weighted_score.name))
+            self.log.info(f"Overwriting {weighted_score.name}.")
             self.access_df.drop(weighted_score.name, axis=1, inplace=True)
 
         self.access_df = self.access_df.join(weighted_score)
@@ -1382,7 +1366,7 @@ class Access:
         3  17093890101  17031010300  89.40  63520.029749
         4  17093890101  17031010400  84.97  63268.514352
 
-        """
+        """  # noqa: E501
 
         # Add it to the list of costs.
         self.cost_df = self.cost_df.merge(
@@ -1480,7 +1464,7 @@ class Access:
         2  17093890101  17031010202  92.95          63073.735631
         3  17093890101  17031010300  89.40          63520.029749
         4  17093890101  17031010400  84.97          63268.514352
-        """
+        """  # noqa: E501
 
         # Add it to the list of costs.
         self.neighbor_cost_df = self.neighbor_cost_df.merge(
@@ -1575,7 +1559,7 @@ class Access:
         2  17093890101  17031010202  92.95  63073.735631
         3  17093890101  17031010300  89.40  63520.029749
         4  17093890101  17031010400  84.97  63268.514352
-        """
+        """  # noqa: E501
         import geopandas as gpd
 
         # TO-DO: check for unprojected geometries
@@ -1625,7 +1609,7 @@ class Access:
         df1and2 = df1and2[df1and2[name] < threshold]
 
         if name in self.cost_df.columns:
-            self.log.info("Overwriting {}.".format(name))
+            self.log.info(f"Overwriting {name}.")
             self.cost_df.drop(name, axis=1, inplace=True)
 
         self.cost_df = self.cost_df.merge(
@@ -1727,7 +1711,7 @@ class Access:
         2  17031010100  17031010202           635.203387
         3  17031010100  17031010300           653.415713
         4  17031010100  17031010400          2065.375554
-        """
+        """  # noqa: E501
         import geopandas as gpd
 
         # TO-DO: check for unprojected geometries
