@@ -516,10 +516,10 @@ class Access:
         supply_values=None,
         normalize=False,
         tau=60,
-        rho=None,  # noqa: ARG002
+        rho=None,
         max_cycles=150,
         initial_step=0.2,
-        half_life=50,  # noqa: ARG002
+        half_life=50,
         min_step=0.005,
         verbose=False,
     ):
@@ -673,9 +673,11 @@ class Access:
                 cost_name=cost,
                 max_cycles=max_cycles,
                 tau=tau,
+                rho=rho,
                 verbose=verbose,
                 initial_step=initial_step,
                 min_step=min_step,
+                half_life=half_life
             )
 
             raam_costs.name = name + "_" + s
