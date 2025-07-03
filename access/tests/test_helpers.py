@@ -1,17 +1,12 @@
-from access import Access
-from access.access import weights, helpers
-
-import math
-import unittest
-
-import numpy as np
-import pandas as pd
-import geopandas as gpd
+import pytest
 import util as tu
 
+from access import Access
+from access.access import helpers
 
-class TestHelpers(unittest.TestCase):
-    def setUp(self):
+
+class TestHelpers:
+    def setup_method(self):
         n = 5
         supply_grid = tu.create_nxn_grid(n)
         demand_grid = supply_grid.sample(1)
@@ -39,10 +34,10 @@ class TestHelpers(unittest.TestCase):
         helpers.sanitize_supply_cost(self.model, None, "value")
         actual = self.model.default_cost
 
-        self.assertEqual(actual, "cost")
+        assert actual == "cost"
 
-    def test_sanitize_supply_cost_raise_ValueError_if_cost_not_found(self):
-        with self.assertRaises(ValueError):
+    def test_sanitize_supply_cost_raise_value_error_if_cost_not_found(self):
+        with pytest.raises(ValueError):
             helpers.sanitize_supply_cost(self.model, "some_cost", "value")
 
     def test_sanitize_demand_cost_set_cost_as_default(self):
@@ -50,17 +45,17 @@ class TestHelpers(unittest.TestCase):
         helpers.sanitize_demand_cost(self.model, None, "value")
         actual = self.model.default_cost
 
-        self.assertEqual(actual, "cost")
+        assert actual == "cost"
 
-    def test_sanitize_demand_cost_raise_ValueError_if_cost_not_found(self):
-        with self.assertRaises(ValueError):
+    def test_sanitize_demand_cost_raise_value_error_if_cost_not_found(self):
+        with pytest.raises(ValueError):
             helpers.sanitize_demand_cost(self.model, "some_cost", "value")
 
     def test_sanitize_supplies_provide_value_as_string(self):
         actual = helpers.sanitize_supplies(self.model, "some_value")
 
-        self.assertEqual(actual, ["some_value"])
+        assert actual == ["some_value"]
 
-    def test_sanitize_supplies_raise_ValueError_if_input_other_than_str_or_list(self):
-        with self.assertRaises(ValueError):
-            sesult = helpers.sanitize_supplies(self.model, 5)
+    def test_sanitize_supplies_raise_value_error_if_input_other_than_str_or_list(self):
+        with pytest.raises(ValueError):
+            helpers.sanitize_supplies(self.model, 5)
