@@ -1,17 +1,12 @@
+import pytest
+import util as tu
+
 from access import Access
 from access.access import weights
 
-import math
-import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import util as tu
-
-
-class TestWeightedCatchment(unittest.TestCase):
-    def setUp(self):
+class TestWeightedCatchment:
+    def setup_method(self):
         n = 5
         supply_grid = tu.create_nxn_grid(n)
         demand_grid = supply_grid.sample(1)
@@ -37,7 +32,7 @@ class TestWeightedCatchment(unittest.TestCase):
             name="test", weight_fn=weights.step_fn({catchment: weight})
         )
         actual = result.iloc[0]["test_value"]
-        self.assertEqual(actual, 1)
+        assert actual == 1
 
     def test_weighted_catchment_small_catchment_weight_x(self):
         catchment = 0.5
@@ -46,7 +41,7 @@ class TestWeightedCatchment(unittest.TestCase):
             name="test", weight_fn=weights.step_fn({catchment: weight})
         )
         actual = result.iloc[0]["test_value"]
-        self.assertEqual(actual, 0.5)
+        assert actual == 0.5
 
     def test_weighted_catchment_large_catchment_weight_1(self):
         catchment = 10
@@ -55,7 +50,7 @@ class TestWeightedCatchment(unittest.TestCase):
             name="test", weight_fn=weights.step_fn({catchment: weight})
         )
         actual = result.iloc[0]["test_value"]
-        self.assertEqual(actual, 25)
+        assert actual == 25
 
     def test_weighted_catchment_run_again_and_test_overwrite(self):
         catchment = 0.5
@@ -67,7 +62,7 @@ class TestWeightedCatchment(unittest.TestCase):
             name="test", weight_fn=weights.step_fn({catchment: weight})
         )
         actual = result.iloc[0]["test_value"]
-        self.assertEqual(actual, 1)
+        assert actual == 1
 
     def test_weighted_catchment_large_catchment_weight_1_normalized(self):
         catchment = 10
@@ -76,7 +71,7 @@ class TestWeightedCatchment(unittest.TestCase):
             name="test", weight_fn=weights.step_fn({catchment: weight}), normalize=True
         )
         actual = result.iloc[0]["test_value"]
-        self.assertEqual(actual, 1)
+        assert actual == 1
 
     def test_weighted_catchment_with_gravity_weights(self):
         n = 5
@@ -109,11 +104,7 @@ class TestWeightedCatchment(unittest.TestCase):
             1.133733026,
         ]
 
-        for id, expected in zip(ids, expected_vals):
-            actual = self.model.access_df.gravity_value.loc[id]
+        for _id, expected in zip(ids, expected_vals, strict=False):
+            actual = self.model.access_df.gravity_value.loc[_id]
 
-            self.assertAlmostEqual(actual, expected)
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert pytest.approx(actual) == expected

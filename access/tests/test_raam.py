@@ -1,17 +1,10 @@
-from access import Access
-from access.access import weights
-
-import math
-import unittest
-
-import numpy as np
-import pandas as pd
-import geopandas as gpd
 import util as tu
 
+from access import Access
 
-class TestRAAM(unittest.TestCase):
-    def setUp(self):
+
+class TestRAAM:
+    def setup_method(self):
         n = 5
         supply_grid = tu.create_nxn_grid(n)
         demand_grid = supply_grid.sample(1)
@@ -40,7 +33,7 @@ class TestRAAM(unittest.TestCase):
         expected = self.model.supply_df.value.sum()
         actual = self.model.access_df["raam_value"].iloc[0]
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_raam_single_demand_location_equals_sum_of_supply_initial_step_int(self):
         self.model.raam(initial_step=1)
@@ -48,7 +41,7 @@ class TestRAAM(unittest.TestCase):
         expected = self.model.supply_df.value.sum()
         actual = self.model.access_df["raam_value"].iloc[0]
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_raam_single_demand_location_equals_sum_of_supply_min_step(self):
         self.model.raam(min_step=1, verbose=True)
@@ -56,7 +49,7 @@ class TestRAAM(unittest.TestCase):
         expected = self.model.supply_df.value.sum()
         actual = self.model.access_df["raam_value"].iloc[0]
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_raam_run_again_and_test_overwrite(self):
         self.model.raam()
@@ -65,11 +58,11 @@ class TestRAAM(unittest.TestCase):
         expected = self.model.supply_df.value.sum()
         actual = self.model.access_df["raam_value"].iloc[0]
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_raam_single_demand_location_equals_sum_of_supply_normalize(self):
         self.model.raam(normalize=True)
 
         actual = self.model.access_df["raam_value"].iloc[0]
 
-        self.assertEqual(actual, 25)
+        assert actual == 25
