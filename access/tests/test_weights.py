@@ -1,12 +1,9 @@
-from access.access import weights
-
-import math
 import unittest
 from random import randint
 
-import numpy as np
 import pandas as pd
-import util as tu
+
+from access.access import weights
 
 
 class TestWeights(unittest.TestCase):
@@ -56,7 +53,7 @@ class TestWeights(unittest.TestCase):
 
     def test_step_fn_negative_weight_raises_error(self):
         with self.assertRaises(ValueError):
-            weight_fn = weights.step_fn({self.r_int: -1})
+            weights.step_fn({self.r_int: -1})
 
     def test_step_fn_non_dict_input_raises_error(self):
         with self.assertRaises(TypeError):
@@ -74,14 +71,13 @@ class TestWeights(unittest.TestCase):
     def test_gaussian_width_zero_raises_error(self):
         with self.assertRaises(ValueError):
             weight_fn = weights.gaussian(0)
-            w_applied = self.apply_weight_fn(weight_fn)
+            self.apply_weight_fn(weight_fn)
 
     def test_gaussian_weight_sigma_one(self):
         weight_fn = weights.gaussian(1)
         w_applied = self.apply_weight_fn(weight_fn)
 
         actual = w_applied.loc[0]
-        actual
 
         self.assertAlmostEqual(actual, 0.6065306597)
 
@@ -93,7 +89,7 @@ class TestWeights(unittest.TestCase):
             0.88249690,
             0.99980001,
         ]
-        for sigma, expected in zip(sigma_vals, expected_vals):
+        for sigma, expected in zip(sigma_vals, expected_vals, strict=False):
             weight_fn = weights.gaussian(sigma)
             w_applied = self.apply_weight_fn(weight_fn)
             print(w_applied.loc[0])
