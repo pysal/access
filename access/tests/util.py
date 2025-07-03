@@ -1,9 +1,8 @@
 import math
 import random
 
-import numpy as np
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
 
 
 def create_nxn_grid(n, buffer=0, random_values=False, seed=44):
@@ -20,7 +19,7 @@ def create_nxn_grid(n, buffer=0, random_values=False, seed=44):
     grid: nxn size grid in a GeoDataFrame with columns 'id', 'x', 'y', 'value'
     """
     rows = []
-    id = 0
+    _id = 0
     value = 1
 
     random.seed(seed)
@@ -29,8 +28,8 @@ def create_nxn_grid(n, buffer=0, random_values=False, seed=44):
         for y in range(n):
             if random_values:
                 value = random.randint(1, 200)
-            id += 1
-            rows.append({"id": id, "x": x, "y": y, "value": value})
+            _id += 1
+            rows.append({"id": _id, "x": x, "y": y, "value": value})
 
     data = pd.DataFrame(rows, columns=["id", "x", "y", "value"])
     grid = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(data.x, data.y))
