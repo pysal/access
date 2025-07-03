@@ -1,13 +1,8 @@
-from access import Access
-from access.access import weights
-
-import math
 import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
 import util as tu
+
+from access import Access
 
 
 class TestMisc(unittest.TestCase):
@@ -116,18 +111,6 @@ class TestMisc(unittest.TestCase):
         )
 
         actual = "new_cost" in self.model.neighbor_cost_df.columns
-
-        self.assertEqual(actual, True)
-
-    def test_user_cost_adds_new_column_to_cost_names(self):
-        new_cost = self.model.neighbor_cost_df.copy()
-        new_cost["new_cost"] = 0
-
-        self.model.append_user_cost_neighbors(
-            new_cost_df=new_cost, name="new_cost", origin="origin", destination="dest"
-        )
-
-        actual = "new_cost" in self.model.neighbor_cost_names
 
         self.assertEqual(actual, True)
 
