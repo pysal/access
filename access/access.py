@@ -677,7 +677,7 @@ class Access:
                 verbose=verbose,
                 initial_step=initial_step,
                 min_step=min_step,
-                half_life=half_life
+                half_life=half_life,
             )
 
             raam_costs.name = name + "_" + s
