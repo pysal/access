@@ -1,13 +1,13 @@
-import unittest
 from random import randint
 
 import pandas as pd
+import pytest
 
 from access.access import weights
 
 
-class TestWeights(unittest.TestCase):
-    def setUp(self):
+class TestWeights:
+    def setup_method(self):
         self.r_int = randint(2, 101)
         self.series = pd.Series(range(1, self.r_int))
 
@@ -22,7 +22,7 @@ class TestWeights(unittest.TestCase):
         w_applied = self.apply_weight_fn(weight_fn)
 
         expected = w_applied.sum()
-        self.assertEqual(expected, 0)
+        assert expected == 0
 
     def test_step_fn_all_weight_one_equals_self(self):
         weight_fn = weights.step_fn({self.r_int: 1})
@@ -31,7 +31,7 @@ class TestWeights(unittest.TestCase):
         expected = w_applied.sum()
         actual = self.series.sum()
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_step_fn_all_weight_half_equals_half(self):
         weight_fn = weights.step_fn({self.r_int: 0.5})
@@ -40,7 +40,7 @@ class TestWeights(unittest.TestCase):
         expected = w_applied.sum()
         actual = self.series.sum() / 2
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_step_fn_all_weight_two_equals_twice(self):
         weight_fn = weights.step_fn({self.r_int: 2})
@@ -49,27 +49,27 @@ class TestWeights(unittest.TestCase):
         expected = w_applied.sum()
         actual = self.series.sum() * 2
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
     def test_step_fn_negative_weight_raises_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             weights.step_fn({self.r_int: -1})
 
     def test_step_fn_non_dict_input_raises_error(self):
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             weights.step_fn(1)
 
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             weights.step_fn("a")
 
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             weights.step_fn([])
 
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             weights.step_fn(1.0)
 
     def test_gaussian_width_zero_raises_error(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             weight_fn = weights.gaussian(0)
             self.apply_weight_fn(weight_fn)
 
@@ -79,7 +79,7 @@ class TestWeights(unittest.TestCase):
 
         actual = w_applied.loc[0]
 
-        self.assertAlmostEqual(actual, 0.6065306597)
+        assert pytest.approx(actual) == 0.6065306597
 
     def test_gaussian_weight_sigma_varied(self):
         sigma_vals = [-50, -2, 2, 50]
@@ -95,7 +95,7 @@ class TestWeights(unittest.TestCase):
             print(w_applied.loc[0])
             actual = w_applied.loc[0]
 
-            self.assertAlmostEqual(actual, expected)
+            assert pytest.approx(actual) == expected
 
     def test_gravity_with_zero_alpha(self):
         rand_int = randint(1, 100)
@@ -104,4 +104,4 @@ class TestWeights(unittest.TestCase):
 
         actual = w_applied.loc[0]
 
-        self.assertEqual(actual, 1)
+        assert actual == 1
