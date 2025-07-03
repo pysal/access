@@ -1,13 +1,9 @@
-from access import Access
-from access.access import weights
-
-import math
 import unittest
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
 import util as tu
+
+from access import Access
+from access.access import weights
 
 
 class TestWeightedCatchment(unittest.TestCase):
@@ -109,8 +105,8 @@ class TestWeightedCatchment(unittest.TestCase):
             1.133733026,
         ]
 
-        for id, expected in zip(ids, expected_vals):
-            actual = self.model.access_df.gravity_value.loc[id]
+        for _id, expected in zip(ids, expected_vals, strict=False):
+            actual = self.model.access_df.gravity_value.loc[_id]
 
             self.assertAlmostEqual(actual, expected)
 
