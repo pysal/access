@@ -4,9 +4,9 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = access
+SPHINXPROJ    = PACKAGE_NAME
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -19,6 +19,10 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+github:
+	@make html
+
 clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf auto_examples/
+	rm -rf generated/
