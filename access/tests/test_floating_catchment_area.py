@@ -99,7 +99,7 @@ class TestFloatingCatchmentArea:
         assert actual == 1
 
     def test_two_stage_floating_catchment_area_zero_catchment(self):
-        zero_catchment =  -1
+        zero_catchment = -1
         self.model.two_stage_fca(max_cost=zero_catchment)
         actual = math.isnan(self.model.access_df.iloc[0]["2sfca_value"])
 
