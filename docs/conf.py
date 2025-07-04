@@ -19,9 +19,6 @@
 import sys, os
 import sphinx_bootstrap_theme
 
-
-sys.path.insert(0, os.path.abspath("../../"))
-
 # import your package to obtain the version info to display on the docs website
 import access
 
@@ -83,12 +80,12 @@ release = access.__version__  # should replace it with your access
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "tests/*"]
+exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "tests/*"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -254,12 +251,12 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "https://docs.python.org/3.6/": None,
-    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+
+    "geopandas": ("https://geopandas.org/en/stable/", None),
     "libpysal": ("https://pysal.org/libpysal/", None),
     "matplotlib": ("https://matplotlib.org/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "python": ("https://docs.python.org/3.9/", None),
+    "python": ("https://docs.python.org/3.13/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
 }
