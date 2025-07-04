@@ -289,7 +289,7 @@ def two_stage_fca(
     # there may be NA values due to a shorter supply dataframe than the demand
     # dataframe. in this case, replace any potential NA values(which correspond
     # to supply locations with no supply) with 0.
-    temp[supply_name].fillna(0, inplace=True)
+    temp[supply_name] = temp[supply_name].fillna(0)
 
     # calculate the fractional ratio of supply
     # to aggregate demand at each location, or Rl
@@ -415,7 +415,7 @@ def three_stage_fca(
     # there may be NA values due to a shorter supply dataframe than the demand
     # dataframe. in this case, replace any potential NA values(which correspond
     # to supply locations with no supply) with 0.
-    temp[supply_name].fillna(0, inplace=True)
+    temp[supply_name] = temp[supply_name].fillna(0)
 
     # calculate the fractional ratio of supply
     #  to aggregate demand at each location, or Rl
