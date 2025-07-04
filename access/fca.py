@@ -63,7 +63,7 @@ def weighted_catchment(
 
     # constrain by max cost
     if max_cost is not None:
-        temp = temp[temp[cost_cost] < max_cost].copy()
+        temp = temp[temp[cost_cost] <= max_cost].copy()
 
     # apply a weight function if inputted -- either enhanced two stage or three stage
     if weight_fn:
