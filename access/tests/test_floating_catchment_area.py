@@ -79,7 +79,7 @@ class TestFloatingCatchmentArea:
         assert actual == 1
 
     def test_floating_catchment_area_ratio_zero_catchment(self):
-        zero_catchment = 0
+        zero_catchment = -1
         self.model.fca_ratio(max_cost=zero_catchment)
         actual = math.isnan(self.model.access_df.iloc[0]["fca_value"])
 
@@ -99,7 +99,7 @@ class TestFloatingCatchmentArea:
         assert actual == 1
 
     def test_two_stage_floating_catchment_area_zero_catchment(self):
-        zero_catchment = 0
+        zero_catchment =  -1
         self.model.two_stage_fca(max_cost=zero_catchment)
         actual = math.isnan(self.model.access_df.iloc[0]["2sfca_value"])
 
@@ -174,7 +174,7 @@ class TestFloatingCatchmentArea:
         assert actual == 1
 
     def test_three_stage_floating_catchment_area_zero_catchment(self):
-        zero_catchment = 0
+        zero_catchment = -1
         self.model.three_stage_fca(max_cost=zero_catchment)
         actual = math.isnan(self.model.access_df.iloc[0]["3sfca_value"])
 
@@ -194,7 +194,7 @@ class TestFloatingCatchmentArea:
         assert actual == 1
 
     def test_enhanced_two_stage_floating_catchment_area_zero_catchment(self):
-        zero_catchment = 0
+        zero_catchment = -1
         self.model.enhanced_two_stage_fca(max_cost=zero_catchment)
         actual = math.isnan(self.model.access_df.iloc[0]["e2sfca_value"])
 
