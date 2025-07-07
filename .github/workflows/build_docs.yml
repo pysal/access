@@ -40,7 +40,7 @@ jobs:
           environment-file: ${{ matrix.environment-file }}
           micromamba-version: 'latest'
 
-      - name: Install esda
+      - name: Install access
         run: pip install .
 
       - name: Make Docs
