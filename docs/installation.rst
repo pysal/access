@@ -8,11 +8,13 @@ Easy!  You can get the package from either pip or conda-forge:
 .. code-block:: bash
 
   pip install access
+
 |
 
 .. code-block:: bash
 
    conda install -c conda-forge access
+
 |
 
 The only dependencies are pandas and numpy.  
@@ -27,6 +29,5 @@ You can also clone the main branch from github:
   git clone git@github.com:pysal/access.git
   cd access/
   pip install .
+
 |
-
-
