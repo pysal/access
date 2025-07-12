@@ -1,9 +1,9 @@
 ---
-name: test
+name: py312_access-latest
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - geopandas
   - numpy
   - pandas

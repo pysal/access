@@ -1,5 +1,5 @@
 ---
-name: test
+name: py313_access-latest
 channels:
   - conda-forge
 dependencies:
