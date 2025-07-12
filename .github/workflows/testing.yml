@@ -51,7 +51,7 @@ jobs:
       - name: setup micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
-         environment-file: .ci/${{ matrix.environment-file }}.yaml
+         environment-file: ci/${{ matrix.environment-file }}.yaml
          micromamba-version: "latest"
        
       - name: install package
