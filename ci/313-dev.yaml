@@ -1,5 +1,5 @@
 ---
-name: py313_access-dev
+name: 313-dev
 channels:
   - conda-forge
 dependencies:

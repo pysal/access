@@ -1,5 +1,5 @@
 ---
-name: py311_access-latest
+name: 311-latest
 channels:
   - conda-forge
 dependencies:

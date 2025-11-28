@@ -28,17 +28,19 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         environment-file: [
-          py311_access-oldest,
-          py311_access-latest,
-          py312_access-latest,
-          py313_access-latest,
-          py313_access-dev,
+          311-oldest,
+          311-latest,
+          312-latest,
+          313-latest,
+          313-dev,
         ]
         experimental: [false]
         include:
-          - environment-file: py313_access-latest
-            os: macos-latest
-          - environment-file: py313_access-latest
+          - environment-file: 313-latest
+            os: macos-15-intel # Intel
+          - environment-file: 313-latest
+            os: macos-latest # Apple Silicon
+          - environment-file: 313-latest
             os: windows-latest
       fail-fast: false
 

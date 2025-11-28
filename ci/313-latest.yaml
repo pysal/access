@@ -1,5 +1,5 @@
 ---
-name: py313_access-latest
+name: 313-latest
 channels:
   - conda-forge
 dependencies:
