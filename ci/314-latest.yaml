@@ -1,0 +1,23 @@
+---
+name: 314-latest
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  - geopandas
+  - numpy
+  - pandas
+  - scipy
+  # testing, etc
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  # docs
+  - nbsphinx
+  - numpydoc
+  - quilt3
+  - sphinx
+  - sphinxcontrib-napoleon
+  - sphinx-gallery
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme

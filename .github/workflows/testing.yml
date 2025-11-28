@@ -32,7 +32,8 @@ jobs:
           311-latest,
           312-latest,
           313-latest,
-          313-dev,
+          314-latest,
+          314-dev,
         ]
         experimental: [false]
         include:
