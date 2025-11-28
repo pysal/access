@@ -37,7 +37,9 @@ jobs:
         experimental: [false]
         include:
           - environment-file: py313_latest
-            os: macos-latest
+            os: macos-15-intel # Intel
+          - environment-file: py313_latest
+            os: macos-latest # Apple Silicon
           - environment-file: py313_latest
             os: windows-latest
       fail-fast: false
