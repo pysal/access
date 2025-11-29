@@ -32,15 +32,16 @@ jobs:
           311-latest,
           312-latest,
           313-latest,
-          313-dev,
+          314-latest,
+          314-dev,
         ]
         experimental: [false]
         include:
-          - environment-file: 313-latest
+          - environment-file: 314-latest
             os: macos-15-intel # Intel
-          - environment-file: 313-latest
+          - environment-file: 314-latest
             os: macos-latest # Apple Silicon
-          - environment-file: 313-latest
+          - environment-file: 314-latest
             os: windows-latest
       fail-fast: false
 
