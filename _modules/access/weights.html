@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>access.weights &#8212; access v0+untagged.1.g7149c70 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <title>access.weights &#8212; access v1.1.10 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=466da8af" />
+    <script src="../../_static/documentation_options.js?v=25b84aaa"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           access</a>
-        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.10</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -78,10 +78,12 @@
     <div class="body col-md-12 content" role="main">
       
   <h1>Source code for access.weights</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
-<div class="viewcode-block" id="step_fn"><a class="viewcode-back" href="../../generated/access.weights.step_fn.html#access.weights.step_fn">[docs]</a><span class="k">def</span> <span class="nf">step_fn</span><span class="p">(</span><span class="n">step_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="step_fn">
+<a class="viewcode-back" href="../../generated/access.weights.step_fn.html#access.weights.step_fn">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">step_fn</span><span class="p">(</span><span class="n">step_dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a step function from a dictionary.</span>
 
@@ -113,15 +115,14 @@
 <span class="sd">    {0: 1, 10: 1, 20: 1, 30: 0.68, 40: 0.68, 50: 0.22, 60: 0.22, 70: 0}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">step_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;step_dict must be of type dict.&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">step_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All weights must be positive.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="n">key_to_test</span><span class="p">):</span>
-
+    <span class="k">def</span><span class="w"> </span><span class="nf">helper</span><span class="p">(</span><span class="n">key_to_test</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">step_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">key_to_test</span> <span class="o">&lt;=</span> <span class="n">k</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">v</span>
@@ -131,12 +132,15 @@
     <span class="k">return</span> <span class="n">helper</span></div>
 
 
-<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../generated/access.weights.gaussian.html#access.weights.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+
+<div class="viewcode-block" id="gaussian">
+<a class="viewcode-back" href="../../generated/access.weights.gaussian.html#access.weights.gaussian">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a gaussian weight function, for a specified width, :math:`\sigma`.</span>
+<span class="sd">    Create a gaussian weight function, for a specified width, :math:`\\sigma`.</span>
 <span class="sd">    The mean / location parameter is assumed to be 0.</span>
-<span class="sd">    Note that the standard normalization of the Gaussian, :math:`1 / \sqrt{2\pi\sigma^2}`,</span>
-<span class="sd">    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\sigma`.</span>
+<span class="sd">    Note that the standard normalization of the Gaussian, :math:`1 / \\sqrt{2\\pi\\sigma^2}`,</span>
+<span class="sd">    is *not* applied, so :math:`f(0) = 1` regardless of the value of :math:`\\sigma`.</span>
 <span class="sd">    Of course, this is irrelevant if the ultimate access values are ultimately normalized.</span>
 
 <span class="sd">    Parameters</span>
@@ -170,7 +174,7 @@
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; {x : np.exp(-x**2/2) for x in range(4)}</span>
 <span class="sd">    {0: 1.0, 1: 0.6065306597126334, 2: 0.1353352832366127, 3: 0.011108996538242306}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sigma must be non-zero.&quot;</span><span class="p">)</span>
@@ -178,7 +182,10 @@
     <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># / np.sqrt(2*np.pi*sigma**2)</span></div>
 
 
-<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../generated/access.weights.gravity.html#access.weights.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="gravity">
+<a class="viewcode-back" href="../../generated/access.weights.gravity.html#access.weights.gravity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gravity</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a gravity function from a scale :math:`s` and :math:`\\alpha` parameters</span>
 <span class="sd">    as well as an optional minimum distance :math:`x_\\text{min}`.</span>
@@ -218,9 +225,10 @@
 
 <span class="sd">    &gt;&gt;&gt; {t : round(fn(t), 2) for t in [0, 1, 2, 20, 40, 60]}</span>
 <span class="sd">    {0: 400.0, 1: 400.0, 2: 100.0, 20: 1.0, 40: 0.25, 60: 0.11}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_dist</span><span class="p">)</span> <span class="o">/</span> <span class="n">scale</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span></div>
+
 </pre></div>
 
     </div>
@@ -238,7 +246,7 @@
     </p>
     <p>
         &copy; Copyright 2019, pysal access developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.0.4.<br/>
     </p>
   </div>
 </footer>

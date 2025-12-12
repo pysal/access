@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>access.access &#8212; access v0+untagged.1.g7149c70 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <title>access.access &#8212; access v1.1.10 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=466da8af" />
+    <script src="../../_static/documentation_options.js?v=25b84aaa"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           access</a>
-        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.10</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -78,23 +78,20 @@
     <div class="body col-md-12 content" role="main">
       
   <h1>Source code for access.access</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fca</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">raam</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">weights</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">helpers</span>
-<span class="kn">from</span> <span class="nn">.datasets</span> <span class="kn">import</span> <span class="n">Datasets</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fca</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">raam</span><span class="p">,</span> <span class="n">weights</span>
 
 <span class="n">access_log_stream</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
 <span class="n">access_log_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(levelname)-8s</span><span class="s2"> :: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">access_log_stream</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">access_log_format</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Access"><a class="viewcode-back" href="../../generated/access.Access.html#access.Access">[docs]</a><span class="k">class</span> <span class="nc">Access</span><span class="p">:</span>
+<div class="viewcode-block" id="Access">
+<a class="viewcode-back" href="../../generated/access.Access.html#access.Access">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Access</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial Access Class</span>
 
@@ -140,11 +137,13 @@
 <span class="sd">                           Lists currently-available measures of access.</span>
 <span class="sd">    cost_metadata        : pandas.DataFrame</span>
 <span class="sd">                           Describes each of the currently-available supply to demand costs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="n">logger_initialized</span> <span class="o">=</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="Access.__init__"><a class="viewcode-back" href="../../generated/access.Access.html#access.Access.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Access.__init__">
+<a class="viewcode-back" href="../../generated/access.Access.html#access.Access.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">demand_df</span><span class="p">,</span>
         <span class="n">demand_value</span><span class="p">,</span>
@@ -161,7 +160,6 @@
         <span class="n">neighbor_cost_dest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">neighbor_cost_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the class.</span>
 
@@ -210,7 +208,7 @@
 <span class="sd">                                          supply_value = [&quot;doc&quot;, &quot;dentist&quot;],</span>
 <span class="sd">                                          cost_df = chi_travel_costs, cost_origin  = &quot;origin&quot;,</span>
 <span class="sd">                                          cost_dest = &quot;destination&quot;, cost_name = &quot;cost&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;access&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">Access</span><span class="o">.</span><span class="n">logger_initialized</span><span class="p">:</span>
@@ -225,28 +223,31 @@
 
         <span class="k">if</span> <span class="n">demand_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">demand_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;demand_index must either be True -- or it must be a column of demand_df&quot;</span>
+                <span class="s2">&quot;demand_index must either be True &quot;</span>
+                <span class="s2">&quot;-- or it must be a column of demand_df&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">demand_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;demand_value must either be True -- or it must be a column of demand_df&quot;</span>
+                <span class="s2">&quot;demand_value must either be True &quot;</span>
+                <span class="s2">&quot;-- or it must be a column of demand_df&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">supply_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">supply_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;supply_index must either be True -- or it must be a column of supply_df&quot;</span>
+                <span class="s2">&quot;supply_index must either be True &quot;</span>
+                <span class="s2">&quot;-- or it must be a column of supply_df&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">supply_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be a column of supply_df&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">sv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">supply_value</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be columns of supply_df&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">sv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">supply_value</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supply_value must be columns of supply_df&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">cost_origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_origin must be a column of cost_df&quot;</span><span class="p">)</span>
 
@@ -256,12 +257,12 @@
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">and</span> <span class="n">cost_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be a column of cost_df&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cost_name</span><span class="p">]):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be columns of cost_df&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cost_name</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cost_name must be columns of cost_df&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">neighbor_cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">neighbor_cost_origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;neighbor_cost_origin must be a column of neighbor_cost_df&quot;</span>
@@ -278,11 +279,10 @@
             <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neighbor_cost_name must be a column of cost_df&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">neighbor_cost_name</span><span class="p">]</span>
-                <span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neighbor_cost_names must be columns of cost_df&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">neighbor_cost_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">neighbor_cost_name</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neighbor_cost_names must be columns of cost_df&quot;</span><span class="p">)</span>
 
         <span class="c1">### Now load the demand DFs.</span>
 
@@ -295,7 +295,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">supply_value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">supply_value</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Warning: A supply value was not provided, so a default</span>
 <span class="sd">                             supply value of 1 was created in the column named &quot;value&quot;.</span>
@@ -317,7 +317,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">supply_index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="n">cost_df</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cost_origin</span> <span class="o">=</span> <span class="n">cost_origin</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cost_dest</span> <span class="o">=</span> <span class="n">cost_dest</span>
@@ -340,7 +339,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">neighbor_cost_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="n">neighbor_cost_df</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_origin</span> <span class="o">=</span> <span class="n">neighbor_cost_origin</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_dest</span> <span class="o">=</span> <span class="n">neighbor_cost_dest</span>
@@ -376,7 +374,10 @@
 
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Access.weighted_catchment"><a class="viewcode-back" href="../../generated/access.Access.weighted_catchment.html#access.Access.weighted_catchment">[docs]</a>    <span class="k">def</span> <span class="nf">weighted_catchment</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.weighted_catchment">
+<a class="viewcode-back" href="../../generated/access.Access.weighted_catchment.html#access.Access.weighted_catchment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_catchment</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;catchment&quot;</span><span class="p">,</span>
         <span class="n">supply_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -423,14 +424,14 @@
 <span class="sd">        &gt;&gt;&gt; gravity = weights.gravity(scale = 60, alpha = -1)</span>
 <span class="sd">        &gt;&gt;&gt; illinois_primary_care.weighted_catchment(weight_fn = gravity)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
         <span class="n">supply_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
-
-            <span class="c1"># Bryan consistently flipped origin and destination in this one -- very confusing.</span>
+            <span class="c1"># Bryan consistently flipped origin and destination in this one</span>
+            <span class="c1"># -- very confusing.</span>
             <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">weighted_catchment</span><span class="p">(</span>
                 <span class="n">loc_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
                 <span class="n">loc_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -445,20 +446,22 @@
 
             <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
             <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># store the raw, un-normalized access values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.fca_ratio"><a class="viewcode-back" href="../../generated/access.Access.fca_ratio.html#access.Access.fca_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">fca_ratio</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.fca_ratio">
+<a class="viewcode-back" href="../../generated/access.Access.fca_ratio.html#access.Access.fca_ratio">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fca_ratio</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fca&quot;</span><span class="p">,</span>
         <span class="n">demand_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -551,18 +554,17 @@
 <span class="sd">        17197884101  0.000437     0.000442</span>
 <span class="sd">        17197884103  0.000510     0.000498</span>
 <span class="sd">        17197980100  0.000488     0.000432</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
-        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="p">)</span>
 
         <span class="n">supply_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">demand_cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_demand_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demand_cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
-
             <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">fca_ratio</span><span class="p">(</span>
                 <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
                 <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -585,20 +587,22 @@
 
             <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
             <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># store the raw, un-normalized access values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.raam"><a class="viewcode-back" href="../../generated/access.Access.raam.html#access.Access.raam">[docs]</a>    <span class="k">def</span> <span class="nf">raam</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.raam">
+<a class="viewcode-back" href="../../generated/access.Access.raam.html#access.Access.raam">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raam</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;raam&quot;</span><span class="p">,</span>
         <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -741,17 +745,16 @@
 
 <span class="sd">        &gt;&gt;&gt; chicago_primary_care.raam(name = &quot;raam_euclidean&quot;, tau = 100, cost = &quot;euclidean&quot;)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
-        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="p">)</span>
 
         <span class="n">cost</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supply_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
-
             <span class="n">raam_costs</span> <span class="o">=</span> <span class="n">raam</span><span class="o">.</span><span class="n">raam</span><span class="p">(</span>
                 <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
                 <span class="n">supply_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">supply_df</span><span class="p">,</span>
@@ -763,27 +766,31 @@
                 <span class="n">cost_name</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
                 <span class="n">max_cycles</span><span class="o">=</span><span class="n">max_cycles</span><span class="p">,</span>
                 <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span>
+                <span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                 <span class="n">initial_step</span><span class="o">=</span><span class="n">initial_step</span><span class="p">,</span>
                 <span class="n">min_step</span><span class="o">=</span><span class="n">min_step</span><span class="p">,</span>
+                <span class="n">half_life</span><span class="o">=</span><span class="n">half_life</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
             <span class="k">if</span> <span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">raam_costs</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># store the raw, un-normalized access values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raam_costs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.two_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.two_stage_fca.html#access.Access.two_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">two_stage_fca</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.two_stage_fca">
+<a class="viewcode-back" href="../../generated/access.Access.two_stage_fca.html#access.Access.two_stage_fca">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">two_stage_fca</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;2sfca&quot;</span><span class="p">,</span>
         <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -899,21 +906,19 @@
 <span class="sd">        17031010202  2818   0.000717       0.000424     0.000973         0.000541</span>
 <span class="sd">        17197884103  2776   0.000384       0.000291     0.000371         0.000377</span>
 <span class="sd">        17197980100  3264   0.000457       0.000325     0.000348         0.000314</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
-        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cost</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using default cost, </span><span class="si">{}</span><span class="s2">, for </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default cost, </span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2">, for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cost</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">:</span>
-
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not an available cost.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2"> not an available cost.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">supply_values</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">supply_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">supply_values</span><span class="p">]</span>
@@ -921,7 +926,6 @@
             <span class="n">supply_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_types</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
-
             <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">two_stage_fca</span><span class="p">(</span>
                 <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
                 <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -940,19 +944,21 @@
 
             <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
             <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.enhanced_two_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.enhanced_two_stage_fca.html#access.Access.enhanced_two_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">enhanced_two_stage_fca</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.enhanced_two_stage_fca">
+<a class="viewcode-back" href="../../generated/access.Access.enhanced_two_stage_fca.html#access.Access.enhanced_two_stage_fca">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enhanced_two_stage_fca</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e2sfca&quot;</span><span class="p">,</span>
         <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1075,11 +1081,11 @@
 <span class="sd">        17031010202  2818     0.001027         0.000531     0.000720         0.000416</span>
 <span class="sd">        17031010300  6236     0.001030         0.000496     0.000710         0.000402</span>
 <span class="sd">        17031010400  5042     0.000900         0.000514     0.000786         0.000430</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
-        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">weight_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">weight_fn</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">step_fn</span><span class="p">({</span><span class="mi">10</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mf">0.68</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">})</span>
@@ -1088,7 +1094,10 @@
             <span class="n">name</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">max_cost</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">,</span> <span class="n">weight_fn</span><span class="p">,</span> <span class="n">normalize</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.three_stage_fca"><a class="viewcode-back" href="../../generated/access.Access.three_stage_fca.html#access.Access.three_stage_fca">[docs]</a>    <span class="k">def</span> <span class="nf">three_stage_fca</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.three_stage_fca">
+<a class="viewcode-back" href="../../generated/access.Access.three_stage_fca.html#access.Access.three_stage_fca">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">three_stage_fca</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;3sfca&quot;</span><span class="p">,</span>
         <span class="n">cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1185,11 +1194,11 @@
 <span class="sd">        17031010202   0.001420       0.000777</span>
 <span class="sd">        17031010300   0.001479       0.000742</span>
 <span class="sd">        17031010400   0.001274       0.000726</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span> <span class="o">==</span> <span class="kc">True</span>
-        <span class="p">),</span> <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply_value_provided</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;You must provide a supply value in order to use this functionality.&quot;</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">weight_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">weight_fn</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">step_fn</span><span class="p">({</span><span class="mi">10</span><span class="p">:</span> <span class="mf">0.962</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mf">0.704</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mf">0.377</span><span class="p">,</span> <span class="mi">60</span><span class="p">:</span> <span class="mf">0.042</span><span class="p">})</span>
@@ -1198,7 +1207,6 @@
         <span class="n">supply_values</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">sanitize_supplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supply_values</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">:</span>
-
             <span class="n">series</span> <span class="o">=</span> <span class="n">fca</span><span class="o">.</span><span class="n">three_stage_fca</span><span class="p">(</span>
                 <span class="n">demand_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="p">,</span>
                 <span class="n">demand_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -1217,21 +1225,21 @@
 
             <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span>
             <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># store the raw, un-normalized access values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">supply_values</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">normalized_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">norm_access_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">norm_access_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]):</span>
             <span class="n">mean_access</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">]</span>
@@ -1239,7 +1247,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">/=</span> <span class="n">mean_access</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">demand_value</span><span class="p">])]</span>
 
-<div class="viewcode-block" id="Access.score"><a class="viewcode-back" href="../../generated/access.Access.score.html#access.Access.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Access.score">
+<a class="viewcode-back" href="../../generated/access.Access.score.html#access.Access.score">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Weighted aggregate of multiple already-calculated, normalized access components.</span>
 
 <span class="sd">        Parameters</span>
@@ -1328,11 +1338,11 @@
 <span class="sd">        17197884101    1.677075</span>
 <span class="sd">        17197884103    1.597554</span>
 <span class="sd">        17197980100    1.597386</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a calculated access value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is not a calculated access value&quot;</span><span class="p">)</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">col_dict</span><span class="p">)</span>
 
@@ -1340,19 +1350,20 @@
 
         <span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="k">if</span> <span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">weighted_score</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weighted_score</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">weighted_score</span></div>
 
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span>
 
     <span class="nd">@default_cost</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the default cost measure.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">new_cost</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="p">:</span>
@@ -1362,11 +1373,11 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to set cost not available in cost df&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span>
 
     <span class="nd">@neighbor_default_cost</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">neighbor_default_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the default cost measure.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">new_cost</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="p">:</span>
@@ -1375,7 +1386,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to set cost not available in cost df&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Access.append_user_cost"><a class="viewcode-back" href="../../generated/access.Access.append_user_cost.html#access.Access.append_user_cost">[docs]</a>    <span class="k">def</span> <span class="nf">append_user_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="Access.append_user_cost">
+<a class="viewcode-back" href="../../generated/access.Access.append_user_cost.html#access.Access.append_user_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append_user_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a user cost, from demand to supply locations.</span>
 
 <span class="sd">        Parameters</span>
@@ -1463,7 +1476,7 @@
 <span class="sd">        3  17093890101  17031010300  89.40  63520.029749</span>
 <span class="sd">        4  17093890101  17031010400  84.97  63268.514352</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
         <span class="c1"># Add it to the list of costs.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -1474,7 +1487,10 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.append_user_cost_neighbors"><a class="viewcode-back" href="../../generated/access.Access.append_user_cost_neighbors.html#access.Access.append_user_cost_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">append_user_cost_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Access.append_user_cost_neighbors">
+<a class="viewcode-back" href="../../generated/access.Access.append_user_cost_neighbors.html#access.Access.append_user_cost_neighbors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append_user_cost_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_cost_df</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a user cost, from supply locations to other supply locations.</span>
 
 <span class="sd">        Parameters</span>
@@ -1561,7 +1577,7 @@
 <span class="sd">        2  17093890101  17031010202  92.95          63073.735631</span>
 <span class="sd">        3  17093890101  17031010300  89.40          63520.029749</span>
 <span class="sd">        4  17093890101  17031010400  84.97          63268.514352</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
         <span class="c1"># Add it to the list of costs.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -1572,7 +1588,10 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Access.create_euclidean_distance"><a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance.html#access.Access.create_euclidean_distance">[docs]</a>    <span class="k">def</span> <span class="nf">create_euclidean_distance</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.create_euclidean_distance">
+<a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance.html#access.Access.create_euclidean_distance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_euclidean_distance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid_o</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">centroid_d</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Euclidean distance from demand to supply locations.</span>
@@ -1656,8 +1675,8 @@
 <span class="sd">        2  17093890101  17031010202  92.95  63073.735631</span>
 <span class="sd">        3  17093890101  17031010300  89.40  63520.029749</span>
 <span class="sd">        4  17093890101  17031010400  84.97  63268.514352</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 
         <span class="c1"># TO-DO: check for unprojected geometries</span>
 
@@ -1706,7 +1725,7 @@
         <span class="n">df1and2</span> <span class="o">=</span> <span class="n">df1and2</span><span class="p">[</span><span class="n">df1and2</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
@@ -1723,7 +1742,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_default_cost&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_default_cost</span> <span class="o">=</span> <span class="n">name</span></div>
 
-<div class="viewcode-block" id="Access.create_euclidean_distance_neighbors"><a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance_neighbors.html#access.Access.create_euclidean_distance_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">create_euclidean_distance_neighbors</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Access.create_euclidean_distance_neighbors">
+<a class="viewcode-back" href="../../generated/access.Access.create_euclidean_distance_neighbors.html#access.Access.create_euclidean_distance_neighbors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_euclidean_distance_neighbors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Euclidean distance among demand locations.</span>
@@ -1808,8 +1830,8 @@
 <span class="sd">        2  17031010100  17031010202           635.203387</span>
 <span class="sd">        3  17031010100  17031010300           653.415713</span>
 <span class="sd">        4  17031010100  17031010400          2065.375554</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 
         <span class="c1"># TO-DO: check for unprojected geometries</span>
 
@@ -1860,7 +1882,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_cost_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="c1"># Set the default cost if it does not exist</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_neighbor_default_cost&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span> <span class="o">=</span> <span class="n">name</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbor_default_cost</span> <span class="o">=</span> <span class="n">name</span></div>
+</div>
+
 </pre></div>
 
     </div>
@@ -1878,7 +1902,7 @@
     </p>
     <p>
         &copy; Copyright 2019, pysal access developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.0.4.<br/>
     </p>
   </div>
 </footer>

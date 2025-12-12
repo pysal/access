@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>access.raam &#8212; access v0+untagged.1.g7149c70 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <title>access.raam &#8212; access v1.1.10 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=466da8af" />
+    <script src="../../_static/documentation_options.js?v=25b84aaa"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           access</a>
-        <span class="navbar-text navbar-version pull-left"><b>0+untagged.1.g7149c70</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.10</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -78,11 +78,11 @@
     <div class="body col-md-12 content" role="main">
       
   <h1>Source code for access.raam</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
-<span class="k">def</span> <span class="nf">iterate_raam</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">iterate_raam</span><span class="p">(</span>
     <span class="n">demand</span><span class="p">,</span>
     <span class="n">supply</span><span class="p">,</span>
     <span class="n">travel</span><span class="p">,</span>
@@ -93,13 +93,11 @@
     <span class="n">limit_initial</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-
     <span class="n">norig</span><span class="p">,</span> <span class="n">ndest</span> <span class="o">=</span> <span class="n">travel</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norig</span><span class="p">,</span> <span class="n">ndest</span><span class="p">))</span>
     <span class="n">assignment</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">norig</span><span class="p">),</span> <span class="n">travel</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">demand</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_cycles</span><span class="p">):</span>
-
         <span class="n">demand_at_supply</span> <span class="o">=</span> <span class="n">assignment</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">congestion_cost</span> <span class="o">=</span> <span class="n">demand_at_supply</span> <span class="o">/</span> <span class="n">supply</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">congestion_cost</span> <span class="o">+</span> <span class="n">travel</span>
@@ -138,7 +136,6 @@
             <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">demand</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-
             <span class="n">step_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">initial_step</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="n">half_life</span><span class="p">)))</span>
             <span class="k">if</span> <span class="n">step_size</span> <span class="o">&lt;</span> <span class="n">min_step</span><span class="p">:</span>
                 <span class="n">step_size</span> <span class="o">=</span> <span class="n">min_step</span>
@@ -149,7 +146,6 @@
         <span class="c1">## This will only happen in the first 10-20 cycles.</span>
         <span class="c1">## So only do these (somewhat costly checks) then.</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">limit_initial</span><span class="p">:</span>
-
             <span class="n">delta_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">travel</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="n">delta_mat</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">norig</span><span class="p">),</span> <span class="n">min_locations</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
 
@@ -170,9 +166,7 @@
 
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2"> </span><span class="si">{:.2f}</span><span class="s2"> </span><span class="si">{:d}</span><span class="s2"> </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">i</span><span class="p">,</span> <span class="n">raam_cost</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">delta</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">step_size</span>
-                    <span class="p">),</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raam_cost</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">step_size</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">end</span><span class="o">=</span><span class="s2">&quot; || &quot;</span><span class="p">,</span>
                 <span class="p">)</span>
 
@@ -181,7 +175,9 @@
     <span class="k">return</span> <span class="n">raam_cost</span>
 
 
-<div class="viewcode-block" id="raam"><a class="viewcode-back" href="../../generated/access.raam.raam.html#access.raam.raam">[docs]</a><span class="k">def</span> <span class="nf">raam</span><span class="p">(</span>
+<div class="viewcode-block" id="raam">
+<a class="viewcode-back" href="../../generated/access.raam.raam.html#access.raam.raam">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">raam</span><span class="p">(</span>
     <span class="n">demand_df</span><span class="p">,</span>
     <span class="n">supply_df</span><span class="p">,</span>
     <span class="n">cost_df</span><span class="p">,</span>
@@ -244,7 +240,7 @@
 <span class="sd">    access     : pandas.Series</span>
 
 <span class="sd">                  A -- potentially-weighted -- Rational Agent Access Model cost.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="k">if</span> <span class="n">demand_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">demand_df</span> <span class="o">=</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">demand_index</span><span class="p">)</span>
@@ -260,7 +256,7 @@
     <span class="n">cost_pivot</span> <span class="o">=</span> <span class="n">cost_df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">cost_origin</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cost_dest</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">cost_name</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">travel_np</span> <span class="o">=</span> <span class="n">cost_pivot</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_locations</span><span class="p">,</span> <span class="n">supply_locations</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722 –– Do not use bare `except`</span>
         <span class="n">travel_np</span> <span class="o">=</span> <span class="n">cost_pivot</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_locations</span><span class="p">,</span> <span class="n">supply_locations</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="n">travel_np</span> <span class="o">=</span> <span class="n">travel_np</span> <span class="o">/</span> <span class="n">tau</span>
@@ -272,7 +268,7 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">supply_np</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">supply_locations</span><span class="p">,</span> <span class="n">supply_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722 –– Do not use bare `except`</span>
         <span class="n">supply_np</span> <span class="o">=</span> <span class="n">supply_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">supply_locations</span><span class="p">,</span> <span class="n">supply_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="n">supply_np</span> <span class="o">=</span> <span class="n">supply_np</span> <span class="o">*</span> <span class="n">rho</span>
@@ -280,7 +276,7 @@
     <span class="c1"># Change this -- should be</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">demand_np</span> <span class="o">=</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_locations</span><span class="p">,</span> <span class="n">demand_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722 –– Do not use bare `except`</span>
         <span class="n">demand_np</span> <span class="o">=</span> <span class="n">demand_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_locations</span><span class="p">,</span> <span class="n">demand_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="n">raam_cost</span> <span class="o">=</span> <span class="n">iterate_raam</span><span class="p">(</span>
@@ -297,6 +293,7 @@
     <span class="n">rs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;RAAM&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">demand_locations</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">raam_cost</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rs</span></div>
+
 </pre></div>
 
     </div>
@@ -314,7 +311,7 @@
     </p>
     <p>
         &copy; Copyright 2019, pysal access developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.0.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.0.4.<br/>
     </p>
   </div>
 </footer>
