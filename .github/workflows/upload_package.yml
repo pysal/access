@@ -15,7 +15,7 @@ on:
 
 jobs:
   build-n-publish:
-    name: Build and publish neatnet to PyPI
+    name: Build and publish to PyPI
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # MANDATORY for trusted publishing to PyPI
