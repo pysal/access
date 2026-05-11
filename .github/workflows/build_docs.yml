@@ -5,7 +5,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
   workflow_dispatch:
     inputs:
       version:
@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 90
     strategy:
       matrix:
-        os: ['ubuntu-latest']
+        os: ["ubuntu-latest"]
         environment-file: [ci/314-latest.yaml]
         experimental: [false]
     defaults:
@@ -30,21 +30,24 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup micromamba
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: ${{ matrix.environment-file }}
-          micromamba-version: 'latest'
+          micromamba-version: "latest"
 
       - name: Install access
-        run: pip install .
+        run: |
+          pip install .
 
       - name: Make Docs
-        run: cd docs; make html
+        run: |
+          cd docs
+          make html
 
       - name: Publish to Github Pages
         uses: peaceiris/actions-gh-pages@v4
