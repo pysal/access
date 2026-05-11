@@ -2,7 +2,7 @@
 files: "access\/|notebooks\/"
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.12.1"
+    rev: "v0.15.12"
     hooks:
       - id: ruff-check
       - id: ruff-format
