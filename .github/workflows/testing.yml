@@ -37,8 +37,6 @@ jobs:
         experimental: [false]
         include:
           - environment-file: 314-latest
-            os: macos-15-intel # Intel
-          - environment-file: 314-latest
             os: macos-latest # Apple Silicon
           - environment-file: 314-latest
             os: windows-latest
@@ -46,7 +44,7 @@ jobs:
 
     steps:
       - name: checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags.
       
@@ -73,7 +71,7 @@ jobs:
           --cov-report xml .
 
       - name: codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: access-codecov
